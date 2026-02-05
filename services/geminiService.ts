@@ -41,25 +41,34 @@ const checkApiKey = () => {
     }
 };
 
-export const analyzeCropQuality = async (base64Image: string, context: any, language: string): Promise<CropAnalysisResult> => {
+// Universal Crop Analysis
+export const analyzeCropQuality = async (base64Image: string, context: any, language: string, mimeType: string = 'image/jpeg'): Promise<CropAnalysisResult> => {
     checkApiKey();
     try {
         const langName = getLangName(language);
-        const prompt = `Act as an Agmarknet Quality Inspector. Analyze this crop image.
-        Context: Commodity=${context.commodity}, Location=${context.district}, ${context.state}. Current Mandi Price=₹${context.price}/q.
-        
-        Task:
-        1. Detect the crop and identify any visual defects (lesions, rot, pest damage, discoloration).
-        2. Grade the quality (A=Premium, B=Standard, C=Poor).
-        3. Estimate fair price based on quality vs market price.
-        4. Provide specific visual checks (Color, Size, Texture).
-        
-        Return JSON structure matching:
+        const prompt = `Act as an expert Plant Pathologist. Analyze this crop image.
+        Constraint: JSON Output ONLY. No Markdown. No Explanations strings inside JSON values.
+        Context: Commodity=${context.commodity}, Location=${context.district}, ${context.state}. Price=₹${context.price}/q.
+
+        Task 1: Disease Detection (Universal)
+        1. Identify the crop (Verify it matches: ${context.commodity} if provided).
+        2. Identify ALL visible diseases, pests, or physical defects.
+        3. Draw a bounding box [ymin, xmin, ymax, xmax] around EACH affected area.
+           IMPORTANT: Return coordinates normalized to 0-1 range (e.g., 0.5, not 500).
+        4. Use standard specific disease names (e.g. "Rice Blast", "Wheat Rust").
+        5. If healthy, label as "Healthy".
+
+        Task 2: Quality & Market Analysis
+        - Grade the overall quality (A/B/C) based on visual appearance.
+        - Estimate fair market price.
+        - Assess physical health indicators.
+
+        Return JSON matching this structure:
         {
-          "bbox": [ymin, xmin, ymax, xmax] (Detection box for the main crop pile/item),
+          "detections": [{ "label": "Specific Disease/Defect Name", "bbox": [ymin, xmin, ymax, xmax], "confidence": 0-100 }],
           "grading": { "overallGrade": "A"|"B"|"C", "colorChecking": "", "sizeCheck": "", "textureCheck": "", "shapeCheck": "" },
-          "health": { "lesions": "None"|"Minor"|"Severe", "chlorosis": "None"|"...", "pestDamage": "...", "mechanicalDamage": "...", "diseaseName": "", "confidence": 0 },
-          "market": { "estimatedPrice": 0, "priceDriver": "Reason for price markup/markdown", "demandFactor": "High/Mod/Low based on quality" }
+          "health": { "lesions": "None"|"Minor"|"Severe", "chlorosis": "...", "pestDamage": "...", "mechanicalDamage": "...", "diseaseName": "Short Label Only (Max 3 words)", "confidence": 0 },
+          "market": { "estimatedPrice": 0, "priceDriver": "Reason", "demandFactor": "High/Mod/Low" }
         }
         Respond in language: ${langName}`;
 
@@ -67,7 +76,7 @@ export const analyzeCropQuality = async (base64Image: string, context: any, lang
             model: MODEL_VISION,
             contents: {
                 parts: [
-                    { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
+                    { inlineData: { mimeType: mimeType, data: base64Image } },
                     { text: prompt }
                 ]
             },
@@ -76,7 +85,18 @@ export const analyzeCropQuality = async (base64Image: string, context: any, lang
                 responseSchema: {
                     type: Type.OBJECT,
                     properties: {
-                        bbox: { type: Type.ARRAY, items: { type: Type.NUMBER } },
+                        detections: {
+                            type: Type.ARRAY,
+                            items: {
+                                type: Type.OBJECT,
+                                properties: {
+                                    label: { type: Type.STRING },
+                                    bbox: { type: Type.ARRAY, items: { type: Type.NUMBER } },
+                                    confidence: { type: Type.NUMBER }
+                                },
+                                required: ["label", "bbox", "confidence"]
+                            }
+                        },
                         grading: {
                             type: Type.OBJECT,
                             properties: {
@@ -110,7 +130,7 @@ export const analyzeCropQuality = async (base64Image: string, context: any, lang
                             required: ["estimatedPrice", "priceDriver", "demandFactor"]
                         }
                     },
-                    required: ["grading", "health", "market"]
+                    required: ["detections", "grading", "health", "market"]
                 }
             }
         });
@@ -124,7 +144,7 @@ export const analyzeCropQuality = async (base64Image: string, context: any, lang
     }
 };
 
-export const analyzeCropDisease = async (base64Image: string, language: string): Promise<DiseaseResult> => {
+export const analyzeCropDisease = async (base64Image: string, language: string, mimeType: string = 'image/jpeg'): Promise<DiseaseResult> => {
     checkApiKey();
     try {
         const langName = getLangName(language);
@@ -136,7 +156,7 @@ export const analyzeCropDisease = async (base64Image: string, language: string):
             model: MODEL_VISION,
             contents: {
                 parts: [
-                    { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
+                    { inlineData: { mimeType: mimeType, data: base64Image } },
                     { text: prompt }
                 ]
             },
