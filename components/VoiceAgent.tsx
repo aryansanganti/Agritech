@@ -33,14 +33,14 @@ export const VoiceAgent: React.FC<Props> = ({ isOpen, onClose }) => {
 
         recognition.onstart = () => setStatus('listening');
         recognition.onend = () => {
-            if (status === 'listening') setStatus('idle'); 
+            if (status === 'listening') setStatus('idle');
         };
-        
+
         recognition.onresult = async (event: any) => {
             const text = event.results[0][0].transcript;
             setTranscript(text);
             setStatus('thinking');
-            
+
             try {
                 const reply = await voiceAgentChat(text);
                 setTranscript(reply || "I didn't catch that.");
@@ -65,7 +65,7 @@ export const VoiceAgent: React.FC<Props> = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl animate-fade-in">
-            <button 
+            <button
                 onClick={onClose}
                 className="absolute top-6 right-6 p-4 text-white/50 hover:text-white transition-colors"
             >
@@ -74,14 +74,16 @@ export const VoiceAgent: React.FC<Props> = ({ isOpen, onClose }) => {
 
             <div className="flex flex-col items-center gap-12 w-full max-w-lg px-6">
                 <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-yellow-300">
-                        Bhumi Live
-                    </h2>
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <span className="text-white/10 font-black text-6xl tracking-widest uppercase select-none">
+                            AgriTech Live
+                        </span>
+                    </div>
                     <p className="text-gray-400 text-lg min-h-[60px]">{transcript}</p>
                 </div>
 
                 {/* Magical Orb */}
-                <button 
+                <button
                     onClick={status === 'idle' ? startListening : undefined}
                     className={`
                         relative w-48 h-48 rounded-full magical-orb

@@ -216,7 +216,7 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
                                 <button
                                     onClick={handleAnalyze}
                                     disabled={analyzing}
-                                    className="flex-1 py-2 bg-bhumi-green hover:bg-green-700 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                                    className="flex-1 py-2 bg-bhoomi-green hover:bg-green-700 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                                 >
                                     {analyzing ? (
                                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -242,7 +242,7 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
 
                     {analyzing && (
                         <div className="h-full flex flex-col items-center justify-center space-y-4">
-                            <div className="w-20 h-20 border-4 border-bhumi-green border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-20 h-20 border-4 border-bhoomi-green border-t-transparent rounded-full animate-spin"></div>
                             <p className="text-gray-500">Scanning crop texture, color, and size...</p>
                         </div>
                     )}
@@ -284,7 +284,7 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
                                 {/* Visual Inspection */}
                                 <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
                                     <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
-                                        <CheckCircle className="text-bhumi-green" size={20} />
+                                        <CheckCircle className="text-bhoomi-green" size={20} />
                                         Visual Grading
                                     </h3>
                                     <div className="space-y-4">
@@ -325,7 +325,7 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
                                         ))}
                                     </div>
                                     {result.health.diseaseName && (
-                                        <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm text-red-700 dark:text-red-300">
+                                        <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm text-red-700 dark:text-red-300 break-words">
                                             <strong>Detected Disease:</strong> {result.health.diseaseName} ({result.health.confidence}%)
                                         </div>
                                     )}

@@ -3,10 +3,10 @@ import { Translations, Language } from '../types';
 
 export const translations: Record<Language, Translations> = {
     en: {
-        welcome: 'BHUMI',
+        welcome: 'AgriTech',
         subtitle: 'Smart Farming Assistant',
         loginTitle: 'Welcome Back',
-        signupTitle: 'Join Bhumi Family',
+        signupTitle: 'Join AgriTech Family',
         name: 'Full Name',
         email: 'Email Address',
         password: 'Password',
@@ -167,10 +167,10 @@ export const translations: Record<Language, Translations> = {
         analyzing: 'Analyzing...'
     },
     zh: {
-        welcome: 'Bhumi',
+        welcome: 'bhoomi',
         subtitle: '智能农业助手',
         loginTitle: '欢迎回来',
-        signupTitle: '加入 Bhumi 大家庭',
+        signupTitle: '加入 bhoomi 大家庭',
         name: '全名',
         email: '电子邮件',
         password: '密码',
@@ -208,10 +208,10 @@ export const translations: Record<Language, Translations> = {
         analyzing: 'Analyzing...'
     },
     es: {
-        welcome: 'Bhumi',
+        welcome: 'bhoomi',
         subtitle: 'Asistente de Agricultura Inteligente',
         loginTitle: 'Bienvenido de nuevo',
-        signupTitle: 'Únete a la familia Bhumi',
+        signupTitle: 'Únete a la familia bhoomi',
         name: 'Nombre completo',
         email: 'Correo electrónico',
         password: 'Contraseña',
@@ -249,10 +249,10 @@ export const translations: Record<Language, Translations> = {
         analyzing: 'Analizando...'
     },
     ru: {
-        welcome: 'Bhumi',
+        welcome: 'bhoomi',
         subtitle: 'Умный агропомощник',
         loginTitle: 'С возвращением',
-        signupTitle: 'Присоединяйтесь к Bhumi',
+        signupTitle: 'Присоединяйтесь к bhoomi',
         name: 'Полное имя',
         email: 'Электронная почта',
         password: 'Пароль',
@@ -290,10 +290,10 @@ export const translations: Record<Language, Translations> = {
         analyzing: 'Analyzing...'
     },
     ja: {
-        welcome: 'Bhumi',
+        welcome: 'bhoomi',
         subtitle: 'スマート農業アシスタント',
         loginTitle: 'お帰りなさい',
-        signupTitle: 'Bhumiに参加する',
+        signupTitle: 'bhoomiに参加する',
         name: '氏名',
         email: 'メールアドレス',
         password: 'パスワード',
@@ -331,10 +331,10 @@ export const translations: Record<Language, Translations> = {
         analyzing: 'Analyzing...'
     },
     pt: {
-        welcome: 'Bhumi',
+        welcome: 'bhoomi',
         subtitle: 'Assistente de Agricultura Inteligente',
         loginTitle: 'Bem-vindo de volta',
-        signupTitle: 'Junte-se à família Bhumi',
+        signupTitle: 'Junte-se à família bhoomi',
         name: 'Nome completo',
         email: 'E-mail',
         password: 'Senha',
@@ -370,5 +370,46 @@ export const translations: Record<Language, Translations> = {
         analyzeSoil: 'Analisar Solo',
         cropAnalysis: 'Classificação de Qualidade',
         analyzing: 'Analisando...'
+    },
+    te: {
+        welcome: 'భూమి',
+        subtitle: 'స్మార్ట్ వ్యవసాయ సహాయకుడు',
+        loginTitle: 'తిరిగి స్వాగతం',
+        signupTitle: 'భూమి కుటుంబంలో చేరండి',
+        name: 'పూర్తి పేరు',
+        email: 'ఇమెయిల్ చిరునామా',
+        password: 'పాస్‌వర్డ్',
+        location: 'స్థానం',
+        dashboard: 'డ్యాష్‌బోర్డ్',
+        disease: 'వ్యాధి గుర్తింపు',
+        yield: 'దిగుబడి అంచనా',
+        advisory: 'స్మార్ట్ సలహా',
+        recommend: 'పంట ప్రణాళిక',
+        weather: 'వాతావరణం',
+        analytics: 'విశ్లేషణలు',
+        profile: 'ప్రొఫైల్',
+        status: 'స్థితి',
+        optimal: 'సరైనది',
+        quickActions: 'త్వరిత చర్యలు',
+        farmConditions: 'నేడు పొలం పరిస్థితులు బాగున్నాయి.',
+        logout: 'లాగ్ అవుట్',
+        greeting: 'నమస్కారం',
+        humidity: 'తేమ',
+        wind: 'గాలి',
+        rain: 'వర్షం',
+        irrigation: 'నీటి పారుదల',
+        fertilizer: 'ఎరువులు',
+        pesticides: 'పురుగుమందులు',
+        lightMode: 'Light Mode',
+        darkMode: 'Dark Mode',
+        activeAlerts: 'Active Alerts',
+        soilAnalysis: 'Soil Analysis',
+        nutrientMirror: 'Nutrient Mirror',
+        thirstTracker: 'Thirst Tracker',
+        rootComfort: 'Root Comfort',
+        salinityAlarm: 'Salinity Alarm',
+        analyzeSoil: 'Analyze Soil',
+        cropAnalysis: 'Quality Grading',
+        analyzing: 'Analyzing...'
     }
 };

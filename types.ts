@@ -1,5 +1,5 @@
 
-export type Language = 'en' | 'hi' | 'or' | 'bn' | 'zh' | 'es' | 'ru' | 'ja' | 'pt';
+export type Language = 'en' | 'hi' | 'or' | 'bn' | 'te' | 'zh' | 'es' | 'ru' | 'ja' | 'pt';
 
 export interface User {
     email: string;
@@ -32,6 +32,7 @@ export interface Listing {
 }
 
 export type PageView =
+    | 'landing'
     | 'language'
     | 'auth'
     | 'dashboard'
@@ -46,7 +47,8 @@ export type PageView =
     | 'profile'
     | 'soil-analysis'
     | 'seedscout'
-    | 'crop-analysis';
+    | 'crop-analysis'
+    | 'pricing-engine';
 
 export interface Detection {
     label: string;

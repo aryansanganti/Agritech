@@ -1,13 +1,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { 
-    DiseaseResult, 
-    CropRec, 
-    YieldResult, 
-    AdvisoryResult, 
-    WeatherData, 
+import {
+    DiseaseResult,
+    CropRec,
+    YieldResult,
+    AdvisoryResult,
+    WeatherData,
     CropAnalysisResult, // From Block 1
     MandiPriceRecord,   // From Block 2
-    PricingPrediction   // From Block 2
+    PricingPrediction
 } from "../types";
 
 // ROBUST KEY RETRIEVAL:
@@ -54,7 +54,7 @@ const checkApiKey = () => {
 // VISION & QUALITY ANALYSIS
 // ==========================================
 
-export const analyzeCropQuality = async (base64Image: string, context: any, language: string): Promise<CropAnalysisResult> => {
+export const analyzeCropQuality = async (base64Image: string, context: any, language: string, mimeType: string = 'image/jpeg'): Promise<CropAnalysisResult> => {
     checkApiKey();
     try {
         const langName = getLangName(language);
@@ -79,7 +79,7 @@ export const analyzeCropQuality = async (base64Image: string, context: any, lang
         {
           "detections": [{ "label": "Specific Disease/Defect Name", "bbox": [ymin, xmin, ymax, xmax], "confidence": 0-100 }],
           "grading": { "overallGrade": "A"|"B"|"C", "colorChecking": "", "sizeCheck": "", "textureCheck": "", "shapeCheck": "" },
-          "health": { "lesions": "None"|"Minor"|"Severe", "chlorosis": "...", "pestDamage": "...", "mechanicalDamage": "...", "diseaseName": "Short Label Only (Max 3 words)", "confidence": 0 },
+          "health": { "lesions": "None"|"Minor"|"Severe", "chlorosis": "...", "pestDamage": "...", "mechanicalDamage": "...", "diseaseName": "VERY SHORT NAME (Max 3 words)", "confidence": 0 },
           "market": { "estimatedPrice": 0, "priceDriver": "Reason", "demandFactor": "High/Mod/Low" }
         }
         Respond in language: ${langName}`;
@@ -237,7 +237,7 @@ export const getCropRecommendations = async (soil: string, season: string, locat
     }
 };
 
-export const chatWithBhumi = async (history: { role: string, parts: { text: string }[] }[], message: string, language: string) => {
+export const chatWithBhoomi = async (history: { role: string, parts: { text: string }[] }[], message: string, language: string) => {
     checkApiKey();
     try {
         const langName = getLangName(language);
@@ -246,7 +246,7 @@ export const chatWithBhumi = async (history: { role: string, parts: { text: stri
             history: history,
             config: {
                 tools: [{ googleSearch: {} }],
-                systemInstruction: `You are Bhumi, a wise and friendly agricultural expert friend. 
+                systemInstruction: `You are bhoomi, a wise and friendly agricultural expert friend. 
                 - Your Goal: Help farmers with practical, empathetic advice.
                 - Personality: Warm, human-like, encouraging. Avoid being robotic. Speak like a knowledgeable neighbor.
                 - Language Rule: You MUST strictly respond in ${langName} ONLY.
@@ -265,12 +265,12 @@ export const chatWithBhumi = async (history: { role: string, parts: { text: stri
 
 // Simplified Agent for Voice interaction (Faster Model)
 export const voiceAgentChat = async (message: string) => {
-    if (!apiKey) return "Please configure your API Key to chat with Bhumi.";
+    if (!apiKey) return "Please configure your API Key to chat with bhoomi.";
     try {
         const chat = ai.chats.create({
             model: MODEL_FAST,
             config: {
-                systemInstruction: `You are Bhumi, a magical farm spirit voice. 
+                systemInstruction: `You are bhoomi, a magical farm spirit voice. 
                  Keep answers VERY short (1-2 sentences), conversational, and helpful. 
                  You are talking to a farmer. Be instant and warm.`
             }

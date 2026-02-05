@@ -6,6 +6,7 @@ import { searchHotspots, getClusterSummary, getDataRanges } from '../services/se
 import { searchHotspotsDynamic, searchHotspotsQuick, baseDistricts, SearchProgressCallback } from '../services/dynamicSeedScoutService';
 import { getSeedScoutInsights, getDistrictEnvironmentalData } from '../services/geminiService';
 import { SatelliteMap } from '../components/SatelliteMap';
+import { DNAScanner } from '../components/DNAScanner';
 import {
     ArrowLeft, Search, MapPin, Thermometer, Droplets, Users, Layers,
     Target, Sparkles, TrendingUp, Filter, Eye, Map, Satellite,
@@ -134,7 +135,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
             <div className="flex items-center justify-between mb-6">
                 <button
                     onClick={onBack}
-                    className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-bhumi-green dark:hover:text-bhumi-gold transition-colors"
+                    className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-bhoomi-green dark:hover:text-bhoomi-gold transition-colors"
                 >
                     <ArrowLeft size={20} />
                     <span>Back</span>
@@ -485,6 +486,14 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
                                 )}
                             </div>
                         </div>
+
+                    )}
+
+                    {/* Scanning Animation State */}
+                    {isSearching && !hasSearched && (
+                        <div className="h-64 glass-panel rounded-2xl p-4">
+                            <DNAScanner />
+                        </div>
                     )}
 
                     {/* Top Results List */}
@@ -522,7 +531,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
                         </div>
                     )}
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
