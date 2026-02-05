@@ -14,18 +14,53 @@ export interface User {
     [key: string]: any; // Allow extensibility for API
 }
 
-export type PageView = 
-    | 'language' 
-    | 'auth' 
-    | 'dashboard' 
-    | 'disease-detection' 
-    | 'yield-prediction' 
+export type PageView =
+    | 'language'
+    | 'auth'
+    | 'dashboard'
+    | 'disease-detection'
+    | 'yield-prediction'
     | 'smart-advisory'
-    | 'chatbot' 
-    | 'crop-recommendation' 
-    | 'weather' 
-    | 'analytics' 
-    | 'profile';
+    | 'chatbot'
+    | 'crop-recommendation'
+    | 'weather'
+    | 'analytics'
+    | 'profile'
+    | 'seedscout';
+
+// SeedScout Types
+export interface DistrictData {
+    id: string;
+    name: string;
+    state: string;
+    lat: number;
+    lng: number;
+    salinity: number;        // EC value in dS/m (0-16)
+    maxTemp: number;         // Average max temp in °C
+    rainfall: number;        // Annual rainfall in mm
+    tribalPercent: number;   // Tribal population percentage
+    cluster?: number;        // K-Means cluster assignment
+}
+
+export interface SeedScoutQuery {
+    cropType: string;
+    salinityTolerance: boolean;
+    heatTolerance: boolean;
+    droughtTolerance: boolean;
+    salinityWeight: number;
+    heatWeight: number;
+    droughtWeight: number;
+}
+
+export interface HotspotResult {
+    district: DistrictData;
+    traitScore: number;
+    salinityScore: number;
+    heatScore: number;
+    droughtScore: number;
+    tribalScore: number;
+    recommendation: string;
+}
 
 export interface WeatherData {
     temp: number;
@@ -102,7 +137,7 @@ export interface Translations {
     quickActions: string;
     farmConditions: string;
     logout: string;
-    greeting: string; 
+    greeting: string;
     humidity: string;
     wind: string;
     rain: string;

@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { PageView, User, Language } from '../../types';
 import { translations } from '../../utils/translations';
-import { 
-    LayoutDashboard, 
-    ScanLine, 
-    Sprout, 
-    CloudSun, 
-    BarChart3, 
-    User as UserIcon, 
-    Menu, 
+import {
+    LayoutDashboard,
+    ScanLine,
+    Sprout,
+    CloudSun,
+    BarChart3,
+    User as UserIcon,
+    Menu,
     X,
     LogOut,
     TrendingUp,
@@ -21,7 +21,8 @@ import {
     Download,
     QrCode,
     Copy,
-    Check
+    Check,
+    Compass
 } from 'lucide-react';
 import { ChatWidget } from '../ChatWidget';
 
@@ -47,27 +48,27 @@ export const BhumiLogo = ({ size = 40 }: { size?: number }) => (
                 <stop offset="100%" stopColor="#4ade80" />
             </linearGradient>
             <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="2" result="blur"/>
-                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                <feGaussianBlur stdDeviation="2" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
         </defs>
-        
+
         {/* Main Leaf Body */}
-        <path 
-            d="M50 95 C 50 95, 10 70, 10 40 C 10 15, 30 5, 50 5 C 70 5, 90 15, 90 40 C 90 70, 50 95, 50 95 Z" 
-            fill="url(#leafGrad)" 
+        <path
+            d="M50 95 C 50 95, 10 70, 10 40 C 10 15, 30 5, 50 5 C 70 5, 90 15, 90 40 C 90 70, 50 95, 50 95 Z"
+            fill="url(#leafGrad)"
             className="drop-shadow-md"
         />
-        
+
         {/* Central Vein */}
-        <path 
-            d="M50 95 Q 50 50 50 15" 
-            stroke="white" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+        <path
+            d="M50 95 Q 50 50 50 15"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
             opacity="0.6"
         />
-        
+
         {/* Side Veins */}
         <path d="M50 70 Q 70 60 80 50" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
         <path d="M50 70 Q 30 60 20 50" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
@@ -112,6 +113,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
 
     const navItems = [
         { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
+        { id: 'seedscout', label: 'SeedScout', icon: Compass },
         { id: 'disease-detection', label: t.disease, icon: ScanLine },
         { id: 'yield-prediction', label: t.yield, icon: TrendingUp },
         { id: 'smart-advisory', label: t.advisory, icon: Droplets },
@@ -136,11 +138,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
                         <button
                             key={item.id}
                             onClick={() => setView(item.id as PageView)}
-                            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                                currentView === item.id 
-                                ? 'bg-bhumi-green text-white shadow-lg shadow-bhumi-green/30' 
-                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-bhumi-green dark:hover:text-white'
-                            }`}
+                            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${currentView === item.id
+                                    ? 'bg-bhumi-green text-white shadow-lg shadow-bhumi-green/30'
+                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-bhumi-green dark:hover:text-white'
+                                }`}
                         >
                             <item.icon size={20} />
                             <span className="font-medium">{item.label}</span>
@@ -196,7 +197,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
             {/* Mobile Menu Overlay */}
             {isMobileMenuOpen && (
                 <div className="fixed inset-0 z-20 bg-white dark:bg-bhumi-dark pt-20 px-4 pb-8 overflow-y-auto md:hidden animate-fade-in">
-                     <nav className="space-y-2">
+                    <nav className="space-y-2">
                         {navItems.map((item) => (
                             <button
                                 key={item.id}
@@ -204,17 +205,16 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
                                     setView(item.id as PageView);
                                     setIsMobileMenuOpen(false);
                                 }}
-                                className={`w-full flex items-center space-x-3 px-4 py-4 rounded-xl transition-all ${
-                                    currentView === item.id 
-                                    ? 'bg-bhumi-green text-white border border-white/20 shadow-md' 
-                                    : 'text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5'
-                                }`}
+                                className={`w-full flex items-center space-x-3 px-4 py-4 rounded-xl transition-all ${currentView === item.id
+                                        ? 'bg-bhumi-green text-white border border-white/20 shadow-md'
+                                        : 'text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5'
+                                    }`}
                             >
                                 <item.icon size={22} />
                                 <span className="font-medium text-lg">{item.label}</span>
                             </button>
                         ))}
-                         {deferredPrompt && (
+                        {deferredPrompt && (
                             <button onClick={handleInstallClick} className="w-full flex items-center space-x-3 px-4 py-4 mt-8 bg-bhumi-green text-white rounded-xl shadow-lg">
                                 <Download size={22} />
                                 <span className="font-medium text-lg">Install Bhumi App</span>
@@ -238,12 +238,12 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
 
             {/* QR Code Modal for Sharing */}
             {showQrModal && (
-                <div 
+                <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in"
                     onClick={() => setShowQrModal(false)}
                 >
-                    <div 
-                        className="bg-white dark:bg-[#0F1419] p-8 rounded-3xl flex flex-col items-center gap-6 max-w-sm w-full shadow-2xl border border-gray-200 dark:border-white/10 animate-scale-up" 
+                    <div
+                        className="bg-white dark:bg-[#0F1419] p-8 rounded-3xl flex flex-col items-center gap-6 max-w-sm w-full shadow-2xl border border-gray-200 dark:border-white/10 animate-scale-up"
                         onClick={e => e.stopPropagation()}
                     >
                         <div className="text-center">
@@ -252,30 +252,29 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
                                 Scan the code below or copy the link to share Bhumi with other farmers.
                             </p>
                         </div>
-                        
+
                         <div className="bg-white p-6 rounded-3xl shadow-xl border-4 border-bhumi-green/20">
                             {/* Improved QR code display for better scanner detection */}
-                            <img 
-                                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(APP_SHARE_URL)}&bgcolor=ffffff&color=2D5016`} 
-                                alt="App QR Code" 
-                                className="w-48 h-48 md:w-64 md:h-64 object-contain" 
+                            <img
+                                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(APP_SHARE_URL)}&bgcolor=ffffff&color=2D5016`}
+                                alt="App QR Code"
+                                className="w-48 h-48 md:w-64 md:h-64 object-contain"
                             />
                         </div>
 
                         <div className="flex gap-3 w-full">
-                            <button 
+                            <button
                                 onClick={handleCopyLink}
-                                className={`flex-1 flex items-center justify-center gap-2 font-bold py-3 rounded-xl transition-all border shadow-sm ${
-                                    copied 
-                                    ? 'bg-green-100 border-green-500 text-green-700' 
-                                    : 'bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10'
-                                }`}
+                                className={`flex-1 flex items-center justify-center gap-2 font-bold py-3 rounded-xl transition-all border shadow-sm ${copied
+                                        ? 'bg-green-100 border-green-500 text-green-700'
+                                        : 'bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10'
+                                    }`}
                             >
                                 {copied ? <Check size={18} /> : <Copy size={18} />}
                                 {copied ? 'Copied!' : 'Copy Link'}
                             </button>
-                            <button 
-                                onClick={() => setShowQrModal(false)} 
+                            <button
+                                onClick={() => setShowQrModal(false)}
                                 className="flex-1 bg-bhumi-green text-white font-bold py-3 rounded-xl hover:bg-green-700 transition-colors shadow-lg"
                             >
                                 Close
