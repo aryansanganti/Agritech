@@ -26,7 +26,33 @@ export type PageView =
     | 'weather'
     | 'analytics'
     | 'profile'
-    | 'seedscout';
+    | 'soil-analysis'
+    | 'seedscout'
+    | 'crop-analysis';
+
+export interface CropAnalysisResult {
+    grading: {
+        overallGrade: 'A' | 'B' | 'C';
+        colorChecking: string;
+        sizeCheck: string;
+        textureCheck: string;
+        shapeCheck: string;
+    };
+    bbox?: number[];
+    health: {
+        lesions: string;
+        chlorosis: string;
+        pestDamage: string;
+        mechanicalDamage: string;
+        diseaseName?: string;
+        confidence?: number;
+    };
+    market: {
+        estimatedPrice: number;
+        priceDriver: string;
+        demandFactor: string;
+    };
+} // end CropAnalysisResult
 
 // SeedScout Types
 export interface DistrictData {
@@ -115,6 +141,23 @@ export interface AnalyticsData {
     expenses: Array<{ category: string; amount: number }>;
 }
 
+
+export interface SoilMetrics {
+    soc: number;         // 0-100 (Derived from Value)
+    moisture: number;    // 0-100 (Derived from Value/Darkness)
+    salinity: number;    // 0-100 (White pixel density)
+    texture: number;     // 0-100 (Variance/Roughness)
+    cracks: boolean;     // True/False (Edge density)
+    description: string; // Summary of spectral analysis
+}
+
+export interface SoilAnalysisResult {
+    metrics: SoilMetrics;
+    aiAdvice: string;
+    soilType: string;
+    recommendedCrops: string[];
+}
+
 export interface Translations {
     welcome: string;
     subtitle: string;
@@ -147,4 +190,12 @@ export interface Translations {
     lightMode: string;
     darkMode: string;
     activeAlerts: string;
+    soilAnalysis: string;
+    cropAnalysis: string;
+    nutrientMirror: string;
+    thirstTracker: string;
+    rootComfort: string;
+    salinityAlarm: string;
+    analyzeSoil: string;
+    analyzing: string;
 }
