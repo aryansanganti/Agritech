@@ -1,0 +1,101 @@
+{
+  "regions": {
+    "Western_Ghats": {
+      "June": {
+        "crops": [
+          {
+            "name": "Black Pepper",
+            "variety": "Panniyur 1",
+            "water_requirement": "High",
+            "duration": "3 years",
+            "profit_margin": "High"
+          },
+          {
+            "name": "Paddy",
+            "variety": "Pratap",
+            "water_requirement": "Low",
+            "water_saving": "30%",
+            "duration": "120 days"
+          },
+          {
+            "name": "Dhan",
+            "variety": "Pratap",
+            "water_requirement": "Low",
+            "water_saving": "30%",
+            "duration": "120 days"
+          }
+        ]
+      },
+      "July": {
+        "crops": [
+          {
+            "name": "Black Pepper",
+            "variety": "Panniyur 1",
+            "water_requirement": "High",
+            "duration": "3 years",
+            "profit_margin": "High"
+          },
+          {
+            "name": "Paddy",
+            "variety": "Pratap",
+            "water_requirement": "Low",
+            "water_saving": "30%",
+            "duration": "120 days"
+          }
+        ]
+      }
+    },
+    "Nashik": {
+      "February": {
+        "crops": [
+          {
+            "name": "Tomato",
+            "variety": "Arka Rakshak",
+            "water_requirement": "Medium",
+            "duration": "90 days",
+            "profit_margin": "Medium"
+          },
+          {
+            "name": "Tamatar",
+            "variety": "Arka Rakshak",
+            "water_requirement": "Medium",
+            "duration": "90 days",
+            "profit_margin": "Medium"
+          },
+          {
+            "name": "Onion",
+            "variety": "N-53",
+            "water_requirement": "Low",
+            "duration": "120 days",
+            "profit_margin": "High"
+          },
+          {
+            "name": "Pyaz",
+            "variety": "N-53",
+            "water_requirement": "Low",
+            "duration": "120 days",
+            "profit_margin": "High"
+          }
+        ]
+      },
+      "June": {
+        "crops": [
+          {
+            "name": "Grapes",
+            "variety": "Thompson Seedless",
+            "water_requirement": "High",
+            "duration": "150 days",
+            "profit_margin": "High"
+          },
+          {
+            "name": "Angur",
+            "variety": "Thompson Seedless",
+            "water_requirement": "High",
+            "duration": "150 days",
+            "profit_margin": "High"
+          }
+        ]
+      }
+    }
+  }
+}

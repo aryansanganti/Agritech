@@ -1,0 +1,100 @@
+{
+  "Nashik": {
+    "date": "2026-02-06",
+    "crops": {
+      "Tomato": {
+        "price": 25,
+        "unit": "kg",
+        "trend": "stable"
+      },
+      "Tamatar": {
+        "price": 25,
+        "unit": "kg",
+        "trend": "stable"
+      },
+      "Onion": {
+        "price": 40,
+        "unit": "kg",
+        "trend": "up"
+      },
+      "Pyaz": {
+        "price": 40,
+        "unit": "kg",
+        "trend": "up"
+      },
+      "Grapes": {
+        "price": 80,
+        "unit": "kg",
+        "trend": "down"
+      },
+      "Angur": {
+        "price": 80,
+        "unit": "kg",
+        "trend": "down"
+      },
+      "Sugarcane": {
+        "price": 320,
+        "unit": "quintal",
+        "trend": "stable"
+      },
+      "Ganna": {
+        "price": 320,
+        "unit": "quintal",
+        "trend": "stable"
+      }
+    },
+    "status": "Open until 6 PM"
+  },
+  "Mumbai": {
+    "date": "2026-02-06",
+    "crops": {
+      "Tomato": {
+        "price": 28,
+        "unit": "kg",
+        "trend": "up"
+      },
+      "Tamatar": {
+        "price": 28,
+        "unit": "kg",
+        "trend": "up"
+      },
+      "Onion": {
+        "price": 42,
+        "unit": "kg",
+        "trend": "stable"
+      },
+      "Pyaz": {
+        "price": 42,
+        "unit": "kg",
+        "trend": "stable"
+      }
+    },
+    "status": "Open until 7 PM"
+  },
+  "Pune": {
+    "date": "2026-02-06",
+    "crops": {
+      "Tomato": {
+        "price": 26,
+        "unit": "kg",
+        "trend": "stable"
+      },
+      "Tamatar": {
+        "price": 26,
+        "unit": "kg",
+        "trend": "stable"
+      },
+      "Onion": {
+        "price": 38,
+        "unit": "kg",
+        "trend": "down"
+      },
+      "Pyaz": {
+        "price": 38,
+        "unit": "kg",
+        "trend": "down"
+      }
+    },
+    "status": "Open until 6:30 PM"
+  }
+}
