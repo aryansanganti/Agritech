@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, BhumiLogo } from './components/ui/Layout';
 import { Dashboard } from './pages/Dashboard';
-import { DiseaseDetection } from './pages/DiseaseDetection';
-import { Chatbot } from './pages/Chatbot';
-import { CropRecommendation } from './pages/CropRecommendation';
-import { YieldPrediction } from './pages/YieldPrediction';
-import { SmartAdvisory } from './pages/SmartAdvisory';
-import { Weather } from './pages/Weather';
-import { Analytics } from './pages/Analytics';
 import { Profile } from './pages/Profile';
 import { SoilAnalysis } from './pages/SoilAnalysis';
 import { CropAnalysis } from './pages/cropanalysis';
+import { Marketplace } from './pages/Marketplace';
 import { SeedScout } from './pages/SeedScout';
+import { PricingEngine } from './pages/PricingEngine';
+import { ReplicationPlanner } from './pages/ReplicationPlanner';
+import { Chatbot } from './pages/Chatbot';
 import { PageView, User, Language } from './types';
 import { translations } from './utils/translations';
 import { api } from './services/api';
 import { isConfigured } from './services/geminiService';
 import { Languages, Mail, Lock, User as UserIcon, MapPin, ArrowRight, Sprout, Droplets, Layers, AlertTriangle } from 'lucide-react';
 
-const App: React.FC = () => {
+const App: React.FC = () => { 
     const [view, setView] = useState<PageView>('language');
     // Default Guest User
     const [user, setUser] = useState<User | null>({
@@ -162,17 +159,24 @@ const App: React.FC = () => {
     const renderPage = () => {
         switch (view) {
             case 'dashboard': return <Dashboard setView={setView} user={user} lang={lang} />;
-            case 'disease-detection': return <DiseaseDetection lang={lang} onBack={goBack} />;
-            case 'yield-prediction': return <YieldPrediction lang={lang} onBack={goBack} />;
-            case 'smart-advisory': return <SmartAdvisory lang={lang} onBack={goBack} />;
-            case 'chatbot': return <Chatbot lang={lang} />;
-            case 'crop-recommendation': return <CropRecommendation lang={lang} onBack={goBack} />;
-            case 'weather': return <Weather lang={lang} onBack={goBack} />;
-            case 'analytics': return <Analytics lang={lang} onBack={goBack} />;
-            case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
-            case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} />;
             case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
-            case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
+            case 'chatbot': return <Chatbot lang={lang} />;
+            case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
+            case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} onNavigateToPricing={() => setView('pricing-engine')} />;
+            case 'marketplace': return <Marketplace user={user} lang={lang} onBack={goBack} onNavigateToQualityGrading={() => setView('crop-analysis')} />;
+            case 'seedscout': return <SeedScout lang={lang} onBack={goBack} onNavigateToReplication={(crop: string, source: string) => {
+                // Store crop and source for replication planner
+                localStorage.setItem('replication_crop', crop);
+                localStorage.setItem('replication_source', source);
+                setView('replication-planner');
+            }} />;
+            case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} onNavigateToMarketplace={() => setView('marketplace')} onNavigateToQualityGrading={() => setView('crop-analysis')} />;
+            case 'replication-planner': return <ReplicationPlanner 
+                lang={lang} 
+                onBack={goBack} 
+                initialCrop={localStorage.getItem('replication_crop') || ''} 
+                initialSource={localStorage.getItem('replication_source') || ''} 
+            />;
             default: return <Dashboard setView={setView} user={user} lang={lang} />;
         }
     };

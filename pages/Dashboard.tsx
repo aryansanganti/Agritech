@@ -1,18 +1,18 @@
 import React from 'react';
-import { CloudRain, Wind, Droplets, ThermometerSun, AlertTriangle, TrendingUp, ScanLine, Sprout, BarChart3, CloudSun, Bug, FlaskConical, Mic } from 'lucide-react';
+import { CloudRain, Wind, Droplets, ThermometerSun, AlertTriangle, TrendingUp, ScanLine, Sprout, BarChart3, CloudSun, Bug, FlaskConical, Mic, MapPin, ArrowRight, Compass } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { PageView, User, Language } from '../types';
 import { translations } from '../utils/translations';
 import { VoiceAgent } from '../components/VoiceAgent';
 
 const mockData = [
-  { name: 'Jan', yield: 40 },
-  { name: 'Feb', yield: 30 },
-  { name: 'Mar', yield: 20 },
-  { name: 'Apr', yield: 27 },
-  { name: 'May', yield: 18 },
-  { name: 'Jun', yield: 23 },
-  { name: 'Jul', yield: 34 },
+    { name: 'Jan', yield: 40 },
+    { name: 'Feb', yield: 30 },
+    { name: 'Mar', yield: 20 },
+    { name: 'Apr', yield: 27 },
+    { name: 'May', yield: 18 },
+    { name: 'Jun', yield: 23 },
+    { name: 'Jul', yield: 34 },
 ];
 
 interface DashboardProps {
@@ -85,8 +85,78 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                 </div>
             </div>
 
+            {/* Featured: Crop Replication Planner */}
+            <div 
+                onClick={() => setView('replication-planner')}
+                className="glass-panel rounded-2xl p-6 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-blue-500/10 border-2 border-dashed border-purple-500/30 hover:border-purple-500 transition-all cursor-pointer group relative overflow-hidden"
+            >
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
+                
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+                    <div className="flex items-start gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <Sprout className="text-white" size={28} />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                                🌱 Crop Replication Planner
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400 text-sm max-w-lg">
+                                Replicate any famous crop anywhere! Get complete cultivation plans with climate adjustments, 
+                                week-by-week schedules, fertilizer calendars & pest management.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                                <span className="px-2 py-1 bg-purple-500/20 text-purple-600 dark:text-purple-400 rounded-lg text-xs font-medium">🍓 Strawberry from Mahabaleshwar</span>
+                                <span className="px-2 py-1 bg-orange-500/20 text-orange-600 dark:text-orange-400 rounded-lg text-xs font-medium">🥭 Alphonso from Ratnagiri</span>
+                                <span className="px-2 py-1 bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg text-xs font-medium">🍎 Apple from Shimla</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold rounded-xl shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all">
+                        <span>Try Now</span>
+                        <ArrowRight size={18} />
+                    </div>
+                </div>
+            </div>
+
+            {/* Quick Actions - SeedScout & Marketplace */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div 
+                    onClick={() => setView('seedscout')}
+                    className="glass-panel rounded-2xl p-5 hover:shadow-lg transition-all cursor-pointer group border border-emerald-500/20 hover:border-emerald-500/50"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Compass className="text-emerald-600" size={24} />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-gray-900 dark:text-white">SeedScout</h3>
+                            <p className="text-sm text-gray-500">Find genetic hotspots for stress-tolerant seeds</p>
+                        </div>
+                        <ArrowRight size={20} className="text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
+                    </div>
+                </div>
+                
+                <div 
+                    onClick={() => setView('marketplace')}
+                    className="glass-panel rounded-2xl p-5 hover:shadow-lg transition-all cursor-pointer group border border-blue-500/20 hover:border-blue-500/50"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span className="text-2xl">🛒</span>
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-gray-900 dark:text-white">Marketplace</h3>
+                            <p className="text-sm text-gray-500">Buy & sell blockchain-verified produce</p>
+                        </div>
+                        <ArrowRight size={20} className="text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                    </div>
+                </div>
+            </div>
+
             {/* Quick Actions Grid */}
-            <div>
+            {/* <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t.quickActions}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                     <button onClick={() => setView('disease-detection')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
@@ -138,14 +208,28 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                         <span className="font-medium text-sm text-center z-10 text-gray-800 dark:text-white">{t.pesticides}</span>
                     </button>
 
-                     <button onClick={() => setView('analytics')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
+                    <button onClick={() => setView('analytics')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
                         <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform z-10">
                             <BarChart3 size={24} />
                         </div>
                         <span className="font-medium text-sm text-center z-10 text-gray-800 dark:text-white">{t.analytics}</span>
                     </button>
+
+                    <button onClick={() => setView('marketplace')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
+                        <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform z-10">
+                            <span className="text-2xl">🛒</span>
+                        </div>
+                        <span className="font-medium text-sm text-center z-10 text-gray-800 dark:text-white">Market</span>
+                    </button>
+
+                    <button onClick={() => setView('marketplace')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
+                        <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform z-10">
+                            <span className="text-2xl">🛒</span>
+                        </div>
+                        <span className="font-medium text-sm text-center z-10 text-gray-800 dark:text-white">Market</span>
+                    </button>
                 </div>
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 {/* Yield Trends */}
@@ -161,14 +245,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                             <AreaChart data={mockData}>
                                 <defs>
                                     <linearGradient id="colorYield" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3}/>
-                                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0}/>
+                                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.2)" />
                                 <XAxis dataKey="name" stroke="#888" />
                                 <YAxis stroke="#888" />
-                                <Tooltip 
+                                <Tooltip
                                     contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff' }}
                                 />
                                 <Area type="monotone" dataKey="yield" stroke="#D4AF37" fillOpacity={1} fill="url(#colorYield)" />
@@ -204,7 +288,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
 
             {/* Voice Agent Trigger */}
             <div className="flex justify-center mt-8 pb-8">
-                <button 
+                <button
                     onClick={() => setShowVoiceAgent(true)}
                     className="group relative flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-bhumi-green to-emerald-600 rounded-full text-white font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all overflow-hidden"
                 >
