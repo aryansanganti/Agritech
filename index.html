@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2D5016">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>BHUMI: Smart Farming Assistant</title>
+    <meta name="description" content="AI-powered agriculture platform using Gemini 3 Pro.">
+    
+    <!-- Tailwind CSS (CDN kept for stability) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        bhumi: {
+                            dark: '#0F1419',
+                            green: '#2D5016',
+                            gold: '#D4AF37',
+                            glass: 'rgba(255, 255, 255, 0.05)',
+                            glassBorder: 'rgba(255, 255, 255, 0.1)',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'orb-pulse': 'orbPulse 4s ease-in-out infinite',
+                        'orb-glow': 'orbGlow 2s ease-in-out infinite alternate',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        orbPulse: {
+                            '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                            '50%': { transform: 'scale(1.1)', opacity: '1' },
+                        },
+                        orbGlow: {
+                            'from': { boxShadow: '0 0 20px #4ADE80, 0 0 40px #2D5016' },
+                            'to': { boxShadow: '0 0 40px #4ADE80, 0 0 80px #2D5016' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Glass Panel Base */
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+
+        /* Light Mode */
+        html:not(.dark) .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(45, 80, 22, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Dark Mode */
+        .dark .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #2D5016; border-radius: 3px; }
+        
+        .dark .animated-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; overflow: hidden;
+            background: radial-gradient(circle at 50% 50%, #1a2e15 0%, #05080a 90%);
+        }
+
+        .light-animated-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; overflow: hidden;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 50%, #fefce8 100%);
+        }
+        
+        .light-orb {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+            animation: floatLight 25s infinite ease-in-out;
+        }
+        .orb-1 { width: 600px; height: 600px; background: #dcfce7; top: -100px; left: -100px; }
+        .orb-2 { width: 500px; height: 500px; background: #fef9c3; bottom: -50px; right: -50px; animation-delay: -5s; }
+
+        @keyframes floatLight {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -20px) scale(1.1); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        .magical-orb {
+            background: radial-gradient(circle, #4ADE80 0%, #166534 60%, #052e16 100%);
+            box-shadow: 0 0 30px #4ADE80, 0 0 60px #166534;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+</head>
+<body>
+    <div class="light-animated-bg dark:hidden">
+        <div class="light-orb orb-1"></div>
+        <div class="light-orb orb-2"></div>
+    </div>
+
+    <div class="hidden dark:block animated-bg">
+        <div class="gradient-orb bg-bhumi-green w-[800px] h-[800px] top-[-300px] left-[-200px] animate-pulse-slow absolute rounded-full filter blur-[100px] opacity-20"></div>
+    </div>
+    
+    <div id="root"></div>
+    
+    <!-- Entry Point for React Application -->
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>
