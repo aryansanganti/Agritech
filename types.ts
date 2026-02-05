@@ -30,6 +30,12 @@ export type PageView =
     | 'seedscout'
     | 'crop-analysis';
 
+export interface Detection {
+    label: string;
+    bbox: number[]; // [ymin, xmin, ymax, xmax]
+    confidence: number;
+}
+
 export interface CropAnalysisResult {
     grading: {
         overallGrade: 'A' | 'B' | 'C';
@@ -38,7 +44,8 @@ export interface CropAnalysisResult {
         textureCheck: string;
         shapeCheck: string;
     };
-    bbox?: number[];
+    bbox?: number[]; // Legacy support
+    detections?: Detection[]; // New multi-object support
     health: {
         lesions: string;
         chlorosis: string;

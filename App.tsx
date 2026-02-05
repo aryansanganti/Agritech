@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, BhumiLogo } from './components/ui/Layout';
 import { Dashboard } from './pages/Dashboard';
-import { DiseaseDetection } from './pages/DiseaseDetection';
-import { Chatbot } from './pages/Chatbot';
-import { CropRecommendation } from './pages/CropRecommendation';
-import { YieldPrediction } from './pages/YieldPrediction';
-import { SmartAdvisory } from './pages/SmartAdvisory';
-import { Weather } from './pages/Weather';
-import { Analytics } from './pages/Analytics';
 import { Profile } from './pages/Profile';
 import { SoilAnalysis } from './pages/SoilAnalysis';
 import { CropAnalysis } from './pages/cropanalysis';
