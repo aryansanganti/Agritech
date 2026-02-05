@@ -1,15 +1,18 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Language, SeedScoutQuery, HotspotResult } from '../types';
+import { Language, SeedScoutQuery, HotspotResult, TopologyResult, SeedRecommendation } from '../types';
 import { translations } from '../utils/translations';
 import { indianDistricts, cropTypes, clusterLabels } from '../data/districtData';
-import { searchHotspotsDynamic, searchHotspotsQuick, getClusterSummary, getDataRanges, SearchProgressCallback } from '../services/seedScoutService';
+import {
+    searchHotspotsDynamic, searchHotspotsQuick, getClusterSummary, getDataRanges,
+    identifyTopology, getTopoRecommendations, SearchProgressCallback
+} from '../services/seedScoutService';
 import { getSeedScoutInsights, getDistrictEnvironmentalData } from '../services/geminiService';
 import { SatelliteMap } from '../components/SatelliteMap';
 import {
     ArrowLeft, Search, MapPin, Thermometer, Droplets, Users, Layers,
     Target, Sparkles, TrendingUp, Filter, Eye, Map, Satellite,
     ChevronDown, ChevronUp, Leaf, FlaskConical, Compass, Loader2,
-    Database, Cloud, AlertCircle, RefreshCw
+    Database, Cloud, AlertCircle, RefreshCw, Globe, Sprout
 } from 'lucide-react';
 
 interface SeedScoutProps {
@@ -38,6 +41,11 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
     const [satelliteView, setSatelliteView] = useState(false);
     const [showAdvanced, setShowAdvanced] = useState(false);
 
+    // Topo-Seed Engine State
+    const [userTopology, setUserTopology] = useState<TopologyResult | null>(null);
+    const [topoSeeds, setTopoSeeds] = useState<SeedRecommendation[]>([]);
+    const [isLocating, setIsLocating] = useState(false);
+
     // AI Insight State
     const [aiInsight, setAiInsight] = useState<string | null>(null);
     const [loadingInsight, setLoadingInsight] = useState(false);
@@ -48,6 +56,40 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
     const [dataSource, setDataSource] = useState<'gemini' | 'cached' | 'quick'>('quick');
 
     const clusterSummary = useMemo(() => getClusterSummary(), []);
+
+    // NEW: Eco-Locate Handler (Topo-Seed Engine)
+    const handleLocate = () => {
+        setIsLocating(true);
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser");
+            setIsLocating(false);
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+            try {
+                // 1. Identify Topology
+                const topology = await identifyTopology(latitude, longitude);
+                setUserTopology(topology);
+
+                // 2. Get Recommendations
+                // Mock weather for now, or fetch from OpenWeatherMap if key available
+                const mockWeather = { humidity: 75, temp: 28 };
+                const response = await getTopoRecommendations(latitude, longitude, mockWeather);
+                setTopoSeeds(response.recommendations);
+            } catch (error) {
+                console.error("Topo-Seed Engine Failed:", error);
+                alert("Could not identify your ecological address. Ensure backend is running.");
+            } finally {
+                setIsLocating(false);
+            }
+        }, (error) => {
+            console.error("GPS Error:", error);
+            setIsLocating(false);
+            alert("Please enable location access to use Eco-Locate.");
+        });
+    };
 
     const handleSearch = async () => {
         setIsSearching(true);
@@ -140,13 +182,13 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
 
         // Progressive fallback: Green → Yellow → Gray
         if (greenHotspots.length > 0) {
-            console.log(`🟢 Showing ${greenHotspots.length} excellent hotspots (score > 70%)`);
+            // console.log(`🟢 Showing ${greenHotspots.length} excellent hotspots`);
             return greenHotspots;
         } else if (yellowHotspots.length > 0) {
-            console.log(`🟡 No excellent hotspots found. Showing ${yellowHotspots.length} good hotspots (score 40-70%)`);
+            // console.log(`🟡 No excellent hotspots found. Showing ${yellowHotspots.length} good hotspots`);
             return yellowHotspots;
         } else {
-            console.log(`⚫ No good hotspots found. Showing ${grayHotspots.length} moderate hotspots (score < 40%)`);
+            // console.log(`⚫ No good hotspots found. Showing ${grayHotspots.length} moderate hotspots`);
             return grayHotspots;
         }
     };
@@ -174,6 +216,70 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
                 <div className="w-16"></div>
             </div>
 
+            {/* NEW: Topo-Seed Engine (Eco-Locate) Panel */}
+            <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-200 dark:border-blue-800">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <Globe className="text-blue-500" size={24} />
+                        <div>
+                            <h2 className="font-bold text-gray-900 dark:text-white">Eco-Locate: Find Your Topology Twin</h2>
+                            <p className="text-xs text-gray-500">Discover seeds from regions perfectly matching your ecology.</p>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handleLocate}
+                        disabled={isLocating}
+                        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2 disabled:opacity-50"
+                    >
+                        {isLocating ? <Loader2 size={18} className="animate-spin" /> : <MapPin size={18} />}
+                        {isLocating ? 'Scanning Ecology...' : 'Find My Genetic Match'}
+                    </button>
+                </div>
+
+                {/* Topology Results */}
+                {userTopology && (
+                    <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800/50 animate-slide-up">
+                        <div className="flex flex-wrap gap-4 mb-4">
+                            <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-lg shadow-sm border border-blue-100 dark:border-blue-900">
+                                <span className="text-xs text-blue-500 font-bold uppercase tracking-wider">Your Ecology</span>
+                                <div className="font-bold text-lg text-gray-800 dark:text-white">{userTopology.topology}</div>
+                            </div>
+                            <div className="flex items-center text-gray-400"><ArrowLeft size={16} className="rotate-180" /></div>
+                            <div className="bg-purple-50 dark:bg-purple-900/20 px-4 py-2 rounded-lg border border-purple-100 dark:border-purple-800">
+                                <span className="text-xs text-purple-500 font-bold uppercase tracking-wider">Topology Twin</span>
+                                <div className="font-bold text-lg text-purple-700 dark:text-purple-300">{userTopology.twins[0]}</div>
+                            </div>
+                        </div>
+
+                        {/* Seed Recommendations Card Checklist */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {topoSeeds.map((seed, idx) => (
+                                <div key={idx} className={`p-3 rounded-xl border flex gap-3 transition-hover hover:scale-[1.02] ${seed.matchType === 'Native'
+                                        ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800'
+                                        : 'bg-purple-50 dark:bg-purple-900/10 border-purple-200 dark:border-purple-800'
+                                    }`}>
+                                    <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-gray-200">
+                                        <img src={seed.image_url} alt={seed.seed_name} className="w-full h-full object-cover"
+                                            onError={(e) => { e.currentTarget.src = 'https://placehold.co/100x100?text=Seed'; }} />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <h4 className="font-bold text-gray-900 dark:text-white text-sm">{seed.seed_name}</h4>
+                                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${seed.matchType === 'Native' ? 'bg-emerald-200 text-emerald-800' : 'bg-purple-200 text-purple-800'
+                                                }`}>
+                                                {seed.matchType === 'Native' ? 'NATIVE' : 'TWIN'}
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{seed.cultural_note}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Search Panel */}
                 <div className="lg:col-span-1 space-y-4">
@@ -183,6 +289,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
                             <Leaf size={18} className="text-emerald-500" />
                             Target Crop
                         </h3>
+                        {/* ... Existing Search Panel ... */}
                         <select
                             value={query.cropType}
                             onChange={(e) => setQuery({ ...query, cropType: e.target.value })}
@@ -283,8 +390,8 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
                         onClick={handleSearch}
                         disabled={isSearching || (!query.salinityTolerance && !query.heatTolerance && !query.droughtTolerance)}
                         className="w-full p-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold 
-                     flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-700 
-                     transition-all shadow-lg shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                      flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-700 
+                      transition-all shadow-lg shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isSearching ? (
                             <>
@@ -294,7 +401,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
                         ) : (
                             <>
                                 <Search size={20} />
-                                <span>Find Genetic Hotspots (AI Data)</span>
+                                <span className="text-left w-full pl-2">Find Hotspots</span>
                             </>
                         )}
                     </button>

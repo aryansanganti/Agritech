@@ -199,3 +199,40 @@ export interface Translations {
     analyzeSoil: string;
     analyzing: string;
 }
+
+// Topo-Seed Engine Types
+export interface TopologyResult {
+    topology: string;
+    twins: string[];
+    message: string;
+}
+
+export interface SeedRecommendation {
+    seed_name: string;
+    primary_topology: string[];
+    secondary_topology: string[];
+    requirements: {
+        min_humidity: number;
+        soil_type: string;
+        altitude_min: number;
+        min_temp: number;
+        max_temp: number;
+    };
+    cultural_note: string;
+    crop_type: string;
+    image_url: string;
+    matchType: 'Native' | 'Twin-Adaptation';
+    matchReason: string;
+}
+
+export interface RecommendationResponse {
+    user_location: {
+        topology: string;
+        twins: string[];
+    };
+    weather_snapshot: {
+        humidity: number;
+        temp: number;
+    };
+    recommendations: SeedRecommendation[];
+}
