@@ -10,8 +10,8 @@ import { getMandiPrices } from '../services/mandiService';
 import { getPriceArbitration } from '../services/geminiService';
 import { getQualityGrading, hasQualityGrading, clearQualityGrading } from '../services/qualityGradingService';
 import { addMarketplaceListing, scoreToGrade } from '../services/marketplaceService';
-import { 
-    WalletState, 
+import {
+    WalletState,
     BlockchainTransactionResult,
     storeCropPriceOnChain,
     isMetaMaskInstalled
@@ -90,9 +90,9 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
     // Handler for adding to marketplace
     const handleAddToMarketplace = () => {
         if (!ethTx || (!pendingPriceData && !prediction)) return;
-        
+
         const qualityGrading = getQualityGrading();
-        
+
         // Default crop image based on crop type
         const getCropDefaultImage = (crop: string): string => {
             const cropImages: Record<string, string> = {
@@ -108,7 +108,7 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
             };
             return cropImages[crop] || 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop';
         };
-        
+
         // Add listing to marketplace
         addMarketplaceListing({
             farmerName: walletState?.address ? `Farmer ${walletState.address.slice(0, 6)}...` : 'Anonymous Farmer',
@@ -133,12 +133,14 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
             recordId: ethTx.blockNumber,
             gradingDetails: qualityGrading?.gradingDetails,
             harvestDate: new Date().toISOString().split('T')[0],
-            image: qualityGrading?.image || getCropDefaultImage(ethTx.data.crop)
+            image: qualityGrading?.image || getCropDefaultImage(ethTx.data.crop),
+            variety: 'Standard',
+            verificationStatus: 'verified'
         });
-        
+
         // Clear quality grading data after adding to marketplace
         clearQualityGrading();
-        
+
         // Navigate to marketplace
         if (onNavigateToMarketplace) {
             onNavigateToMarketplace();
@@ -247,7 +249,7 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                     {/* Left Panel: Input Form and Value Prop */}
                     <div className="lg:col-span-1 space-y-6">
                         {/* Wallet Connect */}
-                        <WalletConnect 
+                        <WalletConnect
                             onWalletConnected={handleWalletConnected}
                             onWalletDisconnected={handleWalletDisconnected}
                         />
@@ -258,7 +260,7 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                         <div className="glass-panel p-6 rounded-2xl bg-gradient-to-br from-emerald-500/5 to-teal-500/5 border border-emerald-500/10">
                             <h3 className="text-sm font-bold text-emerald-600 mb-4 flex items-center gap-2 uppercase tracking-widest">
                                 <ShieldCheck size={16} />
-                                The BHUMI Standard
+                                The AgriTech Standard
                             </h3>
                             <ul className="space-y-4">
                                 <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
@@ -321,8 +323,8 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
 
                         {prediction && (
                             <>
-                                <PricingResult 
-                                    prediction={prediction} 
+                                <PricingResult
+                                    prediction={prediction}
                                     ethTx={ethTx}
                                     qualityScore={currentQuality}
                                     quantityQuintals={quantityQuintals}

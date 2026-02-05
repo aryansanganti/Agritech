@@ -1,60 +1,13 @@
+import { MarketplaceListing } from '../types';
+
 // Marketplace Service
 // Manages marketplace listings with blockchain verification
 
 import { BlockchainTransactionResult } from './ethereumService';
 import { QualityGradingData } from './qualityGradingService';
 
-export interface MarketplaceListing {
-    id: string;
-    // Farmer Info
-    farmerName: string;
-    farmerAddress?: string;  // Wallet address
-    
-    // Crop Info
-    crop: string;
-    variety?: string;
-    grade: 'A' | 'B' | 'C';
-    qualityScore: number;
-    
-    // Pricing
-    price: number;              // Asking price per quintal
-    minPrice: number;           // AI predicted min
-    maxPrice: number;           // AI predicted max
-    guaranteedPrice: number;    // Minimum guaranteed price
-    marketPrice: number;        // Mandi average
-    
-    // Quantity
-    quantity: number;           // In quintals
-    
-    // Location
-    location: {
-        district: string;
-        state: string;
-    };
-    
-    // Blockchain verification
-    blockchainHash: string;
-    transactionHash: string;
-    etherscanUrl: string;
-    contractAddress: string;
-    recordId: number;
-    
-    // Quality grading details
-    gradingDetails?: {
-        colorChecking: string;
-        sizeCheck: string;
-        textureCheck: string;
-        shapeCheck: string;
-    };
-    
-    // Timestamps
-    harvestDate: string;
-    listedDate: string;
-    timestamp: number;
-    
-    // Image (from crop analysis if available)
-    image?: string;
-}
+// Interface removed to use shared definition from types.ts
+
 
 const STORAGE_KEY = 'bhumi_marketplace_listings';
 const PENDING_LISTING_KEY = 'bhumi_pending_marketplace_listing';
@@ -86,13 +39,13 @@ export const addMarketplaceListing = (listing: Omit<MarketplaceListing, 'id' | '
             listedDate: new Date().toISOString().split('T')[0],
             timestamp: Date.now()
         };
-        
+
         listings.unshift(newListing); // Add to beginning
         localStorage.setItem(STORAGE_KEY, JSON.stringify(listings));
-        
+
         // Dispatch event for updates
         window.dispatchEvent(new CustomEvent('marketplaceListingAdded', { detail: newListing }));
-        
+
         return newListing;
     } catch (error) {
         console.error('Failed to add marketplace listing:', error);
@@ -106,7 +59,7 @@ export const removeMarketplaceListing = (id: string): boolean => {
         const listings = getMarketplaceListings();
         const filtered = listings.filter(l => l.id !== id);
         if (filtered.length === listings.length) return false;
-        
+
         localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
         window.dispatchEvent(new CustomEvent('marketplaceListingRemoved', { detail: id }));
         return true;
@@ -206,9 +159,14 @@ export const createListingFromBlockchain = (
         contractAddress: '0xA12AF30a5B555540e3D2013c7FB3eb793ff4b3B5', // Deployed contract
         recordId: tx.blockNumber,
         gradingDetails: qualityData.gradingDetails,
-        harvestDate: new Date().toISOString().split('T')[0]
+        harvestDate: new Date().toISOString().split('T')[0],
+
+        // Default values for new required fields
+        verificationStatus: 'verified',
+        image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&q=80&w=1000', // Placeholder
+        variety: 'Standard'
     });
-    
+
     return listing;
 };
 

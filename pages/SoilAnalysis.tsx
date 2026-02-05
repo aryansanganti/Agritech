@@ -3,11 +3,35 @@ import { PageView, Language, SoilMetrics, SoilAnalysisResult } from '../types';
 import { translations } from '../utils/translations';
 import { analyzeSoilHealth } from '../services/geminiService';
 import { Camera, Upload, RefreshCw, BarChart2, AlertCircle, CheckCircle, Droplets, Sun, Layers, Thermometer, XCircle } from 'lucide-react';
+import { DigitalMicroscope } from '../components/DigitalMicroscope';
 
 interface SoilAnalysisProps {
     lang: Language;
     onBack: () => void;
 }
+
+// Helper Component for Metrics
+const MetricCard = ({ icon: Icon, label, value, sub, color, score }: any) => (
+    <div className="glass-panel p-4 rounded-2xl flex flex-col gap-3">
+        <div className="flex justify-between items-start">
+            <div className={`p-2 rounded-xl bg-gray-50 dark:bg-white/5 ${color}`}>
+                <Icon size={20} />
+            </div>
+            <span className="text-xs font-mono text-gray-400">{sub}</span>
+        </div>
+        <div>
+            <div className="text-xl font-bold text-gray-900 dark:text-white">{value}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
+        </div>
+        {/* Mini Bar */}
+        <div className="h-1.5 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+            <div
+                className={`h-full ${color.replace('text-', 'bg-')}`}
+                style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
+            />
+        </div>
+    </div>
+);
 
 export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
     const t = translations[lang];
@@ -236,7 +260,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
 
             {/* Input Section */}
             {!image ? (
-                <div className="glass-panel p-10 rounded-3xl border-2 border-dashed border-gray-300 dark:border-white/20 flex flex-col items-center justify-center gap-6 hover:border-bhumi-green transition-colors cursor-pointer"
+                <div className="glass-panel p-10 rounded-3xl border-2 border-dashed border-gray-300 dark:border-white/20 flex flex-col items-center justify-center gap-6 hover:border-bhoomi-green transition-colors cursor-pointer"
                     onClick={() => fileInputRef.current?.click()}>
                     <input
                         type="file"
@@ -246,7 +270,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                         onChange={handleImageUpload}
                     />
                     <div className="p-6 bg-green-50 dark:bg-green-900/20 rounded-full">
-                        <Camera size={48} className="text-bhumi-green" />
+                        <Camera size={48} className="text-bhoomi-green" />
                     </div>
                     <div className="text-center">
                         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Take a Photo of Soil</h3>
@@ -257,9 +281,28 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                 <div className="grid md:grid-cols-2 gap-8">
                     {/* Image View */}
                     <div className="space-y-4">
-                        <div className="relative rounded-3xl overflow-hidden glass-panel shadow-lg aspect-[4/3]">
-                            <img src={image} alt="Soil Analysis" className="w-full h-full object-cover" />
-                            <canvas ref={canvasRef} className="hidden" />
+                        <div className="relative rounded-3xl overflow-hidden glass-panel shadow-lg">
+                            {/* Original Image */}
+                            <div className="aspect-[4/3] relative">
+                                <img src={image} alt="Soil Analysis" className="w-full h-full object-cover" />
+                                <canvas ref={canvasRef} className="hidden" />
+                            </div>
+
+                            {/* Digital Twin Overlay - Only show if metrics exist */}
+                            {metrics && (
+                                <div className="mt-4 p-4 bg-gray-900 rounded-2xl">
+                                    <h4 className="text-white text-sm font-bold mb-2 flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                        Digital Twin Simulation
+                                    </h4>
+                                    <DigitalMicroscope
+                                        soc={metrics.soc}
+                                        moisture={metrics.moisture}
+                                        salinity={metrics.salinity}
+                                        texture={metrics.texture}
+                                    />
+                                </div>
+                            )}
                         </div>
 
                         {/* ERROR MESSAGE UI */}
@@ -276,7 +319,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                         {!result && !analyzing && (
                             <button
                                 onClick={runComputerVision}
-                                className="w-full py-4 bg-bhumi-green text-white rounded-xl font-bold text-lg shadow-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2"
+                                className="w-full py-4 bg-bhoomi-green text-white rounded-xl font-bold text-lg shadow-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2"
                             >
                                 <RefreshCw />
                                 {t.analyzeSoil}
@@ -310,7 +353,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                         {result && (
                             <div className="animate-slide-up space-y-6">
                                 {/* AI Insight Card */}
-                                <div className="glass-panel p-6 rounded-3xl border-l-4 border-bhumi-gold bg-gradient-to-br from-yellow-50/50 to-transparent dark:from-yellow-900/20">
+                                <div className="glass-panel p-6 rounded-3xl border-l-4 border-bhoomi-gold bg-gradient-to-br from-yellow-50/50 to-transparent dark:from-yellow-900/20">
                                     <div className="flex items-start gap-4">
                                         <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-full">
                                             <Sun className="text-yellow-600 dark:text-yellow-400" />
@@ -354,51 +397,19 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                                         icon={BarChart2}
                                         label={t.rootComfort}
                                         value={result.metrics.texture > 20 ? 'Cloddy' : 'Fine'}
-                                        sub="Texture"
-                                        color="text-amber-600"
-                                        score={100 - result.metrics.texture}
+                                        sub={`Score: ${result.metrics.texture}`}
+                                        color="text-orange-500"
+                                        score={result.metrics.texture}
                                     />
-                                </div>
-
-                                {/* Recommendations */}
-                                <div className="glass-panel p-6 rounded-3xl">
-                                    <h3 className="font-bold text-gray-900 dark:text-white mb-4">Recommended Crops</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {result.recommendedCrops.map((crop, i) => (
-                                            <span key={i} className="px-4 py-2 bg-bhumi-green/10 text-bhumi-green dark:text-green-400 rounded-full font-medium border border-bhumi-green/20">
-                                                {crop}
-                                            </span>
-                                        ))}
-                                    </div>
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
             )}
+
+            {/* Hidden canvas for processing */}
+            <canvas ref={canvasRef} className="hidden" />
         </div>
     );
 };
-
-// Helper Component for Metrics
-const MetricCard = ({ icon: Icon, label, value, sub, color, score }: any) => (
-    <div className="glass-panel p-4 rounded-2xl flex flex-col gap-3">
-        <div className="flex justify-between items-start">
-            <div className={`p-2 rounded-xl bg-gray-50 dark:bg-white/5 ${color}`}>
-                <Icon size={20} />
-            </div>
-            <span className="text-xs font-mono text-gray-400">{sub}</span>
-        </div>
-        <div>
-            <div className="text-xl font-bold text-gray-900 dark:text-white">{value}</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
-        </div>
-        {/* Mini Bar */}
-        <div className="h-1.5 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-            <div
-                className={`h-full ${color.replace('text-', 'bg-')}`}
-                style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
-            />
-        </div>
-    </div>
-);

@@ -10,7 +10,7 @@ interface Props {
 
 export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
     const [messages, setMessages] = useState<ChatMessage[]>([
-        { id: '1', role: 'model', text: 'Namaste! I am Bhumi, your farming assistant. How can I help you today?', timestamp: Date.now() }
+        { id: '1', role: 'model', text: 'Namaste! I am your farming assistant. How can I help you today?', timestamp: Date.now() }
     ]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -178,11 +178,11 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
             {/* Header */}
             <div className="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-bhumi-green rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-bhoomi-green rounded-full flex items-center justify-center">
                         <Bot size={20} className="text-white" />
                     </div>
                     <div>
-                        <h3 className="font-bold">Bhumi AI Assistant</h3>
+                        <h3 className="font-bold">AI Assistant</h3>
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                             <span className="text-xs text-gray-400">Online • Sarvam M</span>

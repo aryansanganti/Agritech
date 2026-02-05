@@ -1,5 +1,5 @@
 
-export type Language = 'en' | 'hi' | 'or' | 'bn' | 'zh' | 'es' | 'ru' | 'ja' | 'pt';
+export type Language = 'en' | 'hi' | 'or' | 'bn' | 'te' | 'zh' | 'es' | 'ru' | 'ja' | 'pt';
 
 export interface User {
     email: string;
@@ -24,14 +24,15 @@ export interface Listing {
     price: number; // Farmer's price in ₹/q
     marketPrice: number; // Avg Mandi Price in ₹/q
     quantity: number; // in Quintals
-    location: { district: string; state: string };
+    location: string | { district: string; state: string };
     image: string; // Base64 or URL
     analysisId?: string; // Link to crop analysis
-    blockchainHash: string; // Fake hash for verification
+    blockchainHash?: string; // Fake hash for verification
     harvestDate: string;
 }
 
 export type PageView =
+    | 'landing'
     | 'language'
     | 'auth'
     | 'dashboard'
@@ -221,6 +222,31 @@ export interface BlockchainTransaction {
         confidenceScore: number;
     };
     verified: boolean;
+}
+
+export interface MarketplaceListing extends Listing {
+    farmerId?: string; // Optional because service uses farmerAddress
+    farmerAddress?: string;
+    verificationStatus: 'verified' | 'pending' | 'unverified';
+
+    // Additional fields from service
+    qualityScore: number;
+    minPrice: number;
+    maxPrice: number;
+    guaranteedPrice: number;
+    transactionHash: string;
+    etherscanUrl: string;
+    contractAddress: string;
+    recordId: number;
+    gradingDetails?: {
+        colorChecking: string;
+        sizeCheck: string;
+        textureCheck: string;
+        shapeCheck: string;
+    };
+    listedDate: string;
+    timestamp: number;
+    description?: string;
 }
 
 export interface QRCodeData {

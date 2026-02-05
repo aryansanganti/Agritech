@@ -7,6 +7,11 @@ interface Props {
     lang: Language;
 }
 
+const speechLangMap: Record<Language, string> = {
+    en: 'en-US', hi: 'hi-IN', or: 'or-IN', bn: 'bn-IN', te: 'te-IN',
+    zh: 'zh-CN', es: 'es-ES', ru: 'ru-RU', ja: 'ja-JP', pt: 'pt-BR'
+};
+
 export const ChatWidget: React.FC<Props> = ({ lang }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -23,15 +28,16 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
 
     useEffect(() => {
         const greetings: Record<Language, string> = {
-            en: "Namaste! I am Bhumi. How can I help you?",
-            hi: "नमस्ते! मैं भूमि हूँ। मैं आपकी कैसे मदद कर सकती हूँ?",
+            en: "Namaste! I am bhoomi. How can I help you?",
+            hi: "नमस्ते! मैं भूमि हूँ। मैं आपकी कैसे मदद कर सकता हूँ?",
             or: "ନମସ୍କାର! ମୁଁ ଭୂମି | ମୁଁ ତୁମକୁ କିପରି ସାହାଯ୍ୟ କରିପାରିବି?",
-            bn: "নমস্কার! আমি ভূমি। আপনাকে কীভাবে সাহায্য করতে পারি?",
-            zh: "你好！我是Bhumi。我能为你做什么？",
-            es: "¡Hola! Soy Bhumi. ¿Cómo puedo ayudarte?",
-            ru: "Здравствуйте! Я Бхуми. Чем могу помочь?",
-            ja: "こんにちは！ブミです。どのようなご用件でしょうか？",
-            pt: "Olá! Sou Bhumi. Como posso ajudar?"
+            bn: "নমস্কার! আমি ভূমি। আমি আপনাকে কীভাবে সাহায্য করতে পারি?",
+            te: "నమస్కారం! నేను భూమిని. నేను మీకు ఎలా సహాయపడగలను?",
+            zh: "你好！我是bhoomi。我能为你做什么？",
+            es: "¡Hola! Soy bhoomi. ¿Cómo puedo ayudarte?",
+            ru: "Здравствуйте! Я bhoomi. Чем я могу вам помочь?",
+            ja: "こんにちは！bhoomiです。どのようなお手伝いができますか？",
+            pt: "Olá! Sou bhoomi. Como posso ajudar?"
         };
         setMessages([{ id: '1', role: 'model', text: greetings[lang], timestamp: Date.now() }]);
     }, [lang]);
@@ -57,7 +63,7 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
         const parts = text.split(/(\*\*.*?\*\*)/g);
         return parts.map((part, index) => {
             if (part.startsWith('**') && part.endsWith('**')) {
-                return <strong key={index} className="font-bold text-bhumi-green dark:text-bhumi-gold">{part.slice(2, -2)}</strong>;
+                return <strong key={index} className="font-bold text-bhoomi-green dark:text-bhoomi-gold">{part.slice(2, -2)}</strong>;
             }
             return <span key={index}>{part}</span>;
         });
@@ -164,33 +170,25 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
             return; // Toggle capability: if speaking, just stop.
         }
 
-        setIsSpeaking(true);
-        try {
-            // Clean markdown for better speech approximation if needed, 
-            // but Sarvam might handle clean text better.
-            const cleanText = text.replace(/\*/g, '');
-            const audioDataUrl = await generateSpeech(cleanText, lang);
+        // Clean markdown
+        const cleanText = text.replace(/\*/g, '');
+        const utterance = new SpeechSynthesisUtterance(cleanText);
 
-            const audio = new Audio(audioDataUrl);
-            audioPlayerRef.current = audio;
+        // Strictly find voice match
+        const targetLang = speechLangMap[lang];
+        const voices = window.speechSynthesis.getVoices();
+        const voice = voices.find(v => v.lang.includes(targetLang) || v.lang.includes(targetLang.split('-')[0]));
 
-            audio.onended = () => {
-                setIsSpeaking(false);
-                audioPlayerRef.current = null;
-            };
-
-            audio.onerror = () => {
-                console.error("Audio playback error");
-                setIsSpeaking(false);
-                audioPlayerRef.current = null;
-            };
-
-            await audio.play();
-        } catch (error) {
-            console.error("TTS Error:", error);
-            alert("Unable to play audio at this moment.");
-            setIsSpeaking(false);
+        if (voice) {
+            utterance.voice = voice;
         }
+        utterance.lang = targetLang;
+
+        utterance.onend = () => setIsSpeaking(false);
+        utterance.onerror = () => setIsSpeaking(false);
+
+        setIsSpeaking(true);
+        window.speechSynthesis.speak(utterance);
     };
 
     return (
@@ -206,12 +204,12 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                 overflow-hidden
                 ${isOpen ? 'h-[80vh] md:h-[500px] opacity-100 scale-100' : 'h-0 opacity-0 scale-90'}
             `}>
-                <div className="p-4 bg-bhumi-green flex justify-between items-center text-white">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                            <Bot size={18} />
+                <div className="p-4 bg-bhoomi-green flex justify-between items-center text-white">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                            <Bot size={24} className="text-white" />
                         </div>
-                        <span className="font-bold">Bhumi Assistant</span>
+                        <span className="font-bold">bhoomi Assistant</span>
                     </div>
                     <button onClick={() => setIsOpen(false)} className="hover:bg-white/20 p-1 rounded">
                         <Minimize2 size={18} />
@@ -222,15 +220,15 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                             <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${msg.role === 'user'
-                                ? 'bg-bhumi-green text-white rounded-tr-none'
-                                : 'bg-white dark:bg-white/10 text-gray-800 dark:text-gray-200 rounded-tl-none border border-gray-200 dark:border-white/5'
+                                    ? 'bg-bhumi-green text-white rounded-tr-none'
+                                    : 'bg-white dark:bg-white/10 text-gray-800 dark:text-gray-200 rounded-tl-none border border-gray-200 dark:border-white/5'
                                 }`}>
                                 {formatText(msg.text)}
                             </div>
                             {msg.role === 'model' && (
                                 <button
                                     onClick={() => speakText(msg.text)}
-                                    className={`mt-1 transition-colors ${isSpeaking ? 'text-bhumi-green' : 'text-gray-400 hover:text-bhumi-green'}`}
+                                    className={`mt-1 transition-colors ${isSpeaking ? 'text-bhoomi-green' : 'text-gray-400 hover:text-bhoomi-green'}`}
                                     title="Read aloud"
                                 >
                                     {isSpeaking && audioPlayerRef.current ? <Loader2 size={14} className="animate-spin" /> : <Volume2 size={14} />}
@@ -270,13 +268,13 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                                placeholder={isListening ? "Listening..." : "Ask Bhumi..."}
+                                placeholder="Ask Bhumi..."
                                 className="w-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full py-3 pl-4 pr-12 text-sm text-gray-900 dark:text-white focus:border-bhumi-green dark:focus:border-bhumi-gold outline-none transition-colors"
                             />
                             <button
                                 onClick={handleSend}
                                 disabled={!input.trim() || isTyping}
-                                className="absolute right-1 top-1 p-2 bg-bhumi-green text-white rounded-full hover:bg-green-700 transition-colors disabled:opacity-50"
+                                className="absolute right-1 top-1 p-2 bg-bhoomi-green text-white rounded-full hover:bg-green-700 transition-colors disabled:opacity-50"
                             >
                                 <Send size={16} />
                             </button>
@@ -287,13 +285,8 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
 
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`
-                    pointer-events-auto
-                    w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300
-                    mb-4 mr-4 md:mb-0 md:mr-0
-                    hover:scale-110 active:scale-95
-                    ${isOpen ? 'bg-red-500 rotate-90' : 'bg-bhumi-green animate-orb-glow'}
-                `}
+                className={`p-4 rounded-full shadow-2xl text-white transition-all transform hover:scale-110 active:scale-90 flex items-center justify-center 
+                    ${isOpen ? 'bg-red-500 rotate-90' : 'bg-bhoomi-green animate-orb-glow'}`}
             >
                 {isOpen ? <X size={24} className="text-white" /> : <MessageSquareText size={28} className="text-white" />}
             </button>

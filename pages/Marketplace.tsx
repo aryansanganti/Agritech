@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { User, Language, Listing } from '../types';
+import { User, Language, Listing, MarketplaceListing } from '../types';
 import { ArrowLeft, ShoppingBag, Plus, QrCode, ShieldCheck, TrendingUp, MapPin, ExternalLink, Trash2, Leaf, Truck, Route } from 'lucide-react';
 import { MARKETPLACE_LISTINGS } from '../data/listings';
-import { getMarketplaceListings, MarketplaceListing, removeMarketplaceListing } from '../services/marketplaceService';
+import { getMarketplaceListings, removeMarketplaceListing } from '../services/marketplaceService';
 import { CarbonLogistics } from '../components/CarbonLogistics';
 import { DISTRICT_COORDINATES } from '../services/carbonLogisticsService';
 
@@ -25,7 +25,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
     const [showVendorLocationModal, setShowVendorLocationModal] = useState(false);
 
     // Available districts for vendor location selection
-    const availableDistricts = Object.keys(DISTRICT_COORDINATES).map(d => 
+    const availableDistricts = Object.keys(DISTRICT_COORDINATES).map(d =>
         d.charAt(0).toUpperCase() + d.slice(1)
     );
 
@@ -84,7 +84,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-500">Origin:</span>
-                                <span>{selectedListing.location.district}, {selectedListing.location.state}</span>
+                                <span>{typeof selectedListing.location === 'string' ? selectedListing.location : `${selectedListing.location.district}, ${selectedListing.location.state}`}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-500">Grade:</span>
@@ -113,15 +113,15 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                         )}
                         <div className="py-4">
                             <div className="w-48 h-48 bg-white p-2 mx-auto border-4 border-gray-900 rounded-lg">
-                                <div 
-                                    className="w-full h-full bg-contain bg-no-repeat bg-center" 
-                                    style={{ 
+                                <div
+                                    className="w-full h-full bg-contain bg-no-repeat bg-center"
+                                    style={{
                                         backgroundImage: `url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-                                            isBlockchain && selectedListing.etherscanUrl 
-                                                ? selectedListing.etherscanUrl 
+                                            isBlockchain && selectedListing.etherscanUrl
+                                                ? selectedListing.etherscanUrl
                                                 : `https://bhumi.app/verify/${selectedListing.blockchainHash || 'unknown'}`
                                         )}')`
-                                    }} 
+                                    }}
                                 />
                             </div>
                             <p className="text-xs text-gray-400 mt-2">
@@ -157,7 +157,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">Set Your Location</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Enter your warehouse/delivery location to calculate optimal route</p>
                         </div>
-                        
+
                         <div className="space-y-4 text-left">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">District</label>
@@ -196,17 +196,17 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                         </div>
 
                         <div className="flex gap-3">
-                            <button 
-                                onClick={() => setShowVendorLocationModal(false)} 
+                            <button
+                                onClick={() => setShowVendorLocationModal(false)}
                                 className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-bold rounded-xl transition-colors"
                             >
                                 Cancel
                             </button>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setShowVendorLocationModal(false);
                                     setShowCarbonLogistics(true);
-                                }} 
+                                }}
                                 className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
                             >
                                 <Route size={18} />
@@ -228,63 +228,63 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
     const BlockchainListingCard: React.FC<{ item: MarketplaceListing; isOwner: boolean }> = ({ item, isOwner }) => {
         const defaultImage = 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop';
         return (
-        <div className="glass-panel rounded-2xl overflow-hidden group hover:shadow-xl transition-all duration-300 border-2 border-purple-500/30 hover:border-purple-500/60 relative">
-            <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs py-1 px-3 flex items-center justify-center gap-2 z-10">
-                Ethereum Sepolia Verified
-            </div>
-            <div className="relative h-48 overflow-hidden mt-6">
-                <img src={item.image || defaultImage} alt={item.crop} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold shadow-sm">{item.quantity} Qtl</div>
-                <div className={`absolute top-3 left-3 px-2 py-1 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1 ${item.grade === 'A' ? 'bg-green-500 text-white' : item.grade === 'B' ? 'bg-yellow-500 text-white' : 'bg-red-500 text-white'}`}>
-                    <ShieldCheck size={12} /> Grade {item.grade}
+            <div className="glass-panel rounded-2xl overflow-hidden group hover:shadow-xl transition-all duration-300 border-2 border-purple-500/30 hover:border-purple-500/60 relative">
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs py-1 px-3 flex items-center justify-center gap-2 z-10">
+                    Ethereum Sepolia Verified
                 </div>
-            </div>
-            <div className="p-5">
-                <div className="flex justify-between items-start mb-2">
-                    <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.crop}</h3>
-                        <div className="flex items-center gap-1 text-xs text-gray-500 mt-1"><MapPin size={12} /> {item.location.district}, {item.location.state}</div>
-                    </div>
-                    <div className="text-right">
-                        <div className="text-xs text-purple-600 font-medium">Quality Score</div>
-                        <div className="text-lg font-bold text-emerald-600">{item.qualityScore}/10</div>
+                <div className="relative h-48 overflow-hidden mt-6">
+                    <img src={item.image || defaultImage} alt={item.crop} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold shadow-sm">{item.quantity} Qtl</div>
+                    <div className={`absolute top-3 left-3 px-2 py-1 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1 ${item.grade === 'A' ? 'bg-green-500 text-white' : item.grade === 'B' ? 'bg-yellow-500 text-white' : 'bg-red-500 text-white'}`}>
+                        <ShieldCheck size={12} /> Grade {item.grade}
                     </div>
                 </div>
-                <div className="my-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-end">
-                    <div>
-                        <p className="text-xs text-gray-500 mb-1">Listed Price</p>
-                        <div className="text-2xl font-bold text-bhumi-green">₹{item.price}<span className="text-sm font-normal text-gray-400">/q</span></div>
+                <div className="p-5">
+                    <div className="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.crop}</h3>
+                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1"><MapPin size={12} /> {typeof item.location === 'string' ? item.location : `${item.location.district}, ${item.location.state}`}</div>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-xs text-purple-600 font-medium">Quality Score</div>
+                            <div className="text-lg font-bold text-emerald-600">{item.qualityScore}/10</div>
+                        </div>
                     </div>
-                    <div className="text-right">
-                        <p className="text-xs text-gray-500 mb-1">Listed</p>
-                        <div className="text-sm font-medium text-gray-600 dark:text-gray-300">{new Date(item.listedDate).toLocaleDateString()}</div>
+                    <div className="my-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-end">
+                        <div>
+                            <p className="text-xs text-gray-500 mb-1">Listed Price</p>
+                            <div className="text-2xl font-bold text-bhumi-green">₹{item.price}<span className="text-sm font-normal text-gray-400">/q</span></div>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-xs text-gray-500 mb-1">Listed</p>
+                            <div className="text-sm font-medium text-gray-600 dark:text-gray-300">{new Date(item.listedDate).toLocaleDateString()}</div>
+                        </div>
                     </div>
-                </div>
-                <div className="flex gap-2 mt-4">
-                    <button onClick={() => { setSelectedListing(item); setShowQR(true); }} className="flex-1 py-2.5 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
-                        <QrCode size={16} /> View Passport
-                    </button>
-                    {isOwner ? (
-                        <button onClick={() => handleRemoveListing(item.id)} className="py-2.5 px-4 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-600 text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
-                            <Trash2 size={16} />
+                    <div className="flex gap-2 mt-4">
+                        <button onClick={() => { setSelectedListing(item); setShowQR(true); }} className="flex-1 py-2.5 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
+                            <QrCode size={16} /> View Passport
                         </button>
-                    ) : (
-                        <>
-                            <button 
-                                onClick={() => handleOpenCarbonLogistics(item)} 
-                                className="py-2.5 px-3 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1"
-                                title="Calculate Carbon Footprint"
-                            >
-                                <Leaf size={16} />
-                                <Truck size={14} />
+                        {isOwner ? (
+                            <button onClick={() => handleRemoveListing(item.id)} className="py-2.5 px-4 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-600 text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
+                                <Trash2 size={16} />
                             </button>
-                            <button className="flex-1 py-2.5 bg-bhumi-green hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-green-500/20">Buy Now</button>
-                        </>
-                    )}
+                        ) : (
+                            <>
+                                <button
+                                    onClick={() => handleOpenCarbonLogistics(item)}
+                                    className="py-2.5 px-3 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1"
+                                    title="Calculate Carbon Footprint"
+                                >
+                                    <Leaf size={16} />
+                                    <Truck size={14} />
+                                </button>
+                                <button className="flex-1 py-2.5 bg-bhumi-green hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-green-500/20">Buy Now</button>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
     };
 
     const ListingCard: React.FC<{ item: Listing; isOwner: boolean; onViewQR: () => void }> = ({ item, isOwner, onViewQR }) => {
@@ -334,7 +334,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                     <div className="flex justify-between items-start mb-2">
                         <div>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.crop} <span className="text-sm font-normal text-gray-500">({item.variety})</span></h3>
-                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1"><MapPin size={12} /> {item.location.district}, {item.location.state}</div>
+                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1"><MapPin size={12} /> {typeof item.location === 'string' ? item.location : `${item.location.district}, ${item.location.state}`}</div>
                         </div>
                     </div>
                     <div className="my-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-end">
@@ -438,7 +438,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                                     🌱 Carbon-Optimized Delivery
                                 </h3>
                                 <p className="text-sm text-green-700 dark:text-green-300 mt-1">
-                                    Click the <span className="inline-flex items-center gap-1 bg-green-200 dark:bg-green-700 px-1.5 py-0.5 rounded text-xs font-medium"><Leaf size={12}/><Truck size={10}/></span> button on any listing to calculate the shortest route using <span className="font-semibold">Dijkstra's Algorithm</span> and reduce your carbon footprint!
+                                    Click the <span className="inline-flex items-center gap-1 bg-green-200 dark:bg-green-700 px-1.5 py-0.5 rounded text-xs font-medium"><Leaf size={12} /><Truck size={10} /></span> button on any listing to calculate the shortest route using <span className="font-semibold">Dijkstra's Algorithm</span> and reduce your carbon footprint!
                                 </p>
                             </div>
                             <div className="hidden md:flex items-center gap-3 text-green-700 dark:text-green-300">
@@ -454,7 +454,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white">Premium Certified Crops</h2>
                         <button className="flex items-center gap-2 text-sm text-bhumi-green font-medium hover:underline"><TrendingUp size={16} /> Market Trends</button>

@@ -16,11 +16,11 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Database Keys
 const DB_KEYS = {
-    USER: 'bhumi_user',
-    AUTH_TOKEN: 'bhumi_auth_token',
-    THEME: 'bhumi_theme',
-    LANG: 'bhumi_lang',
-    HISTORY: 'bhumi_yield_history'
+    USER: 'bhoomi_user',
+    AUTH_TOKEN: 'bhoomi_auth_token',
+    THEME: 'bhoomi_theme',
+    LANG: 'bhoomi_lang',
+    HISTORY: 'bhoomi_yield_history'
 };
 
 // Mock Database Implementation (Using LocalStorage)
@@ -29,7 +29,7 @@ export const api = {
         async login(email: string, password: string): Promise<User> {
             console.log("🔵 API: Attempting login...");
             await delay(800); // Simulate network request
-            
+
             // Check LocalStorage for existing user
             const stored = localStorage.getItem(DB_KEYS.USER);
             if (stored) {
@@ -54,7 +54,7 @@ export const api = {
                 mainCrop: 'Rice',
                 irrigationSource: 'Canal'
             };
-            
+
             localStorage.setItem(DB_KEYS.USER, JSON.stringify(demoUser));
             console.log("🟢 API: Created new demo user");
             return demoUser;
@@ -82,7 +82,7 @@ export const api = {
     user: {
         async updateProfile(user: User): Promise<User> {
             console.log("🔵 API: Updating profile...");
-            await delay(600); 
+            await delay(600);
             localStorage.setItem(DB_KEYS.USER, JSON.stringify(user));
             return user;
         }

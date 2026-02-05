@@ -146,7 +146,7 @@ const getContract = async (withSigner: boolean = false): Promise<Contract> => {
     const provider = getProvider();
     if (!provider) throw new Error('Provider not available');
 
-    if (CONTRACT_ADDRESS === "PASTE_YOUR_CONTRACT_ADDRESS_HERE") {
+    if ((CONTRACT_ADDRESS as string) === "PASTE_YOUR_CONTRACT_ADDRESS_HERE") {
         throw new Error('Contract address not configured. Please deploy the contract and update contractConfig.ts');
     }
 
