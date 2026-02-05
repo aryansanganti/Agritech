@@ -113,13 +113,9 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
 
     const navItems = [
         { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
+
         { id: 'seedscout', label: 'SeedScout', icon: Compass },
-        { id: 'disease-detection', label: t.disease, icon: ScanLine },
-        { id: 'yield-prediction', label: t.yield, icon: TrendingUp },
-        { id: 'smart-advisory', label: t.advisory, icon: Droplets },
-        { id: 'crop-recommendation', label: t.recommend, icon: Sprout },
-        { id: 'weather', label: t.weather, icon: CloudSun },
-        { id: 'analytics', label: t.analytics, icon: BarChart3 },
+
         { id: 'profile', label: t.profile, icon: UserIcon },
     ];
 
@@ -155,10 +151,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
                             <span>Install App</span>
                         </button>
                     )}
-                    <button onClick={() => setShowQrModal(true)} className="w-full flex items-center space-x-3 px-4 py-3 text-bhumi-green dark:text-bhumi-gold hover:bg-green-50 dark:hover:bg-bhumi-gold/10 rounded-xl transition-colors font-medium">
-                        <QrCode size={20} />
-                        <span>Share App</span>
-                    </button>
                     <button onClick={toggleTheme} className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
                         {isDark ? <Sun size={20} /> : <Moon size={20} />}
                         <span>{isDark ? t.lightMode : t.darkMode}</span>
