@@ -115,7 +115,11 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
         { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
 
         { id: 'seedscout', label: 'SeedScout', icon: Compass },
+<<<<<<< HEAD
 
+=======
+        { id: 'pricing-engine', label: 'Pricing Engine', icon: TrendingUp },
+>>>>>>> d4bc808 (fixes)
         { id: 'profile', label: t.profile, icon: UserIcon },
     ];
 
@@ -135,8 +139,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
                             key={item.id}
                             onClick={() => setView(item.id as PageView)}
                             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${currentView === item.id
-                                    ? 'bg-bhumi-green text-white shadow-lg shadow-bhumi-green/30'
-                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-bhumi-green dark:hover:text-white'
+                                ? 'bg-bhumi-green text-white shadow-lg shadow-bhumi-green/30'
+                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-bhumi-green dark:hover:text-white'
                                 }`}
                         >
                             <item.icon size={20} />
@@ -198,8 +202,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
                                     setIsMobileMenuOpen(false);
                                 }}
                                 className={`w-full flex items-center space-x-3 px-4 py-4 rounded-xl transition-all ${currentView === item.id
-                                        ? 'bg-bhumi-green text-white border border-white/20 shadow-md'
-                                        : 'text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5'
+                                    ? 'bg-bhumi-green text-white border border-white/20 shadow-md'
+                                    : 'text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5'
                                     }`}
                             >
                                 <item.icon size={22} />
@@ -258,8 +262,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
                             <button
                                 onClick={handleCopyLink}
                                 className={`flex-1 flex items-center justify-center gap-2 font-bold py-3 rounded-xl transition-all border shadow-sm ${copied
-                                        ? 'bg-green-100 border-green-500 text-green-700'
-                                        : 'bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10'
+                                    ? 'bg-green-100 border-green-500 text-green-700'
+                                    : 'bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10'
                                     }`}
                             >
                                 {copied ? <Check size={18} /> : <Copy size={18} />}

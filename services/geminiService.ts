@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { DiseaseResult, CropRec, YieldResult, AdvisoryResult, WeatherData } from "../types";
+import { DiseaseResult, CropRec, YieldResult, AdvisoryResult, WeatherData, MandiPriceRecord, PricingPrediction } from "../types";
 
 // ROBUST KEY RETRIEVAL:
 // 1. Check process.env.API_KEY (Node/standard envs)
@@ -415,6 +415,91 @@ export const getDistrictEnvironmentalData = async (
             lng: 78.9629,
             dataSource: 'fallback',
             confidence: 20
+        };
+    }
+};
+
+export const getPriceArbitration = async (
+    crop: string,
+    location: string,
+    sourceRecords: MandiPriceRecord[],
+    language: string
+): Promise<PricingPrediction> => {
+    checkApiKey();
+    try {
+        const langName = getLangName(language);
+        const sourceDataStr = JSON.stringify(sourceRecords, null, 2);
+
+        const prompt = `You are an expert agricultural economist and price arbitrator. 
+        Analyze the following mandi price records for ${crop} in ${location}.
+        
+        Source Data:
+        ${sourceDataStr}
+        
+        Tasks:
+        1. Evaluate the reliability of each source.
+        2. Identify the Minimum Guaranteed Price (MGP) to protect farmers from exploitation.
+        3. Predict the Expected Market Price Band (Low-High) for the current week.
+        4. Provide a confidence score (0-100) for your prediction.
+        5. Explain your arbitration reasoning (e.g., why one source was weighted more).
+        
+        Respond in ${langName}. Use JSON format.`;
+
+        const response = await ai.models.generateContent({
+            model: MODEL_REASONING,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        crop: { type: Type.STRING },
+                        location: { type: Type.STRING },
+                        minGuaranteedPrice: { type: Type.NUMBER },
+                        expectedPriceBand: {
+                            type: Type.OBJECT,
+                            properties: {
+                                low: { type: Type.NUMBER },
+                                high: { type: Type.NUMBER }
+                            },
+                            required: ["low", "high"]
+                        },
+                        confidenceScore: { type: Type.NUMBER },
+                        arbitrationReasoning: { type: Type.STRING },
+                        sourceAnalysis: {
+                            type: Type.ARRAY,
+                            items: {
+                                type: Type.OBJECT,
+                                properties: {
+                                    name: { type: Type.STRING },
+                                    reliability: { type: Type.NUMBER },
+                                    contribution: { type: Type.STRING }
+                                },
+                                required: ["name", "reliability", "contribution"]
+                            }
+                        },
+                        timestamp: { type: Type.STRING }
+                    },
+                    required: ["crop", "location", "minGuaranteedPrice", "expectedPriceBand", "confidenceScore", "arbitrationReasoning", "sourceAnalysis", "timestamp"]
+                }
+            }
+        });
+
+        const text = response.text;
+        if (!text) throw new Error("No response from Gemini");
+        return JSON.parse(text) as PricingPrediction;
+    } catch (error) {
+        console.error("Price Arbitration Error:", error);
+        // Fallback prediction if AI fails
+        return {
+            crop,
+            location,
+            minGuaranteedPrice: 2000,
+            expectedPriceBand: { low: 2200, high: 2800 },
+            confidenceScore: 50,
+            arbitrationReasoning: "Fallback estimation due to service interruption.",
+            sourceAnalysis: sourceRecords.map(s => ({ name: s.source, reliability: 80, contribution: "Average weighting" })),
+            timestamp: new Date().toISOString()
         };
     }
 };
