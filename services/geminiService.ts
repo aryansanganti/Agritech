@@ -54,7 +54,7 @@ const checkApiKey = () => {
 // VISION & QUALITY ANALYSIS
 // ==========================================
 
-export const analyzeCropQuality = async (base64Image: string, context: any, language: string): Promise<CropAnalysisResult> => {
+export const analyzeCropQuality = async (base64Image: string, context: any, language: string, mimeType: string = 'image/jpeg'): Promise<CropAnalysisResult> => {
     checkApiKey();
     try {
         const langName = getLangName(language);
