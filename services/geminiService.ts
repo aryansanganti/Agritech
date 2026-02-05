@@ -1,5 +1,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { DiseaseResult, CropRec, YieldResult, AdvisoryResult, WeatherData, CropAnalysisResult } from "../types";
+import { 
+    DiseaseResult, 
+    CropRec, 
+    YieldResult, 
+    AdvisoryResult, 
+    WeatherData, 
+    CropAnalysisResult, // From Block 1
+    MandiPriceRecord,   // From Block 2
+    PricingPrediction   // From Block 2
+} from "../types";
 
 // ROBUST KEY RETRIEVAL:
 // 1. Check process.env.API_KEY (Node/standard envs)
@@ -40,6 +49,10 @@ const checkApiKey = () => {
         throw new Error("API Key missing. Please configure VITE_API_KEY in your .env file or deployment settings.");
     }
 };
+
+// ==========================================
+// VISION & QUALITY ANALYSIS
+// ==========================================
 
 export const analyzeCropQuality = async (base64Image: string, context: any, language: string): Promise<CropAnalysisResult> => {
     checkApiKey();
@@ -164,6 +177,10 @@ export const analyzeCropDisease = async (base64Image: string, language: string):
     }
 };
 
+// ==========================================
+// ADVISORY & CHAT
+// ==========================================
+
 export const getCropRecommendations = async (soil: string, season: string, location: string, language: string): Promise<CropRec[]> => {
     checkApiKey();
     try {
@@ -245,6 +262,10 @@ export const voiceAgentChat = async (message: string) => {
         return "I am having trouble hearing you clearly.";
     }
 };
+
+// ==========================================
+// YIELD, WEATHER & GENERAL ANALYTICS
+// ==========================================
 
 export const getYieldPrediction = async (data: any, language: string): Promise<YieldResult> => {
     checkApiKey();
@@ -391,6 +412,10 @@ export const getAnalyticsInsight = async (data: any, language: string): Promise<
     }
 };
 
+// ==========================================
+// SOIL & GENETICS
+// ==========================================
+
 export const analyzeSoilHealth = async (metrics: any, language: string): Promise<any> => {
     checkApiKey();
     try {
@@ -477,7 +502,10 @@ export const getSeedScoutInsights = async (district: any, crop: string, language
     }
 };
 
-// NEW: Fetch real environmental data for a district using Gemini with Google Search
+// ==========================================
+// DISTRICT DATA
+// ==========================================
+
 export interface DistrictEnvironmentalData {
     salinity: number;      // EC in dS/m
     maxTemp: number;       // Maximum temperature in °C
@@ -584,4 +612,93 @@ export const getMultipleDistrictData = async (
     }
 
     return results;
+};
+
+// ==========================================
+// PRICE & MARKET ARBITRATION
+// ==========================================
+
+export const getPriceArbitration = async (
+    crop: string,
+    location: string,
+    sourceRecords: MandiPriceRecord[],
+    language: string
+): Promise<PricingPrediction> => {
+    checkApiKey();
+    try {
+        const langName = getLangName(language);
+        const sourceDataStr = JSON.stringify(sourceRecords, null, 2);
+
+        const prompt = `You are an expert agricultural economist and price arbitrator. 
+        Analyze the following mandi price records for ${crop} in ${location}.
+        
+        Source Data:
+        ${sourceDataStr}
+        
+        Tasks:
+        1. Evaluate the reliability of each source.
+        2. Identify the Minimum Guaranteed Price (MGP) to protect farmers from exploitation.
+        3. Predict the Expected Market Price Band (Low-High) for the current week.
+        4. Provide a confidence score (0-100) for your prediction.
+        5. Explain your arbitration reasoning (e.g., why one source was weighted more).
+        
+        Respond in ${langName}. Use JSON format.`;
+
+        const response = await ai.models.generateContent({
+            model: MODEL_REASONING,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        crop: { type: Type.STRING },
+                        location: { type: Type.STRING },
+                        minGuaranteedPrice: { type: Type.NUMBER },
+                        expectedPriceBand: {
+                            type: Type.OBJECT,
+                            properties: {
+                                low: { type: Type.NUMBER },
+                                high: { type: Type.NUMBER }
+                            },
+                            required: ["low", "high"]
+                        },
+                        confidenceScore: { type: Type.NUMBER },
+                        arbitrationReasoning: { type: Type.STRING },
+                        sourceAnalysis: {
+                            type: Type.ARRAY,
+                            items: {
+                                type: Type.OBJECT,
+                                properties: {
+                                    name: { type: Type.STRING },
+                                    reliability: { type: Type.NUMBER },
+                                    contribution: { type: Type.STRING }
+                                },
+                                required: ["name", "reliability", "contribution"]
+                            }
+                        },
+                        timestamp: { type: Type.STRING }
+                    },
+                    required: ["crop", "location", "minGuaranteedPrice", "expectedPriceBand", "confidenceScore", "arbitrationReasoning", "sourceAnalysis", "timestamp"]
+                }
+            }
+        });
+
+        const text = response.text;
+        if (!text) throw new Error("No response from Gemini");
+        return JSON.parse(text) as PricingPrediction;
+    } catch (error) {
+        console.error("Price Arbitration Error:", error);
+        // Fallback prediction if AI fails
+        return {
+            crop,
+            location,
+            minGuaranteedPrice: 2000,
+            expectedPriceBand: { low: 2200, high: 2800 },
+            confidenceScore: 50,
+            arbitrationReasoning: "Fallback estimation due to service interruption.",
+            sourceAnalysis: sourceRecords.map(s => ({ name: s.source, reliability: 80, contribution: "Average weighting" })),
+            timestamp: new Date().toISOString()
+        };
+    }
 };

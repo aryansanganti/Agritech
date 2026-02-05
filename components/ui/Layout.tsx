@@ -117,7 +117,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
         { id: 'crop-analysis', label: t.cropAnalysis, icon: ScanLine },
 
         { id: 'seedscout', label: 'SeedScout', icon: Compass },
-
+        { id: 'pricing-engine', label: 'Pricing Engine', icon: TrendingUp },
         { id: 'profile', label: t.profile, icon: UserIcon },
     ];
 

@@ -12,6 +12,7 @@ import { Profile } from './pages/Profile';
 import { SoilAnalysis } from './pages/SoilAnalysis';
 import { CropAnalysis } from './pages/cropanalysis';
 import { SeedScout } from './pages/SeedScout';
+import { PricingEngine } from './pages/PricingEngine';
 import { PageView, User, Language } from './types';
 import { translations } from './utils/translations';
 import { api } from './services/api';
@@ -173,6 +174,7 @@ const App: React.FC = () => {
             case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} />;
             case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
             case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
+            case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} />;
             default: return <Dashboard setView={setView} user={user} lang={lang} />;
         }
     };
