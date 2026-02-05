@@ -1,12 +1,30 @@
 import React from 'react';
 import { PricingPrediction } from '../types';
-import { AlertCircle, CheckCircle2, TrendingUp, Info, ShieldAlert } from 'lucide-react';
+import { BlockchainTransactionResult } from '../services/ethereumService';
+import { AlertCircle, CheckCircle2, TrendingUp, Info, ShieldAlert, Loader2, Link2 } from 'lucide-react';
+import { EthereumBlockchainQR } from './EthereumBlockchainQR';
 
 interface PricingResultProps {
     prediction: PricingPrediction;
+    ethTx?: BlockchainTransactionResult | null;
+    qualityScore?: number;
+    quantityQuintals?: number;
+    walletConnected?: boolean;
+    onStoreOnChain?: () => void;
+    isStoringOnChain?: boolean;
+    pendingStore?: boolean;
 }
 
-export const PricingResult: React.FC<PricingResultProps> = ({ prediction }) => {
+export const PricingResult: React.FC<PricingResultProps> = ({ 
+    prediction, 
+    ethTx,
+    qualityScore = 8,
+    quantityQuintals = 1,
+    walletConnected = false,
+    onStoreOnChain,
+    isStoringOnChain = false,
+    pendingStore = false
+}) => {
     const {
         minGuaranteedPrice,
         expectedPriceBand,
@@ -100,6 +118,65 @@ export const PricingResult: React.FC<PricingResultProps> = ({ prediction }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Blockchain QR Code Section */}
+            {ethTx ? (
+                <EthereumBlockchainQR 
+                    transaction={ethTx}
+                    farmerName="Farmer"
+                    quantityQuintals={quantityQuintals}
+                />
+            ) : pendingStore && (
+                <div className="glass-panel rounded-3xl p-8 text-center">
+                    {walletConnected ? (
+                        <div className="space-y-4">
+                            <div className="bg-indigo-50 dark:bg-indigo-500/10 p-4 rounded-xl inline-block mb-4">
+                                <Link2 size={32} className="text-indigo-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                Store on Ethereum Blockchain
+                            </h3>
+                            <p className="text-gray-500 max-w-md mx-auto">
+                                Your price data is ready. Click below to permanently store the quality score, 
+                                price, and quantity on Ethereum Sepolia for verification.
+                            </p>
+                            <button
+                                onClick={onStoreOnChain}
+                                disabled={isStoringOnChain}
+                                className="mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-indigo-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mx-auto"
+                            >
+                                {isStoringOnChain ? (
+                                    <>
+                                        <Loader2 size={20} className="animate-spin" />
+                                        Confirming Transaction...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link2 size={20} />
+                                        Store on Ethereum & Generate QR
+                                    </>
+                                )}
+                            </button>
+                            <p className="text-xs text-gray-400 mt-2">
+                                This will create a transaction on Sepolia testnet (requires small gas fee)
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            <div className="bg-amber-50 dark:bg-amber-500/10 p-4 rounded-xl inline-block mb-4">
+                                <AlertCircle size={32} className="text-amber-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                Connect Wallet to Store on Blockchain
+                            </h3>
+                            <p className="text-gray-500 max-w-md mx-auto">
+                                Connect your MetaMask wallet and switch to Sepolia testnet to store 
+                                this price data on the Ethereum blockchain.
+                            </p>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

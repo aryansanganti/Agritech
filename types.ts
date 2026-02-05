@@ -180,6 +180,39 @@ export interface AnalyticsData {
     expenses: Array<{ category: string; amount: number }>;
 }
 
+// Blockchain Types
+export interface BlockchainTransaction {
+    transactionHash: string;
+    blockNumber: number;
+    timestamp: string;
+    data: {
+        crop: string;
+        location: string;
+        qualityScore: number;
+        amount: number;
+        pricePerQuintal: {
+            min: number;
+            max: number;
+            guaranteed: number;
+        };
+        farmerUpiId?: string;
+        confidenceScore: number;
+    };
+    verified: boolean;
+}
+
+export interface QRCodeData {
+    type: 'quality' | 'payment';
+    transactionHash: string;
+    data: {
+        crop?: string;
+        qualityScore?: number;
+        amount?: number;
+        verificationUrl?: string;
+        upiId?: string;
+        payeeName?: string;
+        transactionNote?: string;
+    };
 
 export interface SoilMetrics {
     soc: number;         // 0-100 (Derived from Value)
