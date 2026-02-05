@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, X, MessageSquareText, Minimize2, Mic, Volume2, StopCircle, Loader2 } from 'lucide-react';
-import { transcribeAudio, generateSpeech, chatWithSarvam } from '../services/sarvamService';
+import { chatWithBhumi } from '../services/geminiService';
+import { transcribeAudio, generateSpeech } from '../services/sarvamService';
 import { ChatMessage, Language } from '../types';
 
 interface Props {
@@ -57,7 +58,7 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
         const parts = text.split(/(\*\*.*?\*\*)/g);
         return parts.map((part, index) => {
             if (part.startsWith('**') && part.endsWith('**')) {
-                return <strong key={index} className="font-bold text-bhumi-green dark:text-bhumi-gold">{part.slice(2, -2)}</strong>;
+                return <strong key={index} className="font-bold text-[var(--primary)]">{part.slice(2, -2)}</strong>;
             }
             return <span key={index}>{part}</span>;
         });
@@ -81,11 +82,11 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
             const history = messages
                 .filter((_, i) => i > 0)
                 .map(m => ({
-                    role: m.role === 'model' ? 'assistant' as const : 'user' as const,
-                    content: m.text
+                    role: m.role,
+                    parts: [{ text: m.text }]
                 }));
 
-            const responseText = await chatWithSarvam(history, userMsg.text, lang);
+            const responseText = await chatWithBhumi(history, userMsg.text, lang);
 
             const botMsg: ChatMessage = {
                 id: (Date.now() + 1).toString(),
@@ -198,39 +199,39 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
             <div className={`
                 pointer-events-auto
                 w-full md:w-[400px] 
-                bg-white dark:bg-[#0F1419] 
-                border-t md:border border-gray-200 dark:border-white/20 
-                rounded-t-2xl md:rounded-2xl shadow-2xl 
+                bg-bhumi-card dark:bg-bhumi-darkCard
+                border-t md:border-2 border-bhumi-border dark:border-bhumi-darkBorder
+                md:rounded-none shadow-2xl 
                 flex flex-col 
                 transition-all duration-300 origin-bottom-right
                 overflow-hidden
                 ${isOpen ? 'h-[80vh] md:h-[500px] opacity-100 scale-100' : 'h-0 opacity-0 scale-90'}
             `}>
-                <div className="p-4 bg-bhumi-green flex justify-between items-center text-white">
+                <div className="p-4 bg-bhumi-primary dark:bg-bhumi-darkPrimary flex justify-between items-center text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-white/20 flex items-center justify-center">
                             <Bot size={18} />
                         </div>
-                        <span className="font-bold">Bhumi Assistant</span>
+                        <span className="font-heading font-bold">Bhumi Assistant</span>
                     </div>
-                    <button onClick={() => setIsOpen(false)} className="hover:bg-white/20 p-1 rounded">
+                    <button onClick={() => setIsOpen(false)} className="hover:bg-white/20 p-1">
                         <Minimize2 size={18} />
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-gray-50 dark:bg-black/40">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-bhumi-bg dark:bg-bhumi-darkBg">
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                            <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${msg.role === 'user'
-                                ? 'bg-bhumi-green text-white rounded-tr-none'
-                                : 'bg-white dark:bg-white/10 text-gray-800 dark:text-gray-200 rounded-tl-none border border-gray-200 dark:border-white/5'
+                            <div className={`max-w-[85%] p-3 text-sm shadow-sm ${msg.role === 'user'
+                                    ? 'bg-bhumi-primary dark:bg-bhumi-darkPrimary text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg'
+                                    : 'bg-bhumi-muted dark:bg-bhumi-darkMuted text-bhumi-fg dark:text-bhumi-darkFg border-2 border-bhumi-border dark:border-bhumi-darkBorder'
                                 }`}>
                                 {formatText(msg.text)}
                             </div>
                             {msg.role === 'model' && (
                                 <button
                                     onClick={() => speakText(msg.text)}
-                                    className={`mt-1 transition-colors ${isSpeaking ? 'text-bhumi-green' : 'text-gray-400 hover:text-bhumi-green'}`}
+                                    className={`mt-1 transition-colors ${isSpeaking ? 'text-bhumi-primary dark:text-bhumi-darkPrimary' : 'text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:text-bhumi-primary dark:hover:text-bhumi-darkPrimary'}`}
                                     title="Read aloud"
                                 >
                                     {isSpeaking && audioPlayerRef.current ? <Loader2 size={14} className="animate-spin" /> : <Volume2 size={14} />}
@@ -240,24 +241,24 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                     ))}
                     {isTyping && (
                         <div className="flex justify-start">
-                            <div className="bg-white dark:bg-white/10 rounded-2xl rounded-tl-none p-3 flex gap-1 items-center border border-gray-200 dark:border-white/5">
-                                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
-                                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce delay-75"></span>
-                                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce delay-150"></span>
+                            <div className="bg-bhumi-muted dark:bg-bhumi-darkMuted p-3 flex gap-1 items-center border-2 border-bhumi-border dark:border-bhumi-darkBorder">
+                                <span className="w-1.5 h-1.5 bg-bhumi-mutedFg dark:bg-bhumi-darkMutedFg rounded-full animate-bounce"></span>
+                                <span className="w-1.5 h-1.5 bg-bhumi-mutedFg dark:bg-bhumi-darkMutedFg rounded-full animate-bounce delay-75"></span>
+                                <span className="w-1.5 h-1.5 bg-bhumi-mutedFg dark:bg-bhumi-darkMutedFg rounded-full animate-bounce delay-150"></span>
                             </div>
                         </div>
                     )}
                     <div ref={messagesEndRef} />
                 </div>
 
-                <div className="p-3 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F1419]">
+                <div className="p-3 border-t-2 border-bhumi-border dark:border-bhumi-darkBorder bg-bhumi-card dark:bg-bhumi-darkCard">
                     <div className="relative flex items-center gap-2">
                         <button
                             onClick={toggleVoiceInput}
                             disabled={isProcessingVoice}
-                            className={`p-3 rounded-full transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' :
-                                isProcessingVoice ? 'bg-gray-200 animate-pulse' :
-                                    'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'
+                            className={`p-3 transition-all ${isListening ? 'bg-bhumi-destructive dark:bg-bhumi-darkDestructive text-white animate-pulse' :
+                                    isProcessingVoice ? 'bg-bhumi-muted dark:bg-bhumi-darkMuted animate-pulse' :
+                                        'bg-bhumi-muted dark:bg-bhumi-darkMuted text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:bg-bhumi-border dark:hover:bg-bhumi-darkBorder'
                                 }`}
                             title="Voice Input"
                         >
@@ -271,12 +272,12 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                                 placeholder={isListening ? "Listening..." : "Ask Bhumi..."}
-                                className="w-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full py-3 pl-4 pr-12 text-sm text-gray-900 dark:text-white focus:border-bhumi-green dark:focus:border-bhumi-gold outline-none transition-colors"
+                                className="w-full bg-bhumi-input dark:bg-bhumi-darkInput border-2 border-bhumi-border dark:border-bhumi-darkBorder py-3 pl-4 pr-12 text-sm text-bhumi-fg dark:text-bhumi-darkFg focus:border-bhumi-primary dark:focus:border-bhumi-darkPrimary outline-none transition-colors"
                             />
                             <button
                                 onClick={handleSend}
                                 disabled={!input.trim() || isTyping}
-                                className="absolute right-1 top-1 p-2 bg-bhumi-green text-white rounded-full hover:bg-green-700 transition-colors disabled:opacity-50"
+                                className="absolute right-1 top-1 p-2 bg-bhumi-primary dark:bg-bhumi-darkPrimary text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg hover:opacity-90 transition-colors disabled:opacity-50"
                             >
                                 <Send size={16} />
                             </button>
@@ -289,13 +290,13 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                 onClick={() => setIsOpen(!isOpen)}
                 className={`
                     pointer-events-auto
-                    w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300
+                    w-14 h-14 shadow-lg flex items-center justify-center transition-all duration-300
                     mb-4 mr-4 md:mb-0 md:mr-0
                     hover:scale-110 active:scale-95
-                    ${isOpen ? 'bg-red-500 rotate-90' : 'bg-bhumi-green animate-orb-glow'}
+                    ${isOpen ? 'bg-bhumi-destructive dark:bg-bhumi-darkDestructive rotate-90' : 'bg-bhumi-primary dark:bg-bhumi-darkPrimary animate-orb-glow'}
                 `}
             >
-                {isOpen ? <X size={24} className="text-white" /> : <MessageSquareText size={28} className="text-white" />}
+                {isOpen ? <X size={24} className="text-white" /> : <MessageSquareText size={28} className="text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg" />}
             </button>
         </div>
     );

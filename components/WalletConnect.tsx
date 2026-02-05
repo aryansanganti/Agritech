@@ -146,19 +146,19 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
     // Not connected state
     if (!walletState.isConnected) {
         return (
-            <div className="glass-panel p-6 rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/5 to-purple-500/5">
+            <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-accent/20 dark:border-bhumi-darkAccent/20 p-6">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-indigo-500/20 p-2 rounded-xl">
-                        <Wallet size={20} className="text-indigo-500" />
+                    <div className="bg-bhumi-accent/20 dark:bg-bhumi-darkAccent/20 p-2">
+                        <Wallet size={20} className="text-bhumi-accent dark:text-bhumi-darkAccent" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white">Connect Wallet</h3>
-                        <p className="text-xs text-gray-500">Store prices on Ethereum blockchain</p>
+                        <h3 className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">Connect Wallet</h3>
+                        <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Store prices on Ethereum blockchain</p>
                     </div>
                 </div>
 
                 {error && (
-                    <div className="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl text-red-600 text-sm flex items-center gap-2">
+                    <div className="mb-4 p-3 bg-bhumi-destructive/10 dark:bg-bhumi-darkDestructive/10 text-bhumi-destructive dark:text-bhumi-darkDestructive text-sm flex items-center gap-2">
                         <AlertTriangle size={16} />
                         {error}
                     </div>
@@ -167,7 +167,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 <button
                     onClick={handleConnect}
                     disabled={isConnecting}
-                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
+                    className="w-full bg-bhumi-accent dark:bg-bhumi-darkAccent hover:opacity-90 text-white font-bold py-3 flex items-center justify-center gap-2 disabled:opacity-50 transition-all border-2 border-bhumi-accent dark:border-bhumi-darkAccent"
                 >
                     {isConnecting ? (
                         <Loader2 size={20} className="animate-spin" />
@@ -178,7 +178,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 </button>
 
                 {!isMetaMaskInstalled() && (
-                    <p className="text-xs text-center text-gray-500 mt-3">
+                    <p className="text-xs text-center text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mt-3">
                         MetaMask not detected. Click to install.
                     </p>
                 )}
@@ -189,21 +189,21 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
     // Connected but wrong network
     if (!walletState.isCorrectNetwork) {
         return (
-            <div className="glass-panel p-6 rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-orange-500/5">
+            <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-secondary/30 dark:border-bhumi-darkSecondary/30 p-6">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-amber-500/20 p-2 rounded-xl">
-                        <AlertTriangle size={20} className="text-amber-500" />
+                    <div className="bg-bhumi-secondary/30 dark:bg-bhumi-darkSecondary/30 p-2">
+                        <AlertTriangle size={20} className="text-bhumi-fg dark:text-bhumi-darkFg" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white">Wrong Network</h3>
-                        <p className="text-xs text-gray-500">Please switch to Sepolia testnet</p>
+                        <h3 className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">Wrong Network</h3>
+                        <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Please switch to Sepolia testnet</p>
                     </div>
                 </div>
 
-                <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 mb-4">
+                <div className="bg-bhumi-muted dark:bg-bhumi-darkMuted p-3 mb-4">
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-500">Connected</span>
-                        <span className="font-mono font-bold text-gray-900 dark:text-white">
+                        <span className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Connected</span>
+                        <span className="font-mono font-bold text-bhumi-fg dark:text-bhumi-darkFg">
                             {walletState.address && formatAddress(walletState.address)}
                         </span>
                     </div>
@@ -212,7 +212,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 <button
                     onClick={handleSwitchNetwork}
                     disabled={isSwitching}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
+                    className="w-full bg-bhumi-secondary dark:bg-bhumi-darkSecondary hover:opacity-90 text-bhumi-fg dark:text-bhumi-darkFg font-bold py-3 flex items-center justify-center gap-2 disabled:opacity-50 transition-all border-2 border-bhumi-secondary dark:border-bhumi-darkSecondary"
                 >
                     {isSwitching ? (
                         <Loader2 size={20} className="animate-spin" />
@@ -227,47 +227,47 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
 
     // Connected and correct network
     return (
-        <div className="glass-panel p-6 rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-teal-500/5">
+        <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-primary/20 dark:border-bhumi-darkPrimary/20 p-6">
             <div className="flex items-center gap-3 mb-4">
-                <div className="bg-emerald-500/20 p-2 rounded-xl">
-                    <CheckCircle2 size={20} className="text-emerald-500" />
+                <div className="bg-bhumi-primary/20 dark:bg-bhumi-darkPrimary/20 p-2">
+                    <CheckCircle2 size={20} className="text-bhumi-primary dark:text-bhumi-darkPrimary" />
                 </div>
                 <div>
-                    <h3 className="font-bold text-gray-900 dark:text-white">Wallet Connected</h3>
-                    <p className="text-xs text-emerald-600">Sepolia Testnet</p>
+                    <h3 className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">Wallet Connected</h3>
+                    <p className="text-xs text-bhumi-primary dark:text-bhumi-darkPrimary">Sepolia Testnet</p>
                 </div>
             </div>
 
             <div className="space-y-3">
                 {/* Address */}
-                <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
+                <div className="bg-bhumi-muted dark:bg-bhumi-darkMuted p-3">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-500 uppercase tracking-widest">Address</span>
+                        <span className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg uppercase tracking-widest">Address</span>
                         <button
                             onClick={copyAddress}
-                            className="text-indigo-500 hover:text-indigo-600 transition-colors"
+                            className="text-bhumi-accent dark:text-bhumi-darkAccent hover:opacity-80 transition-colors"
                         >
                             {copied ? <CheckCircle2 size={14} /> : <Copy size={14} />}
                         </button>
                     </div>
-                    <p className="font-mono text-sm font-bold text-gray-900 dark:text-white mt-1">
+                    <p className="font-mono text-sm font-bold text-bhumi-fg dark:text-bhumi-darkFg mt-1">
                         {walletState.address && formatAddress(walletState.address)}
                     </p>
                 </div>
 
                 {/* Balance */}
-                <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
+                <div className="bg-bhumi-muted dark:bg-bhumi-darkMuted p-3">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-500 uppercase tracking-widest">Balance</span>
+                        <span className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg uppercase tracking-widest">Balance</span>
                         <button
                             onClick={openFaucet}
-                            className="text-xs text-indigo-500 hover:text-indigo-600 flex items-center gap-1"
+                            className="text-xs text-bhumi-accent dark:text-bhumi-darkAccent hover:opacity-80 flex items-center gap-1"
                         >
                             <Droplets size={12} />
                             Get Test ETH
                         </button>
                     </div>
-                    <p className="font-bold text-gray-900 dark:text-white mt-1">
+                    <p className="font-bold text-bhumi-fg dark:text-bhumi-darkFg mt-1">
                         {walletState.balance && formatBalance(walletState.balance)} ETH
                     </p>
                 </div>
@@ -277,7 +277,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 href={`https://sepolia.etherscan.io/address/${walletState.address}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 w-full text-center text-xs text-indigo-500 hover:text-indigo-600 flex items-center justify-center gap-1"
+                className="mt-4 w-full text-center text-xs text-bhumi-accent dark:text-bhumi-darkAccent hover:opacity-80 flex items-center justify-center gap-1"
             >
                 <ExternalLink size={12} />
                 View on Etherscan

@@ -38,28 +38,28 @@ export const PricingResult: React.FC<PricingResultProps> = ({
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Main Price Card */}
-            <div className="glass-panel p-8 rounded-3xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+            <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-8 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity text-bhumi-fg dark:text-bhumi-darkFg">
                     <TrendingUp size={120} />
                 </div>
 
                 <div className="relative z-10">
-                    <div className="flex items-center gap-2 text-emerald-500 mb-2 font-medium">
+                    <div className="flex items-center gap-2 text-bhumi-primary dark:text-bhumi-darkPrimary mb-2 font-medium">
                         <CheckCircle2 size={18} />
                         <span>AI-Arbitrated Price Band</span>
                     </div>
 
-                    <h2 className="text-5xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+                    <h2 className="text-5xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg mb-4 tracking-tight">
                         ₹{expectedPriceBand.low.toLocaleString()} - ₹{expectedPriceBand.high.toLocaleString()}
-                        <span className="text-lg font-normal text-gray-500 ml-2">/ quintal</span>
+                        <span className="text-lg font-normal text-bhumi-mutedFg dark:text-bhumi-darkMutedFg ml-2">/ quintal</span>
                     </h2>
 
                     <div className="flex flex-wrap gap-4 items-center">
-                        <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-600 px-4 py-2 rounded-full text-sm font-semibold">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <div className="flex items-center gap-2 bg-bhumi-primary/10 dark:bg-bhumi-darkPrimary/10 text-bhumi-primary dark:text-bhumi-darkPrimary px-4 py-2 text-sm font-semibold">
+                            <span className="w-2 h-2 bg-bhumi-primary dark:bg-bhumi-darkPrimary animate-pulse"></span>
                             Confidence: {confidenceScore}%
                         </div>
-                        <div className="flex items-center gap-2 bg-amber-500/10 text-amber-600 px-4 py-2 rounded-full text-sm font-semibold border border-amber-500/20">
+                        <div className="flex items-center gap-2 bg-bhumi-secondary/30 dark:bg-bhumi-darkSecondary/30 text-bhumi-fg dark:text-bhumi-darkFg px-4 py-2 text-sm font-semibold border-2 border-bhumi-secondary dark:border-bhumi-darkSecondary">
                             <ShieldAlert size={16} />
                             MGP Error Protection Active
                         </div>
@@ -68,13 +68,13 @@ export const PricingResult: React.FC<PricingResultProps> = ({
             </div>
 
             {/* Minimum Guaranteed Price Banner */}
-            <div className="bg-gradient-to-r from-red-500 to-orange-600 p-6 rounded-2xl text-white shadow-xl shadow-red-500/20">
+            <div className="bg-bhumi-destructive dark:bg-bhumi-darkDestructive p-6 text-white shadow-xl shadow-bhumi-destructive/20 dark:shadow-bhumi-darkDestructive/20 border-2 border-bhumi-destructive dark:border-bhumi-darkDestructive">
                 <div className="flex items-start gap-4">
-                    <div className="bg-white/20 p-3 rounded-xl border border-white/30">
+                    <div className="bg-white/20 p-3 border-2 border-white/30">
                         <AlertCircle size={28} />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold mb-1 italic uppercase tracking-wider">Minimum Guaranteed Price (MGP)</h3>
+                        <h3 className="text-xl font-heading font-bold mb-1 italic uppercase tracking-wider">Minimum Guaranteed Price (MGP)</h3>
                         <p className="text-3xl font-black mb-2">₹{minGuaranteedPrice.toLocaleString()}</p>
                         <p className="text-white/80 text-sm max-w-xl">
                             <span className="font-bold underline">LEGAL PROTECTION:</span> No registered agent is permitted to purchase below this price. If an agent offers less, report immediately via the Transparency Dashboard.
@@ -85,19 +85,19 @@ export const PricingResult: React.FC<PricingResultProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Reasoning Card */}
-                <div className="glass-panel p-6 rounded-2xl border-l-4 border-l-blue-500">
-                    <div className="flex items-center gap-2 text-blue-500 mb-4 font-bold uppercase text-xs tracking-widest">
+                <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-6 border-l-4 border-l-bhumi-accent dark:border-l-bhumi-darkAccent">
+                    <div className="flex items-center gap-2 text-bhumi-accent dark:text-bhumi-darkAccent mb-4 font-heading font-bold uppercase text-xs tracking-widest">
                         <Info size={16} />
                         AI Arbitration Logic
                     </div>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed italic">
+                    <p className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg leading-relaxed italic">
                         "{arbitrationReasoning}"
                     </p>
                 </div>
 
                 {/* Sources Card */}
-                <div className="glass-panel p-6 rounded-2xl">
-                    <div className="flex items-center gap-2 text-gray-500 mb-4 font-bold uppercase text-xs tracking-widest text-emerald-500">
+                <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-6">
+                    <div className="flex items-center gap-2 mb-4 font-heading font-bold uppercase text-xs tracking-widest text-bhumi-primary dark:text-bhumi-darkPrimary">
                         <ShieldAlert size={16} />
                         Source Reliability Index
                     </div>
@@ -105,16 +105,16 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                         {sourceAnalysis.map((source, i) => (
                             <div key={i} className="flex flex-col gap-1">
                                 <div className="flex justify-between items-center text-sm">
-                                    <span className="font-medium text-gray-700 dark:text-gray-200">{source.name}</span>
-                                    <span className="text-emerald-500 font-bold">{source.reliability}%</span>
+                                    <span className="font-medium text-bhumi-fg dark:text-bhumi-darkFg">{source.name}</span>
+                                    <span className="text-bhumi-primary dark:text-bhumi-darkPrimary font-bold">{source.reliability}%</span>
                                 </div>
-                                <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                <div className="w-full h-1.5 bg-bhumi-muted dark:bg-bhumi-darkMuted overflow-hidden">
                                     <div
-                                        className="h-full bg-emerald-500 rounded-full transition-all duration-1000"
+                                        className="h-full bg-bhumi-primary dark:bg-bhumi-darkPrimary transition-all duration-1000"
                                         style={{ width: `${source.reliability}%` }}
                                     ></div>
                                 </div>
-                                <span className="text-[10px] text-gray-400 italic mt-1">{source.contribution}</span>
+                                <span className="text-[10px] text-bhumi-mutedFg dark:text-bhumi-darkMutedFg italic mt-1">{source.contribution}</span>
                             </div>
                         ))}
                     </div>
@@ -161,23 +161,23 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                     )}
                 </div>
             ) : pendingStore && (
-                <div className="glass-panel rounded-3xl p-8 text-center">
+                <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-8 text-center">
                     {walletConnected ? (
                         <div className="space-y-4">
-                            <div className="bg-indigo-50 dark:bg-indigo-500/10 p-4 rounded-xl inline-block mb-4">
-                                <Link2 size={32} className="text-indigo-600" />
+                            <div className="bg-bhumi-accent/10 dark:bg-bhumi-darkAccent/10 p-4 inline-block mb-4">
+                                <Link2 size={32} className="text-bhumi-accent dark:text-bhumi-darkAccent" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                            <h3 className="text-xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">
                                 Store on Ethereum Blockchain
                             </h3>
-                            <p className="text-gray-500 max-w-md mx-auto">
+                            <p className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg max-w-md mx-auto">
                                 Your price data is ready. Click below to permanently store the quality score, 
                                 price, and quantity on Ethereum Sepolia for verification.
                             </p>
                             <button
                                 onClick={onStoreOnChain}
                                 disabled={isStoringOnChain}
-                                className="mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-indigo-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mx-auto"
+                                className="mt-4 bg-bhumi-accent dark:bg-bhumi-darkAccent hover:opacity-90 text-white font-bold py-4 px-8 shadow-lg shadow-bhumi-accent/30 dark:shadow-bhumi-darkAccent/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mx-auto border-2 border-bhumi-accent dark:border-bhumi-darkAccent"
                             >
                                 {isStoringOnChain ? (
                                     <>
@@ -191,19 +191,19 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                                     </>
                                 )}
                             </button>
-                            <p className="text-xs text-gray-400 mt-2">
+                            <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mt-2">
                                 This will create a transaction on Sepolia testnet (requires small gas fee)
                             </p>
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            <div className="bg-amber-50 dark:bg-amber-500/10 p-4 rounded-xl inline-block mb-4">
-                                <AlertCircle size={32} className="text-amber-600" />
+                            <div className="bg-bhumi-secondary/30 dark:bg-bhumi-darkSecondary/30 p-4 inline-block mb-4">
+                                <AlertCircle size={32} className="text-bhumi-secondary dark:text-bhumi-darkSecondary" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                            <h3 className="text-xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">
                                 Connect Wallet to Store on Blockchain
                             </h3>
-                            <p className="text-gray-500 max-w-md mx-auto">
+                            <p className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg max-w-md mx-auto">
                                 Connect your MetaMask wallet and switch to Sepolia testnet to store 
                                 this price data on the Ethereum blockchain.
                             </p>

@@ -27,60 +27,60 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
     const [showVoiceAgent, setShowVoiceAgent] = React.useState(false);
 
     return (
-        <div className="space-y-6 md:space-y-8 animate-fade-in pb-20 md:pb-0 relative">
+        <div className="space-y-8 animate-fade-in pb-20 md:pb-0 relative">
             <div className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1">{t.greeting}, {firstName}</h1>
-                    <p className="text-sm md:text-base text-gray-500 dark:text-gray-400">{t.farmConditions}</p>
+                    <h1 className="text-2xl md:text-4xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg mb-1">{t.greeting}, <span className="text-bhumi-primary dark:text-bhumi-darkPrimary">{firstName}</span></h1>
+                    <p className="text-sm md:text-base text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-accent italic">{t.farmConditions}</p>
                 </div>
-                <div className="hidden md:block bg-green-100 dark:bg-bhumi-green/20 px-4 py-2 rounded-full border border-green-200 dark:border-bhumi-green/50 text-green-700 dark:text-bhumi-green font-medium shadow-sm">
-                    {t.status}: {t.optimal}
+                <div className="hidden md:block bg-bhumi-accent dark:bg-bhumi-darkAccent px-5 py-2.5 border-2 border-bhumi-border dark:border-bhumi-darkBorder text-bhumi-primary dark:text-bhumi-darkPrimary font-medium shadow-sm">
+                    {t.status}: <span className="font-bold">{t.optimal}</span>
                 </div>
             </div>
 
             {/* Weather Strip */}
             <div className="flex md:grid md:grid-cols-4 gap-4 overflow-x-auto no-scrollbar pb-2 md:pb-0 snap-x">
-                <div className="min-w-[140px] md:min-w-0 glass-panel bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex flex-col justify-between h-28 relative overflow-hidden snap-start border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="absolute right-[-10px] top-[-10px] w-16 h-16 bg-orange-500/20 rounded-full blur-xl"></div>
-                    <div className="p-2 bg-orange-100 dark:bg-orange-500/10 rounded-lg w-fit text-orange-500 dark:text-orange-400 mb-2">
-                        <ThermometerSun size={20} />
+                <div className="min-w-[150px] md:min-w-0 bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-5 flex flex-col justify-between h-32 relative overflow-hidden snap-start group hover:shadow-md transition-shadow">
+                    <div className="absolute right-[-15px] top-[-15px] w-20 h-20 bg-orange-400/20 dark:bg-orange-500/20 blur-2xl group-hover:scale-110 transition-transform"></div>
+                    <div className="p-2.5 bg-orange-100 dark:bg-orange-500/20 w-fit text-orange-600 dark:text-orange-400 mb-2">
+                        <ThermometerSun size={22} />
                     </div>
                     <div>
-                        <span className="text-2xl font-bold block text-gray-900 dark:text-white">28°C</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">Sunny</span>
+                        <span className="text-2xl font-heading font-bold block text-bhumi-fg dark:text-bhumi-darkFg">28°C</span>
+                        <span className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-accent italic">Sunny</span>
                     </div>
                 </div>
 
-                <div className="min-w-[140px] md:min-w-0 glass-panel bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex flex-col justify-between h-28 relative overflow-hidden snap-start border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="absolute right-[-10px] top-[-10px] w-16 h-16 bg-blue-500/20 rounded-full blur-xl"></div>
-                    <div className="p-2 bg-blue-100 dark:bg-blue-500/10 rounded-lg w-fit text-blue-500 dark:text-blue-400 mb-2">
-                        <Droplets size={20} />
+                <div className="min-w-[150px] md:min-w-0 bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-5 flex flex-col justify-between h-32 relative overflow-hidden snap-start group hover:shadow-md transition-shadow">
+                    <div className="absolute right-[-15px] top-[-15px] w-20 h-20 bg-blue-400/20 dark:bg-blue-500/20 blur-2xl group-hover:scale-110 transition-transform"></div>
+                    <div className="p-2.5 bg-blue-100 dark:bg-blue-500/20 w-fit text-blue-600 dark:text-blue-400 mb-2">
+                        <Droplets size={22} />
                     </div>
                     <div>
-                        <span className="text-2xl font-bold block text-gray-900 dark:text-white">65%</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{t.humidity}</span>
+                        <span className="text-2xl font-heading font-bold block text-bhumi-fg dark:text-bhumi-darkFg">65%</span>
+                        <span className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-accent italic">{t.humidity}</span>
                     </div>
                 </div>
 
-                <div className="min-w-[140px] md:min-w-0 glass-panel bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex flex-col justify-between h-28 relative overflow-hidden snap-start border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="absolute right-[-10px] top-[-10px] w-16 h-16 bg-gray-500/20 rounded-full blur-xl"></div>
-                    <div className="p-2 bg-gray-100 dark:bg-gray-500/10 rounded-lg w-fit text-gray-600 dark:text-gray-400 mb-2">
-                        <Wind size={20} />
+                <div className="min-w-[150px] md:min-w-0 bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-5 flex flex-col justify-between h-32 relative overflow-hidden snap-start group hover:shadow-md transition-shadow">
+                    <div className="absolute right-[-15px] top-[-15px] w-20 h-20 bg-gray-400/20 dark:bg-gray-500/20 blur-2xl group-hover:scale-110 transition-transform"></div>
+                    <div className="p-2.5 bg-gray-100 dark:bg-gray-500/20 w-fit text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mb-2">
+                        <Wind size={22} />
                     </div>
                     <div>
-                        <span className="text-2xl font-bold block text-gray-900 dark:text-white">12 km/h</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{t.wind}</span>
+                        <span className="text-2xl font-heading font-bold block text-bhumi-fg dark:text-bhumi-darkFg">12 km/h</span>
+                        <span className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-accent italic">{t.wind}</span>
                     </div>
                 </div>
 
-                <div className="min-w-[140px] md:min-w-0 glass-panel bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex flex-col justify-between h-28 relative overflow-hidden snap-start border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="absolute right-[-10px] top-[-10px] w-16 h-16 bg-purple-500/20 rounded-full blur-xl"></div>
-                    <div className="p-2 bg-purple-100 dark:bg-purple-500/10 rounded-lg w-fit text-purple-500 dark:text-purple-400 mb-2">
-                        <CloudRain size={20} />
+                <div className="min-w-[150px] md:min-w-0 bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-5 flex flex-col justify-between h-32 relative overflow-hidden snap-start group hover:shadow-md transition-shadow">
+                    <div className="absolute right-[-15px] top-[-15px] w-20 h-20 bg-indigo-400/20 dark:bg-indigo-500/20 blur-2xl group-hover:scale-110 transition-transform"></div>
+                    <div className="p-2.5 bg-indigo-100 dark:bg-indigo-500/20 w-fit text-indigo-600 dark:text-indigo-400 mb-2">
+                        <CloudRain size={22} />
                     </div>
                     <div>
-                        <span className="text-2xl font-bold block text-gray-900 dark:text-white">10%</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{t.rain}</span>
+                        <span className="text-2xl font-heading font-bold block text-bhumi-fg dark:text-bhumi-darkFg">10%</span>
+                        <span className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-accent italic">{t.rain}</span>
                     </div>
                 </div>
             </div>
@@ -233,10 +233,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 {/* Yield Trends */}
-                <div className="glass-panel bg-white dark:bg-white/5 p-4 md:p-6 rounded-2xl col-span-1 lg:col-span-2 border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-5 md:p-6 col-span-1 lg:col-span-2">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
-                            <TrendingUp size={20} className="text-bhumi-green dark:text-bhumi-gold" />
+                        <h3 className="text-lg font-heading font-bold flex items-center gap-2 text-bhumi-fg dark:text-bhumi-darkFg">
+                            <TrendingUp size={20} className="text-bhumi-secondary dark:text-bhumi-darkSecondary" />
                             {t.yield} Trends
                         </h3>
                     </div>
@@ -245,41 +245,41 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                             <AreaChart data={mockData}>
                                 <defs>
                                     <linearGradient id="colorYield" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#B89D6F" stopOpacity={0.4} />
+                                        <stop offset="95%" stopColor="#B89D6F" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.2)" />
-                                <XAxis dataKey="name" stroke="#888" />
-                                <YAxis stroke="#888" />
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(200, 217, 190, 0.3)" className="dark:stroke-bhumi-darkBorder" />
+                                <XAxis dataKey="name" stroke="#6B8E5E" className="dark:stroke-bhumi-darkMutedFg" />
+                                <YAxis stroke="#6B8E5E" className="dark:stroke-bhumi-darkMutedFg" />
                                 <Tooltip
-                                    contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff' }}
+                                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--card-foreground)', borderRadius: '8px' }}
                                 />
-                                <Area type="monotone" dataKey="yield" stroke="#D4AF37" fillOpacity={1} fill="url(#colorYield)" />
+                                <Area type="monotone" dataKey="yield" stroke="#B89D6F" strokeWidth={2} fillOpacity={1} fill="url(#colorYield)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
                 {/* Alerts */}
-                <div className="glass-panel bg-white dark:bg-white/5 p-4 md:p-6 rounded-2xl col-span-1 border border-gray-200 dark:border-white/10 shadow-sm">
-                    <h3 className="text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
-                        <AlertTriangle size={20} className="text-red-500" />
+                <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-5 md:p-6 col-span-1">
+                    <h3 className="text-lg font-heading font-bold mb-5 flex items-center gap-2 text-bhumi-fg dark:text-bhumi-darkFg">
+                        <AlertTriangle size={20} className="text-bhumi-destructive" />
                         {t.activeAlerts}
                     </h3>
                     <div className="space-y-3">
-                        <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 p-3 rounded-xl flex gap-3 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors cursor-pointer">
-                            <AlertTriangle className="text-red-500 dark:text-red-400 shrink-0" size={18} />
+                        <div className="bg-bhumi-destructive/10 border-2 border-bhumi-destructive/30 p-4 flex gap-3 hover:bg-bhumi-destructive/15 transition-colors cursor-pointer group">
+                            <AlertTriangle className="text-bhumi-destructive shrink-0 group-hover:scale-110 transition-transform" size={18} />
                             <div>
-                                <div className="text-red-600 dark:text-red-400 font-bold text-sm mb-1">High Humidity</div>
-                                <p className="text-xs text-gray-600 dark:text-gray-300">Risk of fungal disease in Rice.</p>
+                                <div className="text-bhumi-destructive font-bold text-sm mb-1">High Humidity</div>
+                                <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Risk of fungal disease in Rice.</p>
                             </div>
                         </div>
-                        <div className="bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/30 p-3 rounded-xl flex gap-3 hover:bg-yellow-100 dark:hover:bg-yellow-500/20 transition-colors cursor-pointer">
-                            <AlertTriangle className="text-yellow-500 dark:text-yellow-400 shrink-0" size={18} />
+                        <div className="bg-bhumi-secondary/20 border-2 border-bhumi-secondary/40 p-4 flex gap-3 hover:bg-bhumi-secondary/30 transition-colors cursor-pointer group">
+                            <AlertTriangle className="text-bhumi-secondaryFg dark:text-bhumi-darkSecondary shrink-0 group-hover:scale-110 transition-transform" size={18} />
                             <div>
-                                <div className="text-yellow-600 dark:text-yellow-400 font-bold text-sm mb-1">Pest Alert</div>
-                                <p className="text-xs text-gray-600 dark:text-gray-300">Locusts reported 50km north.</p>
+                                <div className="text-bhumi-secondaryFg dark:text-bhumi-darkSecondary font-bold text-sm mb-1">Pest Alert</div>
+                                <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Locusts reported 50km north.</p>
                             </div>
                         </div>
                     </div>
@@ -287,17 +287,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
             </div>
 
             {/* Voice Agent Trigger */}
-            <div className="flex justify-center mt-8 pb-8">
+            <div className="flex justify-center mt-10 pb-8">
                 <button
                     onClick={() => setShowVoiceAgent(true)}
-                    className="group relative flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-bhumi-green to-emerald-600 rounded-full text-white font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all overflow-hidden"
+                    className="group relative flex items-center gap-3 px-8 py-4 bg-bhumi-primary dark:bg-bhumi-darkPrimary text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden border-2 border-bhumi-primary dark:border-bhumi-darkPrimary"
                 >
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_red]"></div>
+                    <div className="w-3 h-3 bg-bhumi-destructive animate-pulse shadow-[0_0_10px_rgba(201,123,123,0.7)]"></div>
                     <span className="relative z-10 flex items-center gap-2">
                         <Mic size={20} /> Ask Bhumi Live
                     </span>
-                    <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
                 </button>
             </div>
 

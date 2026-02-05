@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, Sparkles, ArrowLeft, Mic, Volume2, StopCircle, Loader2 } from 'lucide-react';
-import { transcribeAudio, generateSpeech, chatWithSarvam } from '../services/sarvamService';
+import { chatWithBhumi } from '../services/geminiService';
+import { transcribeAudio, generateSpeech } from '../services/sarvamService';
 import { ChatMessage, Language } from '../types';
 
 interface Props {
@@ -53,15 +54,15 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
         setIsTyping(true);
 
         try {
-            // Prepare history for Sarvam - exclude initial greeting, convert to Sarvam format
+            // Prepare history for Gemini - exclude initial greeting
             const history = messages
                 .filter((_, i) => i > 0) // Skip the first message (greeting)
                 .map(m => ({
-                    role: m.role === 'model' ? 'assistant' as const : 'user' as const,
-                    content: m.text
+                    role: m.role,
+                    parts: [{ text: m.text }]
                 }));
 
-            const responseText = await chatWithSarvam(history, userMsg.text, lang);
+            const responseText = await chatWithBhumi(history, userMsg.text, lang);
 
             const botMsg: ChatMessage = {
                 id: (Date.now() + 1).toString(),
@@ -174,25 +175,25 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
     };
 
     return (
-        <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] flex flex-col glass-panel rounded-2xl overflow-hidden animate-fade-in relative">
+        <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] flex flex-col bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder overflow-hidden animate-fade-in relative">
             {/* Header */}
-            <div className="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between gap-3">
+            <div className="p-4 border-b-2 border-bhumi-border dark:border-bhumi-darkBorder bg-bhumi-muted dark:bg-bhumi-darkMuted flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-bhumi-green rounded-full flex items-center justify-center">
-                        <Bot size={20} className="text-white" />
+                    <div className="w-10 h-10 bg-bhumi-primary dark:bg-bhumi-darkPrimary flex items-center justify-center">
+                        <Bot size={20} className="text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg" />
                     </div>
                     <div>
-                        <h3 className="font-bold">Bhumi AI Assistant</h3>
+                        <h3 className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">Bhumi AI Assistant</h3>
                         <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                            <span className="text-xs text-gray-400">Online • Sarvam M</span>
+                            <span className="w-2 h-2 bg-bhumi-primary dark:bg-bhumi-darkPrimary animate-pulse"></span>
+                            <span className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Online • Gemini 3 Pro</span>
                         </div>
                     </div>
                 </div>
                 {onBack && (
                     <button
                         onClick={onBack}
-                        className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                        className="p-2 hover:bg-bhumi-border dark:hover:bg-bhumi-darkBorder transition-colors text-bhumi-fg dark:text-bhumi-darkFg"
                         title="Back to Dashboard"
                     >
                         <ArrowLeft size={20} />
@@ -201,20 +202,20 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar bg-bhumi-bg dark:bg-bhumi-darkBg">
                 {messages.map((msg) => (
                     <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[80%] md:max-w-[70%] rounded-2xl p-4 ${msg.role === 'user'
-                            ? 'bg-bhumi-green text-white rounded-tr-none'
-                            : 'bg-white/10 text-gray-100 rounded-tl-none border border-white/5'
+                        <div className={`max-w-[80%] md:max-w-[70%] p-4 ${msg.role === 'user'
+                                ? 'bg-bhumi-primary dark:bg-bhumi-darkPrimary text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg'
+                                : 'bg-bhumi-card dark:bg-bhumi-darkCard text-bhumi-fg dark:text-bhumi-darkFg border-2 border-bhumi-border dark:border-bhumi-darkBorder'
                             }`}>
-                            <div className="flex items-center gap-2 mb-1 opacity-50 text-xs">
+                            <div className="flex items-center gap-2 mb-1 opacity-60 text-xs">
                                 {msg.role === 'model' ? <Sparkles size={12} /> : <User size={12} />}
                                 <span>{msg.role === 'model' ? 'Bhumi' : 'You'}</span>
                                 {msg.role === 'model' && (
                                     <button
                                         onClick={() => speakText(msg.text)}
-                                        className={`ml-2 transition-colors ${isSpeaking ? 'text-bhumi-gold' : 'text-gray-400 hover:text-white'}`}
+                                        className={`ml-2 transition-colors ${isSpeaking ? 'text-bhumi-secondary dark:text-bhumi-darkSecondary' : 'text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:text-bhumi-fg dark:hover:text-bhumi-darkFg'}`}
                                         title="Read aloud"
                                     >
                                         {isSpeaking && audioPlayerRef.current ? <Loader2 size={12} className="animate-spin" /> : <Volume2 size={12} />}
@@ -227,10 +228,10 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
                 ))}
                 {isTyping && (
                     <div className="flex justify-start">
-                        <div className="bg-white/10 rounded-2xl rounded-tl-none p-4 flex gap-1 items-center">
-                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
-                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                        <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-4 flex gap-1 items-center border-2 border-bhumi-border dark:border-bhumi-darkBorder">
+                            <span className="w-2 h-2 bg-bhumi-mutedFg dark:bg-bhumi-darkMutedFg animate-bounce"></span>
+                            <span className="w-2 h-2 bg-bhumi-mutedFg dark:bg-bhumi-darkMutedFg animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                            <span className="w-2 h-2 bg-bhumi-mutedFg dark:bg-bhumi-darkMutedFg animate-bounce" style={{ animationDelay: '0.4s' }}></span>
                         </div>
                     </div>
                 )}
@@ -238,15 +239,15 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-white/5 border-t border-white/10">
+            <div className="p-4 bg-bhumi-muted dark:bg-bhumi-darkMuted border-t-2 border-bhumi-border dark:border-bhumi-darkBorder">
                 <div className="relative flex items-center gap-2">
                     <button
                         onClick={toggleVoiceInput}
                         disabled={isProcessingVoice}
-                        className={`p-4 rounded-xl transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' :
-                            isProcessingVoice ? 'bg-gray-600 animate-pulse' :
-                                'bg-white/10 text-gray-400 hover:bg-white/20'
-                            }`}
+                        className={`p-4 transition-all ${isListening ? 'bg-bhumi-destructive dark:bg-bhumi-darkDestructive text-white animate-pulse' :
+                                isProcessingVoice ? 'bg-bhumi-mutedFg dark:bg-bhumi-darkMutedFg animate-pulse' :
+                                    'bg-bhumi-card dark:bg-bhumi-darkCard text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:bg-bhumi-border dark:hover:bg-bhumi-darkBorder'
+                            } border-2 border-bhumi-border dark:border-bhumi-darkBorder`}
                         title="Voice Input"
                     >
                         {isProcessingVoice ? <Loader2 size={20} className="animate-spin" /> :
@@ -259,12 +260,12 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                             placeholder={isListening ? "Listening..." : "Ask about crops, weather..."}
-                            className="w-full bg-bhumi-dark border border-white/20 rounded-xl py-4 pl-4 pr-12 focus:outline-none focus:border-bhumi-gold transition-colors text-white placeholder-gray-500"
+                            className="w-full bg-bhumi-input dark:bg-bhumi-darkInput border-2 border-bhumi-border dark:border-bhumi-darkBorder py-4 pl-4 pr-12 focus:outline-none focus:border-bhumi-primary dark:focus:border-bhumi-darkPrimary transition-colors text-bhumi-fg dark:text-bhumi-darkFg placeholder-bhumi-mutedFg dark:placeholder-bhumi-darkMutedFg"
                         />
                         <button
                             onClick={handleSend}
                             disabled={!input.trim() || isTyping}
-                            className="absolute right-2 top-2 p-2 bg-bhumi-gold hover:bg-yellow-500 text-bhumi-dark rounded-lg transition-colors disabled:opacity-50"
+                            className="absolute right-2 top-2 p-2 bg-bhumi-primary dark:bg-bhumi-darkPrimary hover:opacity-90 text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg transition-colors disabled:opacity-50"
                         >
                             <Send size={20} />
                         </button>
