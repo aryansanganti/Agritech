@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, X, MessageSquareText, Minimize2, Mic, Volume2, StopCircle, Loader2 } from 'lucide-react';
-import { chatWithBhumi } from '../services/geminiService';
-import { transcribeAudio, generateSpeech } from '../services/sarvamService';
+import { transcribeAudio, generateSpeech, chatWithSarvam } from '../services/sarvamService';
 import { ChatMessage, Language } from '../types';
 
 interface Props {
@@ -82,11 +81,11 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
             const history = messages
                 .filter((_, i) => i > 0)
                 .map(m => ({
-                    role: m.role,
-                    parts: [{ text: m.text }]
+                    role: m.role === 'model' ? 'assistant' as const : 'user' as const,
+                    content: m.text
                 }));
 
-            const responseText = await chatWithBhumi(history, userMsg.text, lang);
+            const responseText = await chatWithSarvam(history, userMsg.text, lang);
 
             const botMsg: ChatMessage = {
                 id: (Date.now() + 1).toString(),
@@ -223,8 +222,8 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                             <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${msg.role === 'user'
-                                    ? 'bg-bhumi-green text-white rounded-tr-none'
-                                    : 'bg-white dark:bg-white/10 text-gray-800 dark:text-gray-200 rounded-tl-none border border-gray-200 dark:border-white/5'
+                                ? 'bg-bhumi-green text-white rounded-tr-none'
+                                : 'bg-white dark:bg-white/10 text-gray-800 dark:text-gray-200 rounded-tl-none border border-gray-200 dark:border-white/5'
                                 }`}>
                                 {formatText(msg.text)}
                             </div>
@@ -257,8 +256,8 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                             onClick={toggleVoiceInput}
                             disabled={isProcessingVoice}
                             className={`p-3 rounded-full transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' :
-                                    isProcessingVoice ? 'bg-gray-200 animate-pulse' :
-                                        'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'
+                                isProcessingVoice ? 'bg-gray-200 animate-pulse' :
+                                    'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'
                                 }`}
                             title="Voice Input"
                         >

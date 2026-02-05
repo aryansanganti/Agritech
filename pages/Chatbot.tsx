@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, Sparkles, ArrowLeft, Mic, Volume2, StopCircle, Loader2 } from 'lucide-react';
-import { chatWithBhumi } from '../services/geminiService';
-import { transcribeAudio, generateSpeech } from '../services/sarvamService';
+import { transcribeAudio, generateSpeech, chatWithSarvam } from '../services/sarvamService';
 import { ChatMessage, Language } from '../types';
 
 interface Props {
@@ -54,15 +53,15 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
         setIsTyping(true);
 
         try {
-            // Prepare history for Gemini - exclude initial greeting
+            // Prepare history for Sarvam - exclude initial greeting, convert to Sarvam format
             const history = messages
                 .filter((_, i) => i > 0) // Skip the first message (greeting)
                 .map(m => ({
-                    role: m.role,
-                    parts: [{ text: m.text }]
+                    role: m.role === 'model' ? 'assistant' as const : 'user' as const,
+                    content: m.text
                 }));
 
-            const responseText = await chatWithBhumi(history, userMsg.text, lang);
+            const responseText = await chatWithSarvam(history, userMsg.text, lang);
 
             const botMsg: ChatMessage = {
                 id: (Date.now() + 1).toString(),
@@ -186,7 +185,7 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
                         <h3 className="font-bold">Bhumi AI Assistant</h3>
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                            <span className="text-xs text-gray-400">Online • Gemini 3 Pro</span>
+                            <span className="text-xs text-gray-400">Online • Sarvam M</span>
                         </div>
                     </div>
                 </div>
@@ -206,8 +205,8 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
                 {messages.map((msg) => (
                     <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] md:max-w-[70%] rounded-2xl p-4 ${msg.role === 'user'
-                                ? 'bg-bhumi-green text-white rounded-tr-none'
-                                : 'bg-white/10 text-gray-100 rounded-tl-none border border-white/5'
+                            ? 'bg-bhumi-green text-white rounded-tr-none'
+                            : 'bg-white/10 text-gray-100 rounded-tl-none border border-white/5'
                             }`}>
                             <div className="flex items-center gap-2 mb-1 opacity-50 text-xs">
                                 {msg.role === 'model' ? <Sparkles size={12} /> : <User size={12} />}
@@ -245,8 +244,8 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
                         onClick={toggleVoiceInput}
                         disabled={isProcessingVoice}
                         className={`p-4 rounded-xl transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' :
-                                isProcessingVoice ? 'bg-gray-600 animate-pulse' :
-                                    'bg-white/10 text-gray-400 hover:bg-white/20'
+                            isProcessingVoice ? 'bg-gray-600 animate-pulse' :
+                                'bg-white/10 text-gray-400 hover:bg-white/20'
                             }`}
                         title="Voice Input"
                     >
