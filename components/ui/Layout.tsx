@@ -115,11 +115,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
         { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
 
         { id: 'seedscout', label: 'SeedScout', icon: Compass },
-<<<<<<< HEAD
-
-=======
         { id: 'pricing-engine', label: 'Pricing Engine', icon: TrendingUp },
->>>>>>> d4bc808 (fixes)
         { id: 'profile', label: t.profile, icon: UserIcon },
     ];
 
