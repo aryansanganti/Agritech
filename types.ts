@@ -114,6 +114,38 @@ export interface ChatMessage {
     timestamp: number;
 }
 
+// Pricing Engine Types
+export interface MandiPriceRecord {
+    state: string;
+    district: string;
+    market: string;
+    commodity: string;
+    variety: string;
+    minPrice: number;
+    maxPrice: number;
+    modalPrice: number;
+    date: string;
+    source: string;
+}
+
+export interface PricingPrediction {
+    crop: string;
+    location: string;
+    minGuaranteedPrice: number;
+    expectedPriceBand: {
+        low: number;
+        high: number;
+    };
+    confidenceScore: number;
+    arbitrationReasoning: string;
+    sourceAnalysis: Array<{
+        name: string;
+        reliability: number;
+        contribution: string;
+    }>;
+    timestamp: string;
+}
+
 export interface DiseaseResult {
     disease: string;
     confidence: number;
