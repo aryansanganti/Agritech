@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, RefreshCw, ArrowLeft, CheckCircle, AlertTriangle, Scale, DollarSign, Activity, ArrowRight } from 'lucide-react';
+import { Camera, Upload, RefreshCw, ArrowLeft, CheckCircle, AlertTriangle, Scale, DollarSign, Activity, ArrowRight, XCircle } from 'lucide-react';
 import { analyzeCropQuality } from '../services/geminiService';
 import { getMarketPrice, STATES, getCommodities } from '../services/agmarknetService';
 import { storeQualityGrading, gradeToScore } from '../services/qualityGradingService';
@@ -25,7 +25,11 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
     const [result, setResult] = useState<CropAnalysisResult | null>(null);
     const [marketPrice, setMarketPrice] = useState<number | null>(null);
 
+    // NEW: State for validation errors
+    const [error, setError] = useState<string | null>(null);
+
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null); // NEW: Needed for pixel validation
 
     // Fetch Market Price when details change
     useEffect(() => {
@@ -45,9 +49,88 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
             reader.onloadend = () => {
                 setImage(reader.result as string);
                 setResult(null);
+                setError(null); // Clear previous errors
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    // NEW: Client-Side Validation Logic
+    const validateImage = (img: HTMLImageElement): boolean => {
+        if (!canvasRef.current) return true; // Fail open if canvas not ready
+
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return true;
+
+        const width = 200; // Small size for speed
+        const height = (img.height / img.width) * width;
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const data = imageData.data;
+        const pixelCount = data.length / 4;
+
+        let skinTonePixels = 0;
+        let skyBluePixels = 0;
+        let flatWhitePixels = 0;
+        let totalTexture = 0; // Sum of intensity differences
+
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            const d = max - min;
+
+            // 1. Detect Skin (Red dominant, mid brightness)
+            if (r > 95 && g > 40 && b > 20 && d > 15 && r > g && r > b && max > 20 && max < 230) {
+                skinTonePixels++;
+            }
+
+            // 2. Detect Sky (Blue dominant)
+            if (b > r + 30 && b > g + 30 && b > 100) {
+                skyBluePixels++;
+            }
+
+            // 3. Detect Flat White/Gray (Screenshots/Documents)
+            // High brightness, very low saturation
+            if (r > 200 && g > 200 && b > 200 && d < 15) {
+                flatWhitePixels++;
+            }
+
+            // Simple texture helper for next check
+            totalTexture += d;
+        }
+
+        const textureAvg = totalTexture / pixelCount;
+
+        // --- VALIDATION RULES ---
+
+        // Rule 1: Is it a selfie?
+        if (skinTonePixels / pixelCount > 0.15) {
+            setError("This looks like a photo of a person. Please upload a photo of crops or produce.");
+            return false;
+        }
+
+        // Rule 2: Is it just the sky?
+        if (skyBluePixels / pixelCount > 0.4) {
+            setError("This image appears to be mostly sky. Please focus on the crop produce.");
+            return false;
+        }
+
+        // Rule 3: Is it a document/screen? 
+        // If it's very white/gray AND has very low texture (flat color)
+        if (flatWhitePixels / pixelCount > 0.6 && textureAvg < 10) {
+            setError("This looks like a document or screenshot. Please upload a real photo of the crop.");
+            return false;
+        }
+
+        return true; // Passed validation
     };
 
     const handleAnalyze = async () => {
@@ -57,19 +140,56 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
         }
 
         setAnalyzing(true);
+        setError(null);
+
         try {
+            // 1. Perform Client-Side Validation
+            const img = new Image();
+            img.src = image;
+            await new Promise((resolve) => { img.onload = resolve; }); // Wait for load
+
+            const isValid = validateImage(img);
+            if (!isValid) {
+                setAnalyzing(false);
+                return;
+            }
+
+            // 2. Proceed with API Analysis
             const base64Data = image.split(',')[1];
             const context = {
                 state, district, market, commodity, price: marketPrice || 0
             };
 
             const data = await analyzeCropQuality(base64Data, context, lang);
+
+            // --- NEW: VALIDATION LOGIC ---
+
+            // Normalize strings for comparison (lowercase, trim)
+            const userSelection = commodity.toLowerCase().trim();
+            const aiDetection = data.detectedCrop.toLowerCase().trim();
+
+            // Check for match. 
+            // We use .includes() to be smart. e.g. "Tomato" matches "Red Tomato" or "Tomato (Local)"
+            // Also trust the AI's explicit 'isMatch' flag if available, but fallback to logic
+            const isMatch = data.isMatch || aiDetection.includes(userSelection) || userSelection.includes(aiDetection);
+
+            if (!isMatch) {
+                // MISMATCH FOUND
+                setError(
+                    `Commodity Mismatch! You selected "${commodity}", but the AI detected "${data.detectedCrop}" in the image. Please select the correct crop or upload the correct image.`
+                );
+                setAnalyzing(false);
+                return; // Stop here, don't save or show results
+            }
+
+            // --- END VALIDATION ---
+
             setResult(data);
 
             // Store quality grading for use in Pricing Engine
             const qualityScore = gradeToScore(data.grading.overallGrade);
             storeQualityGrading({
-                crop: commodity,
+                crop: data.detectedCrop, // Store the AI's verified name
                 state: state,
                 district: district,
                 qualityScore: qualityScore,
@@ -196,6 +316,15 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                             {image ? (
                                 <div className="relative w-full h-full">
                                     <img src={image} alt="Crop" className="w-full h-full object-contain" />
+
+                                    {/* ERROR OVERLAY */}
+                                    {error && (
+                                        <div className="absolute inset-0 bg-black/80 flex items-center justify-center p-4 text-center z-20">
+                                            <XCircle className="text-red-500 mx-auto mb-2" size={32} />
+                                            <p className="text-white text-sm font-medium">{error}</p>
+                                        </div>
+                                    )}
+
                                     {result?.detections && result.detections.length > 0 ? (
                                         result.detections.map((det, i) => (
                                             <div
@@ -233,9 +362,22 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                             />
                         </div>
 
+                        {/* Hidden Canvas for Validation */}
+                        <canvas ref={canvasRef} className="hidden" />
+
+                        {/* ERROR MESSAGE UI (If visible outside image overlay) */}
+                        {error && !image && (
+                            <div className="mt-2 p-3 bg-red-50 text-red-600 text-xs rounded-lg">
+                                {error}
+                            </div>
+                        )}
+
                         <div className="mt-4 flex gap-3">
                             <button
-                                onClick={() => fileInputRef.current?.click()}
+                                onClick={() => {
+                                    fileInputRef.current?.click();
+                                    setError(null);
+                                }}
                                 className="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             >
                                 {image ? 'Change Photo' : 'Select Photo'}
@@ -261,7 +403,7 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
 
                 {/* Right Column: Analysis Results */}
                 <div className="lg:col-span-2">
-                    {!result && !analyzing && (
+                    {!result && !analyzing && !error && (
                         <div className="h-full flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl p-12">
                             <Activity size={64} className="mb-4 opacity-20" />
                             <p className="text-lg font-medium opacity-50">Upload an image and analyze to see Grading Report</p>

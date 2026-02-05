@@ -290,6 +290,37 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
     const ListingCard: React.FC<{ item: Listing; isOwner: boolean; onViewQR: () => void }> = ({ item, isOwner, onViewQR }) => {
         const priceDiff = item.price - item.marketPrice;
         const isCheaper = priceDiff < 0;
+        
+        // Convert Listing to MarketplaceListing format for carbon logistics
+        const handleCarbonClick = () => {
+            const marketplaceListing: MarketplaceListing = {
+                id: item.id,
+                farmerName: 'Local Farmer',
+                crop: item.crop,
+                variety: item.variety,
+                quantity: item.quantity,
+                grade: item.grade as 'A' | 'B' | 'C',
+                qualityScore: item.grade === 'A' ? 9 : item.grade === 'B' ? 7 : 5,
+                price: item.price,
+                minPrice: item.price * 0.9,
+                maxPrice: item.price * 1.1,
+                guaranteedPrice: item.price * 0.85,
+                marketPrice: item.marketPrice,
+                location: item.location,
+                image: item.image,
+                blockchainHash: item.blockchainHash || '0x...',
+                transactionHash: item.blockchainHash || '0x...',
+                etherscanUrl: '',
+                contractAddress: '',
+                recordId: 0,
+                harvestDate: new Date().toISOString(),
+                listedDate: new Date().toISOString(),
+                timestamp: Date.now(),
+            };
+            setSelectedForLogistics(marketplaceListing);
+            setShowVendorLocationModal(true);
+        };
+        
         return (
             <div className="glass-panel rounded-2xl overflow-hidden group hover:shadow-xl transition-all duration-300 border border-transparent hover:border-bhumi-green/30">
                 <div className="relative h-48 overflow-hidden">
@@ -322,7 +353,17 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                             <QrCode size={16} /> {isOwner ? 'View Passport' : 'Verify'}
                         </button>
                         {!isOwner && (
-                            <button className="flex-1 py-2.5 bg-bhumi-green hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-green-500/20">Buy Now</button>
+                            <>
+                                <button 
+                                    onClick={handleCarbonClick} 
+                                    className="py-2.5 px-3 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1"
+                                    title="Calculate Carbon Footprint & Route"
+                                >
+                                    <Leaf size={16} />
+                                    <Truck size={14} />
+                                </button>
+                                <button className="flex-1 py-2.5 bg-bhumi-green hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-green-500/20">Buy Now</button>
+                            </>
                         )}
                     </div>
                 </div>

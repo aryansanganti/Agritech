@@ -1,0 +1,53 @@
+{
+  "early_blight": {
+    "symptoms": ["yellow_leaves", "brown_spots", "concentric_rings"],
+    "crops": ["Tomato", "Potato", "Tamatar", "Aloo"],
+    "questions": [
+      "Are the spots on leaf tips or middle?",
+      "Are the spots brown or black?"
+    ],
+    "treatment": {
+      "medicine": "Mancozeb",
+      "dosage": "2g per liter",
+      "frequency": "Every 10 days"
+    }
+  },
+  "woolly_aphid": {
+    "symptoms": ["white_insects", "sticky_powder", "sugarcane"],
+    "crops": ["Sugarcane", "Ganna"],
+    "questions": [
+      "Are they leaving sticky powder on leaves?"
+    ],
+    "treatment": {
+      "medicine": "Acephate",
+      "dosage": "1.5g per liter",
+      "frequency": "Every 7 days"
+    }
+  },
+  "root_rot": {
+    "symptoms": ["root_rotting", "wilting", "yellow_leaves"],
+    "crops": ["Multiple"],
+    "questions": [
+      "Is soil waterlogged?",
+      "Are roots brown and mushy?"
+    ],
+    "treatment": {
+      "medicine": "Trichoderma",
+      "dosage": "5g per liter",
+      "frequency": "Apply to soil"
+    }
+  },
+  "nitrogen_deficiency": {
+    "symptoms": ["yellow_leaves", "stunted_growth"],
+    "crops": ["Multiple"],
+    "questions": [
+      "Are leaves yellow from tip or base?",
+      "Is growth stunted?"
+    ],
+    "treatment": {
+      "medicine": "Urea",
+      "dosage": "50kg per acre",
+      "frequency": "Apply during sowing"
+    }
+  }
+}

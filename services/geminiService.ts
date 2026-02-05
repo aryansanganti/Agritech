@@ -62,21 +62,28 @@ export const analyzeCropQuality = async (base64Image: string, context: any, lang
         Constraint: JSON Output ONLY. No Markdown. No Explanations strings inside JSON values.
         Context: Commodity=${context.commodity}, Location=${context.district}, ${context.state}. Price=₹${context.price}/q.
 
-        Task 1: Disease Detection (Universal)
-        1. Identify the crop (Verify it matches: ${context.commodity} if provided).
-        2. Identify ALL visible diseases, pests, or physical defects.
-        3. Draw a bounding box [ymin, xmin, ymax, xmax] around EACH affected area.
-           IMPORTANT: Return coordinates normalized to 0-1 range (e.g., 0.5, not 500).
-        4. Use standard specific disease names (e.g. "Rice Blast", "Wheat Rust").
-        5. If healthy, label as "Healthy".
+        Task 1: Crop Identification & Verification
+        1. Identify the crop seen in the image.
+        2. Check if it matches the User's claimed Commodity: "${context.commodity}".
+        3. Set 'isMatch' to true if it matches (allow for synonyms like "Tomato" matching "Red Tomato").
+        4. If it is a different crop, set 'isMatch' to false.
 
-        Task 2: Quality & Market Analysis
+        Task 2: Disease Detection
+        1. Identify ALL visible diseases, pests, or physical defects.
+        2. Draw a bounding box [ymin, xmin, ymax, xmax] around EACH affected area.
+           IMPORTANT: Return coordinates normalized to 0-1 range (e.g., 0.5, not 500).
+        3. Use standard specific disease names (e.g. "Rice Blast", "Wheat Rust").
+        4. If healthy, label as "Healthy".
+
+        Task 3: Quality & Market Analysis
         - Grade the overall quality (A/B/C) based on visual appearance.
         - Estimate fair market price.
         - Assess physical health indicators.
 
         Return JSON matching this structure:
         {
+          "detectedCrop": "Actual Crop Name",
+          "isMatch": true/false,
           "detections": [{ "label": "Specific Disease/Defect Name", "bbox": [ymin, xmin, ymax, xmax], "confidence": 0-100 }],
           "grading": { "overallGrade": "A"|"B"|"C", "colorChecking": "", "sizeCheck": "", "textureCheck": "", "shapeCheck": "" },
           "health": { "lesions": "None"|"Minor"|"Severe", "chlorosis": "...", "pestDamage": "...", "mechanicalDamage": "...", "diseaseName": "VERY SHORT NAME (Max 3 words)", "confidence": 0 },
@@ -97,6 +104,8 @@ export const analyzeCropQuality = async (base64Image: string, context: any, lang
                 responseSchema: {
                     type: Type.OBJECT,
                     properties: {
+                        detectedCrop: { type: Type.STRING },
+                        isMatch: { type: Type.BOOLEAN },
                         detections: {
                             type: Type.ARRAY,
                             items: {
@@ -142,7 +151,7 @@ export const analyzeCropQuality = async (base64Image: string, context: any, lang
                             required: ["estimatedPrice", "priceDriver", "demandFactor"]
                         }
                     },
-                    required: ["detections", "grading", "health", "market"]
+                    required: ["detectedCrop", "isMatch", "detections", "grading", "health", "market"]
                 }
             }
         });

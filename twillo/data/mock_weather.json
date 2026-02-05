@@ -1,0 +1,32 @@
+{
+  "Nashik": {
+    "date": "2026-02-06",
+    "forecast": {
+      "morning": "Clear",
+      "afternoon": "Heavy Rain at 4 PM",
+      "temperature": "28°C",
+      "humidity": "75%",
+      "advisory": "Do not spray pesticides after 2 PM"
+    }
+  },
+  "Mumbai": {
+    "date": "2026-02-06",
+    "forecast": {
+      "morning": "Cloudy",
+      "afternoon": "Light drizzle",
+      "temperature": "30°C",
+      "humidity": "80%",
+      "advisory": "Good weather for field work"
+    }
+  },
+  "Pune": {
+    "date": "2026-02-06",
+    "forecast": {
+      "morning": "Partly cloudy",
+      "afternoon": "Clear",
+      "temperature": "27°C",
+      "humidity": "65%",
+      "advisory": "Ideal conditions for spraying"
+    }
+  }
+}

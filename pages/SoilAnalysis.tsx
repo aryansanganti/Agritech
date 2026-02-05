@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { PageView, Language, SoilMetrics, SoilAnalysisResult } from '../types';
 import { translations } from '../utils/translations';
 import { analyzeSoilHealth } from '../services/geminiService';
-import { Camera, Upload, RefreshCw, BarChart2, AlertCircle, CheckCircle, Droplets, Sun, Layers, Thermometer } from 'lucide-react';
+import { Camera, Upload, RefreshCw, BarChart2, AlertCircle, CheckCircle, Droplets, Sun, Layers, Thermometer, XCircle } from 'lucide-react';
 import { DigitalMicroscope } from '../components/DigitalMicroscope';
 
 interface SoilAnalysisProps {
@@ -10,12 +10,39 @@ interface SoilAnalysisProps {
     onBack: () => void;
 }
 
+// Helper Component for Metrics
+const MetricCard = ({ icon: Icon, label, value, sub, color, score }: any) => (
+    <div className="glass-panel p-4 rounded-2xl flex flex-col gap-3">
+        <div className="flex justify-between items-start">
+            <div className={`p-2 rounded-xl bg-gray-50 dark:bg-white/5 ${color}`}>
+                <Icon size={20} />
+            </div>
+            <span className="text-xs font-mono text-gray-400">{sub}</span>
+        </div>
+        <div>
+            <div className="text-xl font-bold text-gray-900 dark:text-white">{value}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
+        </div>
+        {/* Mini Bar */}
+        <div className="h-1.5 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+            <div
+                className={`h-full ${color.replace('text-', 'bg-')}`}
+                style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
+            />
+        </div>
+    </div>
+);
+
 export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
     const t = translations[lang];
     const [image, setImage] = useState<string | null>(null);
     const [analyzing, setAnalyzing] = useState(false);
     const [metrics, setMetrics] = useState<SoilMetrics | null>(null);
     const [result, setResult] = useState<SoilAnalysisResult | null>(null);
+    
+    // NEW: State for handling errors (like uploading a selfie)
+    const [error, setError] = useState<string | null>(null);
+
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -27,6 +54,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                 setImage(reader.result as string);
                 setMetrics(null);
                 setResult(null);
+                setError(null); // Clear previous errors
             };
             reader.readAsDataURL(file);
         }
@@ -35,6 +63,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
     const runComputerVision = async () => {
         if (!image || !canvasRef.current) return;
         setAnalyzing(true);
+        setError(null);
 
         const img = new Image();
         img.src = image;
@@ -57,9 +86,12 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
             let totalSat = 0;
             let whitePixelCount = 0;
             let edgePixels = 0;
-
-            // Texture Analysis vars
             let intensities = [];
+
+            // NEW: Counters for Validation
+            let earthTonePixels = 0;
+            let skinTonePixels = 0;
+            let greenFoliagePixels = 0;
 
             for (let i = 0; i < data.length; i += 4) {
                 const r = data[i];
@@ -73,6 +105,15 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                 const d = max - min;
                 const s = max === 0 ? 0 : d / max;
 
+                // Calculate Hue (0-1) for color detection
+                let h = 0;
+                if (d !== 0) {
+                    if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+                    else if (max === g) h = (b - r) / d + 2;
+                    else h = (r - g) / d + 4;
+                    h /= 6;
+                }
+
                 totalV += v;
                 totalSat += s;
 
@@ -80,15 +121,65 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                 const intensity = (r + g + b) / 3;
                 intensities.push(intensity);
 
-                // Salinity Detection: High Brightness + Low Saturation
-                // White is high RGB, low Saturation
-                // Relaxed thresholds for better real-world detection
                 if (r > 190 && g > 190 && b > 190 && s < 0.30) {
                     whitePixelCount++;
                 }
+
+                // --- VALIDATION LOGIC START ---
+                
+                // 1. Detect Skin (Simple heuristic)
+                // Skin is usually Red > Green > Blue, with specific brightness
+                if (r > 95 && g > 40 && b > 20 && 
+                    (max - min) > 15 && 
+                    r > g && r > b && 
+                    v > 0.2 && v < 0.9) {
+                    skinTonePixels++;
+                }
+
+                // 2. Detect Foliage (Green)
+                if (g > r && g > b && g > 50 && s > 0.1) {
+                    greenFoliagePixels++;
+                }
+
+                // 3. Detect Earth/Soil
+                // Soil ranges from Red/Brown (Hue 0-0.15) to Yellow/Sand (Hue 0.1-0.2)
+                // It also has some saturation but isn't neon.
+                if ((h >= 0 && h <= 0.22) && s > 0.05 && v < 0.9) {
+                    earthTonePixels++;
+                }
+                
+                // --- VALIDATION LOGIC END ---
             }
 
             const pixelCount = data.length / 4;
+
+            // --- PERFORM VALIDATION CHECKS ---
+            
+            // Check 1: Is it too much foliage?
+            if (greenFoliagePixels / pixelCount > 0.4) {
+                setError("This image appears to be mostly leaves/plants. Please take a photo of the soil ground.");
+                setAnalyzing(false);
+                return;
+            }
+
+            // Check 2: Is it a person/selfie?
+            // If more than 15% of pixels look like skin, reject.
+            if (skinTonePixels / pixelCount > 0.15) {
+                setError("This looks like a photo of a person. Please upload a photo of soil.");
+                setAnalyzing(false);
+                return;
+            }
+
+            // Check 3: Is there enough soil?
+            // If less than 40% of the image is "Earth Tone", reject.
+            if (earthTonePixels / pixelCount < 0.40) {
+                setError("We couldn't detect enough soil in this image. Please take a closer photo of the ground.");
+                setAnalyzing(false);
+                return;
+            }
+
+            // --- PROCEED WITH NORMAL ANALYSIS ---
+
             const avgV = totalV / pixelCount;
             const avgSat = totalSat / pixelCount;
             const salinityScore = (whitePixelCount / pixelCount) * 100;
@@ -97,10 +188,9 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
             const meanIntensity = intensities.reduce((a, b) => a + b, 0) / pixelCount;
             const variance = intensities.reduce((a, b) => a + Math.pow(b - meanIntensity, 2), 0) / pixelCount;
             const stdDev = Math.sqrt(variance);
-            const textureScore = Math.min(100, (stdDev / 128) * 100); // Normalize roughly
+            const textureScore = Math.min(100, (stdDev / 128) * 100);
 
             // Edge Detection (Simplified for Cracks)
-            // Sobel-like check on grayscale buffer
             const grayscale = new Uint8ClampedArray(width * height);
             for (let i = 0; i < data.length; i += 4) {
                 grayscale[i / 4] = (data[i] + data[i + 1] + data[i + 2]) / 3;
@@ -119,27 +209,20 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
             const crackScore = (highGradients / pixelCount) * 100;
 
             // Derived Metrics
-            // SOC Proxy: Darker soil (Lower V) = Higher SOC. 
-            // Invert V: 1 - 0.8 (light) = 0.2 (Low SOC). 1 - 0.2 (dark) = 0.8 (High SOC).
             const socScore = Math.round((1 - avgV) * 100);
-
-            // Moisture: Also correlates with darkness, but we can combine with saturation for "wet look"
-            // Wet soil is darker (Low V) and often more saturated colors in some contexts, but mostly just darker.
-            // Let's use a weighted combo.
             const moistureScore = Math.round((1 - avgV) * 80 + avgSat * 20);
 
             const calculatedMetrics: SoilMetrics = {
                 soc: socScore,
                 moisture: moistureScore,
-                salinity: Math.round(salinityScore * 5), // Amplify for visibility
+                salinity: Math.round(salinityScore * 5),
                 texture: Math.round(textureScore),
-                cracks: crackScore > 5, // Threshold
+                cracks: crackScore > 5,
                 description: `Avg Brightness: ${(avgV * 100).toFixed(0)}%, Salinity Index: ${(salinityScore * 100).toFixed(2)}`
             };
 
             setMetrics(calculatedMetrics);
 
-            // 2. Call GenAI with these metrics
             try {
                 const aiResult = await analyzeSoilHealth(calculatedMetrics, lang);
                 setResult({
@@ -148,7 +231,6 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                 });
             } catch (err) {
                 console.error(err);
-                // Fallback result if API fails
                 setResult({
                     metrics: calculatedMetrics,
                     aiAdvice: "Could not connect to AI advisor. Please check your connection. Based on metrics, please check the dashboard below.",
@@ -223,6 +305,17 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                             )}
                         </div>
 
+                        {/* ERROR MESSAGE UI */}
+                        {error && (
+                            <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-300 rounded-xl flex items-start gap-3 animate-fade-in">
+                                <XCircle className="mt-1 flex-shrink-0" size={20} />
+                                <div>
+                                    <strong className="block font-bold mb-1">Invalid Image</strong>
+                                    <p className="text-sm">{error}</p>
+                                </div>
+                            </div>
+                        )}
+
                         {!result && !analyzing && (
                             <button
                                 onClick={runComputerVision}
@@ -239,12 +332,18 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                                 {t.analyzing}
                             </div>
                         )}
-                        {result && (
+                        
+                        {/* Reset Button Logic: Show if Error exists OR Result exists */}
+                        {(result || error) && (
                             <button
-                                onClick={() => { setImage(null); setResult(null); }}
+                                onClick={() => { 
+                                    setImage(null); 
+                                    setResult(null); 
+                                    setError(null);
+                                }}
                                 className="w-full py-3 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-white/5"
                             >
-                                Analyze Another Sample
+                                Try Another Image
                             </button>
                         )}
                     </div>
@@ -292,57 +391,25 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                                         value={result.metrics.salinity > 10 ? 'High' : 'Normal'}
                                         sub={`Index: ${result.metrics.salinity}`}
                                         color={result.metrics.salinity > 10 ? "text-red-500" : "text-green-500"}
-                                        score={100 - result.metrics.salinity} // Invert for "Goodness"
+                                        score={100 - result.metrics.salinity}
                                     />
                                     <MetricCard
                                         icon={BarChart2}
                                         label={t.rootComfort}
                                         value={result.metrics.texture > 20 ? 'Cloddy' : 'Fine'}
-                                        sub="Texture"
-                                        color="text-amber-600"
-                                        score={100 - result.metrics.texture}
+                                        sub={`Score: ${result.metrics.texture}`}
+                                        color="text-orange-500"
+                                        score={result.metrics.texture}
                                     />
-                                </div>
-
-                                {/* Recommendations */}
-                                <div className="glass-panel p-6 rounded-3xl">
-                                    <h3 className="font-bold text-gray-900 dark:text-white mb-4">Recommended Crops</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {result.recommendedCrops.map((crop, i) => (
-                                            <span key={i} className="px-4 py-2 bg-bhoomi-green/10 text-bhoomi-green dark:text-green-400 rounded-full font-medium border border-bhoomi-green/20">
-                                                {crop}
-                                            </span>
-                                        ))}
-                                    </div>
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
             )}
+
+            {/* Hidden canvas for processing */}
+            <canvas ref={canvasRef} className="hidden" />
         </div>
     );
 };
-
-// Helper Component for Metrics
-const MetricCard = ({ icon: Icon, label, value, sub, color, score }: any) => (
-    <div className="glass-panel p-4 rounded-2xl flex flex-col gap-3">
-        <div className="flex justify-between items-start">
-            <div className={`p-2 rounded-xl bg-gray-50 dark:bg-white/5 ${color}`}>
-                <Icon size={20} />
-            </div>
-            <span className="text-xs font-mono text-gray-400">{sub}</span>
-        </div>
-        <div>
-            <div className="text-xl font-bold text-gray-900 dark:text-white">{value}</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
-        </div>
-        {/* Mini Bar */}
-        <div className="h-1.5 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-            <div
-                className={`h-full ${color.replace('text-', 'bg-')}`}
-                style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
-            />
-        </div>
-    </div>
-);
