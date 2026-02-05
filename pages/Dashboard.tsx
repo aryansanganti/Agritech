@@ -86,7 +86,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
             </div>
 
             {/* Quick Actions Grid */}
-            <div>
+            {/* <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t.quickActions}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                     <button onClick={() => setView('disease-detection')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
@@ -145,7 +145,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                         <span className="font-medium text-sm text-center z-10 text-gray-800 dark:text-white">{t.analytics}</span>
                     </button>
                 </div>
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 {/* Yield Trends */}

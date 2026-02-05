@@ -1,5 +1,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { DiseaseResult, CropRec, YieldResult, AdvisoryResult, WeatherData, MandiPriceRecord, PricingPrediction } from "../types";
+import { 
+    DiseaseResult, 
+    CropRec, 
+    YieldResult, 
+    AdvisoryResult, 
+    WeatherData, 
+    CropAnalysisResult, // From Block 1
+    MandiPriceRecord,   // From Block 2
+    PricingPrediction   // From Block 2
+} from "../types";
 
 // ROBUST KEY RETRIEVAL:
 // 1. Check process.env.API_KEY (Node/standard envs)
@@ -18,7 +27,7 @@ const apiKey = getApiKey();
 const ai = new GoogleGenAI({ apiKey });
 
 const MODEL_REASONING = 'gemini-3-pro-preview';
-const MODEL_VISION = 'gemini-3-flash-preview'; 
+const MODEL_VISION = 'gemini-3-flash-preview';
 const MODEL_FAST = 'gemini-3-flash-preview';
 
 // Helper to check if key is present for UI indicators
@@ -41,7 +50,113 @@ const checkApiKey = () => {
     }
 };
 
-export const analyzeCropDisease = async (base64Image: string, language: string): Promise<DiseaseResult> => {
+// ==========================================
+// VISION & QUALITY ANALYSIS
+// ==========================================
+
+export const analyzeCropQuality = async (base64Image: string, context: any, language: string, mimeType: string = 'image/jpeg'): Promise<CropAnalysisResult> => {
+    checkApiKey();
+    try {
+        const langName = getLangName(language);
+        const prompt = `Act as an expert Plant Pathologist. Analyze this crop image.
+        Constraint: JSON Output ONLY. No Markdown. No Explanations strings inside JSON values.
+        Context: Commodity=${context.commodity}, Location=${context.district}, ${context.state}. Price=₹${context.price}/q.
+
+        Task 1: Disease Detection (Universal)
+        1. Identify the crop (Verify it matches: ${context.commodity} if provided).
+        2. Identify ALL visible diseases, pests, or physical defects.
+        3. Draw a bounding box [ymin, xmin, ymax, xmax] around EACH affected area.
+           IMPORTANT: Return coordinates normalized to 0-1 range (e.g., 0.5, not 500).
+        4. Use standard specific disease names (e.g. "Rice Blast", "Wheat Rust").
+        5. If healthy, label as "Healthy".
+
+        Task 2: Quality & Market Analysis
+        - Grade the overall quality (A/B/C) based on visual appearance.
+        - Estimate fair market price.
+        - Assess physical health indicators.
+
+        Return JSON matching this structure:
+        {
+          "detections": [{ "label": "Specific Disease/Defect Name", "bbox": [ymin, xmin, ymax, xmax], "confidence": 0-100 }],
+          "grading": { "overallGrade": "A"|"B"|"C", "colorChecking": "", "sizeCheck": "", "textureCheck": "", "shapeCheck": "" },
+          "health": { "lesions": "None"|"Minor"|"Severe", "chlorosis": "...", "pestDamage": "...", "mechanicalDamage": "...", "diseaseName": "Short Label Only (Max 3 words)", "confidence": 0 },
+          "market": { "estimatedPrice": 0, "priceDriver": "Reason", "demandFactor": "High/Mod/Low" }
+        }
+        Respond in language: ${langName}`;
+
+        const response = await ai.models.generateContent({
+            model: MODEL_VISION,
+            contents: {
+                parts: [
+                    { inlineData: { mimeType: mimeType, data: base64Image } },
+                    { text: prompt }
+                ]
+            },
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        detections: {
+                            type: Type.ARRAY,
+                            items: {
+                                type: Type.OBJECT,
+                                properties: {
+                                    label: { type: Type.STRING },
+                                    bbox: { type: Type.ARRAY, items: { type: Type.NUMBER } },
+                                    confidence: { type: Type.NUMBER }
+                                },
+                                required: ["label", "bbox", "confidence"]
+                            }
+                        },
+                        grading: {
+                            type: Type.OBJECT,
+                            properties: {
+                                overallGrade: { type: Type.STRING, enum: ["A", "B", "C"] },
+                                colorChecking: { type: Type.STRING },
+                                sizeCheck: { type: Type.STRING },
+                                textureCheck: { type: Type.STRING },
+                                shapeCheck: { type: Type.STRING }
+                            },
+                            required: ["overallGrade", "colorChecking", "sizeCheck", "textureCheck", "shapeCheck"]
+                        },
+                        health: {
+                            type: Type.OBJECT,
+                            properties: {
+                                lesions: { type: Type.STRING },
+                                chlorosis: { type: Type.STRING },
+                                pestDamage: { type: Type.STRING },
+                                mechanicalDamage: { type: Type.STRING },
+                                diseaseName: { type: Type.STRING },
+                                confidence: { type: Type.NUMBER }
+                            },
+                            required: ["lesions", "chlorosis", "pestDamage", "mechanicalDamage"]
+                        },
+                        market: {
+                            type: Type.OBJECT,
+                            properties: {
+                                estimatedPrice: { type: Type.NUMBER },
+                                priceDriver: { type: Type.STRING },
+                                demandFactor: { type: Type.STRING }
+                            },
+                            required: ["estimatedPrice", "priceDriver", "demandFactor"]
+                        }
+                    },
+                    required: ["detections", "grading", "health", "market"]
+                }
+            }
+        });
+
+        const text = response.text;
+        if (!text) throw new Error("No response from Gemini");
+        return JSON.parse(text) as CropAnalysisResult;
+    } catch (error) {
+        console.error("Gemini Crop Analysis Error:", error);
+        throw error;
+    }
+};
+
+export const analyzeCropDisease = async (base64Image: string, language: string, mimeType: string = 'image/jpeg'): Promise<DiseaseResult> => {
     checkApiKey();
     try {
         const langName = getLangName(language);
@@ -53,7 +168,7 @@ export const analyzeCropDisease = async (base64Image: string, language: string):
             model: MODEL_VISION,
             contents: {
                 parts: [
-                    { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
+                    { inlineData: { mimeType: mimeType, data: base64Image } },
                     { text: prompt }
                 ]
             },
@@ -80,6 +195,10 @@ export const analyzeCropDisease = async (base64Image: string, language: string):
         throw error;
     }
 };
+
+// ==========================================
+// ADVISORY & CHAT
+// ==========================================
 
 export const getCropRecommendations = async (soil: string, season: string, location: string, language: string): Promise<CropRec[]> => {
     checkApiKey();
@@ -162,6 +281,10 @@ export const voiceAgentChat = async (message: string) => {
         return "I am having trouble hearing you clearly.";
     }
 };
+
+// ==========================================
+// YIELD, WEATHER & GENERAL ANALYTICS
+// ==========================================
 
 export const getYieldPrediction = async (data: any, language: string): Promise<YieldResult> => {
     checkApiKey();
@@ -308,6 +431,59 @@ export const getAnalyticsInsight = async (data: any, language: string): Promise<
     }
 };
 
+// ==========================================
+// SOIL & GENETICS
+// ==========================================
+
+export const analyzeSoilHealth = async (metrics: any, language: string): Promise<any> => {
+    checkApiKey();
+    try {
+        const langName = getLangName(language);
+        // Hybrid Prompt: We provide the "Hard Metrics" from CV, GenAI gives the "Soft Advice".
+        const prompt = `Act as an expert Agronomist. I have analyzed a soil sample using Computer Vision and extracted these metrics:
+        - Organic Carbon Proxy (Darkness/Value): ${metrics.soc}% (Higher is better)
+        - Moisture Index: ${metrics.moisture}%
+        - Salinity Probability (White Crust): ${metrics.salinity}%
+        - Texture/Clod Index: ${metrics.texture} (0=Fine, 100=Very Rough)
+        - Surface Cracks Detected: ${metrics.cracks}
+
+        Based ONLY on these metrics, provide a detailed analysis in ${langName} JSON format:
+        1. "aiAdvice": A conversational summary paragraph explaining what these numbers mean for the farmer. Be specific (e.g., "Your soil is quite pale, indicating low organic carbon.").
+        2. "soilType": Best guess of soil type (Clay, Loamy, Sandy, Silt) based on the texture/moisture profile.
+        3. "recommendedCrops": Array of 3 suitable crops.
+
+        JSON Schema: { aiAdvice: string, soilType: string, recommendedCrops: string[] }
+        `;
+
+        const response = await ai.models.generateContent({
+            model: MODEL_REASONING,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        aiAdvice: { type: Type.STRING },
+                        soilType: { type: Type.STRING },
+                        recommendedCrops: {
+                            type: Type.ARRAY,
+                            items: { type: Type.STRING }
+                        }
+                    },
+                    required: ["aiAdvice", "soilType", "recommendedCrops"]
+                }
+            }
+        });
+
+        const text = response.text;
+        if (!text) throw new Error("No response from Gemini");
+        return JSON.parse(text);
+    } catch (error) {
+        console.error("Gemini Soil Analysis Error:", error);
+        throw error;
+    }
+};
+
 export const getSeedScoutInsights = async (district: any, crop: string, language: string): Promise<string> => {
     checkApiKey();
     try {
@@ -345,7 +521,10 @@ export const getSeedScoutInsights = async (district: any, crop: string, language
     }
 };
 
-// NEW: Fetch real environmental data for a district using Gemini with Google Search
+// ==========================================
+// DISTRICT DATA
+// ==========================================
+
 export interface DistrictEnvironmentalData {
     salinity: number;      // EC in dS/m
     maxTemp: number;       // Maximum temperature in °C
@@ -398,7 +577,9 @@ export const getDistrictEnvironmentalData = async (
             }
         });
 
-        const data = JSON.parse(response.text || '{}');
+        const text = response.text;
+        if (!text) throw new Error("No response from Gemini");
+        const data = JSON.parse(text);
         return {
             ...data,
             dataSource: 'gemini'
@@ -418,6 +599,43 @@ export const getDistrictEnvironmentalData = async (
         };
     }
 };
+
+// Batch fetch for multiple districts (with caching)
+const districtCache: Map<string, DistrictEnvironmentalData> = new Map();
+
+export const getMultipleDistrictData = async (
+    districts: Array<{ name: string; state: string }>
+): Promise<Map<string, DistrictEnvironmentalData>> => {
+    const results = new Map<string, DistrictEnvironmentalData>();
+
+    for (const district of districts) {
+        const key = `${district.name}-${district.state}`;
+
+        // Check cache first
+        if (districtCache.has(key)) {
+            results.set(key, districtCache.get(key)!);
+            continue;
+        }
+
+        // Fetch from Gemini
+        try {
+            const data = await getDistrictEnvironmentalData(district.name, district.state);
+            districtCache.set(key, data);
+            results.set(key, data);
+        } catch (e) {
+            console.error(`Failed to fetch data for ${key}`, e);
+        }
+
+        // Rate limiting - wait 500ms between calls
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    return results;
+};
+
+// ==========================================
+// PRICE & MARKET ARBITRATION
+// ==========================================
 
 export const getPriceArbitration = async (
     crop: string,
@@ -502,37 +720,4 @@ export const getPriceArbitration = async (
             timestamp: new Date().toISOString()
         };
     }
-};
-
-// Batch fetch for multiple districts (with caching)
-const districtCache: Map<string, DistrictEnvironmentalData> = new Map();
-
-export const getMultipleDistrictData = async (
-    districts: Array<{ name: string; state: string }>
-): Promise<Map<string, DistrictEnvironmentalData>> => {
-    const results = new Map<string, DistrictEnvironmentalData>();
-
-    for (const district of districts) {
-        const key = `${district.name}-${district.state}`;
-
-        // Check cache first
-        if (districtCache.has(key)) {
-            results.set(key, districtCache.get(key)!);
-            continue;
-        }
-
-        // Fetch from Gemini
-        try {
-            const data = await getDistrictEnvironmentalData(district.name, district.state);
-            districtCache.set(key, data);
-            results.set(key, data);
-        } catch (e) {
-            console.error(`Failed to fetch data for ${key}`, e);
-        }
-
-        // Rate limiting - wait 500ms between calls
-        await new Promise(resolve => setTimeout(resolve, 500));
-    }
-
-    return results;
 };

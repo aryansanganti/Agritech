@@ -15,6 +15,7 @@
     "@vis.gl/react-google-maps": "^1.7.1",
     "ethers": "^6.16.0",
     "firebase": "^10.8.0",
+    "groq-sdk": "^0.37.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.344.0",
     "qrcode.react": "^4.2.0",

@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, BhumiLogo } from './components/ui/Layout';
 import { Dashboard } from './pages/Dashboard';
-import { DiseaseDetection } from './pages/DiseaseDetection';
-import { Chatbot } from './pages/Chatbot';
-import { CropRecommendation } from './pages/CropRecommendation';
-import { YieldPrediction } from './pages/YieldPrediction';
-import { SmartAdvisory } from './pages/SmartAdvisory';
-import { Weather } from './pages/Weather';
-import { Analytics } from './pages/Analytics';
 import { Profile } from './pages/Profile';
+import { SoilAnalysis } from './pages/SoilAnalysis';
+import { CropAnalysis } from './pages/cropanalysis';
 import { SeedScout } from './pages/SeedScout';
 import { PricingEngine } from './pages/PricingEngine';
 import { PageView, User, Language } from './types';
@@ -168,6 +163,8 @@ const App: React.FC = () => {
             case 'crop-recommendation': return <CropRecommendation lang={lang} onBack={goBack} />;
             case 'weather': return <Weather lang={lang} onBack={goBack} />;
             case 'analytics': return <Analytics lang={lang} onBack={goBack} />;
+            case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
+            case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} />;
             case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
             case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
             case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} />;

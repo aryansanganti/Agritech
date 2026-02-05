@@ -113,6 +113,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
 
     const navItems = [
         { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
+        { id: 'soil-analysis', label: t.soilAnalysis, icon: FlaskConical },
+        { id: 'crop-analysis', label: t.cropAnalysis, icon: ScanLine },
 
         { id: 'seedscout', label: 'SeedScout', icon: Compass },
         { id: 'pricing-engine', label: 'Pricing Engine', icon: TrendingUp },
