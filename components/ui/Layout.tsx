@@ -54,6 +54,18 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const navItems = [
+        { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
+        { id: 'soil-analysis', label: t.soilAnalysis, icon: FlaskConical },
+        { id: 'crop-analysis', label: t.cropAnalysis, icon: ScanLine },
+
+        { id: 'seedscout', label: 'SeedScout', icon: Compass },
+        { id: 'replication-planner', label: 'Replication Planner', icon: Sprout },
+        { id: 'pricing-engine', label: 'Pricing Engine', icon: TrendingUp },
+        { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
+        { id: 'profile', label: t.profile, icon: UserIcon },
+    ];
+
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-bhoomi-dark transition-colors duration-300 font-sans">
             <Navbar

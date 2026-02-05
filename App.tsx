@@ -6,11 +6,15 @@ import { SoilAnalysis } from './pages/SoilAnalysis';
 import { CropAnalysis } from './pages/cropanalysis';
 import { SeedScout } from './pages/SeedScout';
 import { PricingEngine } from './pages/PricingEngine';
+import { ReplicationPlanner } from './pages/ReplicationPlanner';
 import { Chatbot } from './pages/Chatbot';
-import { Profile } from './pages/Profile';
+import { PageView, User, Language } from './types';
 import { LandingPage } from './pages/LandingPage';
-import { Language, PageView, User } from './types';
-import { AlertTriangle } from 'lucide-react';
+import { Profile } from './pages/Profile';
+import { translations } from './utils/translations';
+import { api } from './services/api';
+import { isConfigured } from './services/geminiService';
+import { Languages, Mail, Lock, User as UserIcon, MapPin, ArrowRight, Sprout, Droplets, Layers, AlertTriangle } from 'lucide-react';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -24,11 +28,12 @@ const MOCK_USER: User = {
     language: 'en' // Default, will be updated by state
 };
 
-function App() {
+const App: React.FC = () => {
+    const [view, setView] = useState<PageView>('landing');
     const [loading, setLoading] = useState(true);
+    // Default Guest User
     const [user, setUser] = useState<User | null>(null);
-    const [currentView, setCurrentView] = useState<PageView>('landing'); // Default to landing
-    const [language, setLanguage] = useState<Language>('en');
+    const [lang, setLang] = useState<Language>('en');
     const [isDark, setIsDark] = useState(false);
 
     // Initial Load Simulation
@@ -50,16 +55,18 @@ function App() {
 
     const toggleTheme = () => setIsDark(!isDark);
 
+    const goBack = () => setView('dashboard');
+
     // Instant Login Handler (Bypasses Auth Page)
     const handleInstantLogin = () => {
-        const userWithLang = { ...MOCK_USER, language: language };
+        const userWithLang = { ...MOCK_USER, language: lang };
         setUser(userWithLang);
-        setCurrentView('dashboard');
+        setView('dashboard');
     };
 
     const handleLogout = () => {
         setUser(null);
-        setCurrentView('landing');
+        setView('landing');
     };
 
     const apiKeyMissing = !API_KEY;
@@ -88,25 +95,17 @@ function App() {
     }
 
     const renderPage = () => {
-        switch (currentView) {
-            case 'dashboard':
-                return <Dashboard user={user} lang={language} setView={setCurrentView} />;
-            case 'marketplace':
-                return <Marketplace lang={language} onBack={() => setCurrentView('dashboard')} user={user} />;
-            case 'soil-analysis':
-                return <SoilAnalysis lang={language} onBack={() => setCurrentView('dashboard')} />;
-            case 'crop-analysis':
-                return <CropAnalysis lang={language} onBack={() => setCurrentView('dashboard')} />;
-            case 'seedscout':
-                return <SeedScout lang={language} onBack={() => setCurrentView('dashboard')} />;
-            case 'pricing-engine':
-                return <PricingEngine lang={language} onBack={() => setCurrentView('dashboard')} />;
-            case 'chatbot':
-                return <Chatbot lang={language} />;
-            case 'profile':
-                return <Profile user={user} setUser={setUser} onBack={() => setCurrentView('dashboard')} />;
-            default:
-                return <Dashboard user={user} lang={language} setView={setCurrentView} />;
+        switch (view) {
+            case 'dashboard': return <Dashboard setView={setView} user={user} lang={lang} />;
+            case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
+            case 'chatbot': return <Chatbot lang={lang} />;
+            case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
+            case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} />;
+            case 'marketplace': return <Marketplace user={user} lang={lang} onBack={goBack} />;
+            case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
+            case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} />;
+            case 'replication-planner': return <ReplicationPlanner lang={lang} onBack={goBack} />;
+            default: return <Dashboard setView={setView} user={user} lang={lang} />;
         }
     };
 
@@ -115,7 +114,7 @@ function App() {
             <ApiKeyBanner />
 
             {/* Landing Page (Public) */}
-            {currentView === 'landing' && !user && (
+            {view === 'landing' && !user && (
                 <LandingPage
                     onGetStarted={handleInstantLogin}
                 />
@@ -124,11 +123,11 @@ function App() {
             {/* Main App Layout (Protected) */}
             {user && (
                 <Layout
-                    currentView={currentView}
-                    setView={setCurrentView}
+                    currentView={view}
+                    setView={setView}
                     user={user}
                     logout={handleLogout}
-                    lang={language}
+                    lang={lang}
                     isDark={isDark}
                     toggleTheme={toggleTheme}
                 >

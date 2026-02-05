@@ -1,12 +1,32 @@
 import React from 'react';
 import { PricingPrediction } from '../types';
-import { AlertCircle, CheckCircle2, TrendingUp, Info, ShieldAlert } from 'lucide-react';
+import { BlockchainTransactionResult } from '../services/ethereumService';
+import { AlertCircle, CheckCircle2, TrendingUp, Info, ShieldAlert, Loader2, Link2, ShoppingBag, ArrowRight } from 'lucide-react';
+import { EthereumBlockchainQR } from './EthereumBlockchainQR';
 
 interface PricingResultProps {
     prediction: PricingPrediction;
+    ethTx?: BlockchainTransactionResult | null;
+    qualityScore?: number;
+    quantityQuintals?: number;
+    walletConnected?: boolean;
+    onStoreOnChain?: () => void;
+    isStoringOnChain?: boolean;
+    pendingStore?: boolean;
+    onAddToMarketplace?: () => void;
 }
 
-export const PricingResult: React.FC<PricingResultProps> = ({ prediction }) => {
+export const PricingResult: React.FC<PricingResultProps> = ({ 
+    prediction, 
+    ethTx,
+    qualityScore = 8,
+    quantityQuintals = 1,
+    walletConnected = false,
+    onStoreOnChain,
+    isStoringOnChain = false,
+    pendingStore = false,
+    onAddToMarketplace
+}) => {
     const {
         minGuaranteedPrice,
         expectedPriceBand,
@@ -100,6 +120,97 @@ export const PricingResult: React.FC<PricingResultProps> = ({ prediction }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Blockchain QR Code Section */}
+            {ethTx ? (
+                <div className="space-y-6">
+                    <EthereumBlockchainQR 
+                        transaction={ethTx}
+                        farmerName="Farmer"
+                        quantityQuintals={quantityQuintals}
+                    />
+                    
+                    {/* Add to Marketplace Button */}
+                    {onAddToMarketplace && (
+                        <div className="glass-panel rounded-3xl p-8 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-500/30">
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="bg-emerald-500/20 p-4 rounded-xl">
+                                        <ShoppingBag size={32} className="text-emerald-600" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                                            Blockchain Verified ✓
+                                        </h3>
+                                        <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md">
+                                            Your crop is now verified on Ethereum blockchain. Add it to the 
+                                            marketplace to connect with buyers directly.
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={onAddToMarketplace}
+                                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-emerald-500/30 transition-all flex items-center gap-2 whitespace-nowrap"
+                                >
+                                    <ShoppingBag size={20} />
+                                    Add to Marketplace
+                                    <ArrowRight size={18} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ) : pendingStore && (
+                <div className="glass-panel rounded-3xl p-8 text-center">
+                    {walletConnected ? (
+                        <div className="space-y-4">
+                            <div className="bg-indigo-50 dark:bg-indigo-500/10 p-4 rounded-xl inline-block mb-4">
+                                <Link2 size={32} className="text-indigo-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                Store on Ethereum Blockchain
+                            </h3>
+                            <p className="text-gray-500 max-w-md mx-auto">
+                                Your price data is ready. Click below to permanently store the quality score, 
+                                price, and quantity on Ethereum Sepolia for verification.
+                            </p>
+                            <button
+                                onClick={onStoreOnChain}
+                                disabled={isStoringOnChain}
+                                className="mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-indigo-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mx-auto"
+                            >
+                                {isStoringOnChain ? (
+                                    <>
+                                        <Loader2 size={20} className="animate-spin" />
+                                        Confirming Transaction...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link2 size={20} />
+                                        Store on Ethereum & Generate QR
+                                    </>
+                                )}
+                            </button>
+                            <p className="text-xs text-gray-400 mt-2">
+                                This will create a transaction on Sepolia testnet (requires small gas fee)
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            <div className="bg-amber-50 dark:bg-amber-500/10 p-4 rounded-xl inline-block mb-4">
+                                <AlertCircle size={32} className="text-amber-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                Connect Wallet to Store on Blockchain
+                            </h3>
+                            <p className="text-gray-500 max-w-md mx-auto">
+                                Connect your MetaMask wallet and switch to Sepolia testnet to store 
+                                this price data on the Ethereum blockchain.
+                            </p>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

@@ -24,10 +24,10 @@ export interface Listing {
     price: number; // Farmer's price in ₹/q
     marketPrice: number; // Avg Mandi Price in ₹/q
     quantity: number; // in Quintals
-    location: { district: string; state: string };
+    location: string | { district: string; state: string };
     image: string; // Base64 or URL
     analysisId?: string; // Link to crop analysis
-    blockchainHash: string; // Fake hash for verification
+    blockchainHash?: string; // Fake hash for verification
     harvestDate: string;
 }
 
@@ -48,7 +48,8 @@ export type PageView =
     | 'soil-analysis'
     | 'seedscout'
     | 'crop-analysis'
-    | 'pricing-engine';
+    | 'pricing-engine'
+    | 'replication-planner';
 
 export interface Detection {
     label: string;
@@ -200,6 +201,65 @@ export interface AnalyticsData {
     expenses: Array<{ category: string; amount: number }>;
 }
 
+// Blockchain Types
+export interface BlockchainTransaction {
+    transactionHash: string;
+    blockNumber: number;
+    timestamp: string;
+    data: {
+        crop: string;
+        location: string;
+        qualityScore: number;
+        amount: number;
+        pricePerQuintal: {
+            min: number;
+            max: number;
+            guaranteed: number;
+        };
+        farmerUpiId?: string;
+        confidenceScore: number;
+    };
+    verified: boolean;
+}
+
+export interface MarketplaceListing extends Listing {
+    farmerId?: string; // Optional because service uses farmerAddress
+    farmerAddress?: string;
+    verificationStatus: 'verified' | 'pending' | 'unverified';
+
+    // Additional fields from service
+    qualityScore: number;
+    minPrice: number;
+    maxPrice: number;
+    guaranteedPrice: number;
+    transactionHash: string;
+    etherscanUrl: string;
+    contractAddress: string;
+    recordId: number;
+    gradingDetails?: {
+        colorChecking: string;
+        sizeCheck: string;
+        textureCheck: string;
+        shapeCheck: string;
+    };
+    listedDate: string;
+    timestamp: number;
+    description?: string;
+}
+
+export interface QRCodeData {
+    type: 'quality' | 'payment';
+    transactionHash: string;
+    data: {
+        crop?: string;
+        qualityScore?: number;
+        amount?: number;
+        verificationUrl?: string;
+        upiId?: string;
+        payeeName?: string;
+        transactionNote?: string;
+    };
+}
 
 export interface SoilMetrics {
     soc: number;         // 0-100 (Derived from Value)
