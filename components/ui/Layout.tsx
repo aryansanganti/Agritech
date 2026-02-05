@@ -21,7 +21,8 @@ import {
     Download,
     QrCode,
     Copy,
-    Check
+    Check,
+    Compass
 } from 'lucide-react';
 import { ChatWidget } from '../ChatWidget';
 
@@ -113,6 +114,9 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
     const navItems = [
         { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
         { id: 'soil-analysis', label: t.soilAnalysis, icon: FlaskConical },
+
+        { id: 'seedscout', label: 'SeedScout', icon: Compass },
+
         { id: 'profile', label: t.profile, icon: UserIcon },
     ];
 

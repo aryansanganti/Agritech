@@ -10,6 +10,7 @@ import { Weather } from './pages/Weather';
 import { Analytics } from './pages/Analytics';
 import { Profile } from './pages/Profile';
 import { SoilAnalysis } from './pages/SoilAnalysis';
+import { SeedScout } from './pages/SeedScout';
 import { PageView, User, Language } from './types';
 import { translations } from './utils/translations';
 import { api } from './services/api';
@@ -168,6 +169,8 @@ const App: React.FC = () => {
             case 'weather': return <Weather lang={lang} onBack={goBack} />;
             case 'analytics': return <Analytics lang={lang} onBack={goBack} />;
             case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
+            case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
+            case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
             default: return <Dashboard setView={setView} user={user} lang={lang} />;
         }
     };
