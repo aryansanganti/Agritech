@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Leaf, Sparkles } from 'lucide-react';
+import { Search, MapPin, Leaf, Sparkles, Package } from 'lucide-react';
 
 interface PricingFormProps {
-    onSearch: (crop: string, district: string, state: string, quality: number) => void;
+    onSearch: (crop: string, district: string, state: string, quality: number, quantity: number) => void;
     isLoading: boolean;
 }
 
@@ -11,10 +11,11 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
     const [state, setState] = useState('Maharashtra');
     const [district, setDistrict] = useState('Nagpur');
     const [quality, setQuality] = useState(8);
+    const [quantity, setQuantity] = useState(1);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSearch(crop, district, state, quality);
+        onSearch(crop, district, state, quality, quantity);
     };
 
     const crops = [
@@ -91,6 +92,26 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                         <span>Low Quality</span>
                         <span>Premium (Grade A)</span>
                     </div>
+                </div>
+
+                {/* Quantity Input */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                        <Package size={16} className="text-emerald-500" />
+                        Quantity (Quintals)
+                    </label>
+                    <input
+                        type="number"
+                        min="1"
+                        max="1000"
+                        value={quantity}
+                        onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                        className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                        placeholder="Enter quantity in quintals"
+                    />
+                    <p className="text-[10px] text-gray-400 mt-1">
+                        Enter the amount of crop to sell (1 Quintal = 100 kg)
+                    </p>
                 </div>
             </div>
 

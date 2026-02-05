@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Language, PricingPrediction } from '../types';
 import { translations } from '../utils/translations';
-import { ArrowLeft, BarChart3, ShieldCheck, Zap, Info, Loader2, Sparkles } from 'lucide-react';
+import { ArrowLeft, BarChart3, ShieldCheck, Zap, Info, Loader2, Sparkles, Link2 } from 'lucide-react';
 import { PricingForm } from '../components/PricingForm';
 import { PricingResult } from '../components/PricingResult';
 import { PriceHistoryChart } from '../components/PriceHistoryChart';
+import { WalletConnect } from '../components/WalletConnect';
 import { getMandiPrices } from '../services/mandiService';
 import { getPriceArbitration } from '../services/geminiService';
+import { 
+    WalletState, 
+    BlockchainTransactionResult,
+    storeCropPriceOnChain,
+    isMetaMaskInstalled
+} from '../services/ethereumService';
 
 interface PricingEngineProps {
     lang: Language;
@@ -16,14 +23,68 @@ interface PricingEngineProps {
 export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) => {
     const t = translations[lang];
     const [prediction, setPrediction] = useState<PricingPrediction | null>(null);
+    const [ethTx, setEthTx] = useState<BlockchainTransactionResult | null>(null);
+    const [walletState, setWalletState] = useState<WalletState | null>(null);
+    const [currentQuality, setCurrentQuality] = useState<number>(8);
+    const [quantityQuintals, setQuantityQuintals] = useState<number>(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [isStoringOnChain, setIsStoringOnChain] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [status, setStatus] = useState<string>('');
+    const [pendingPriceData, setPendingPriceData] = useState<{
+        crop: string;
+        location: string;
+        quality: number;
+        quantity: number;
+        prediction: PricingPrediction;
+    } | null>(null);
 
-    const handleSearch = async (crop: string, district: string, state: string, quality: number) => {
+    const handleWalletConnected = (state: WalletState) => {
+        setWalletState(state);
+    };
+
+    const handleWalletDisconnected = () => {
+        setWalletState(null);
+    };
+
+    // Store on Ethereum when wallet is connected and we have pending data
+    const storeOnEthereum = async () => {
+        if (!pendingPriceData || !walletState?.isConnected || !walletState?.isCorrectNetwork) {
+            return;
+        }
+
+        setIsStoringOnChain(true);
+        setStatus('Storing on Ethereum Sepolia...');
+
+        try {
+            const tx = await storeCropPriceOnChain({
+                crop: pendingPriceData.crop,
+                location: pendingPriceData.location,
+                qualityScore: pendingPriceData.quality,
+                quantity: pendingPriceData.quantity,
+                minPrice: pendingPriceData.prediction.expectedPriceBand.low,
+                maxPrice: pendingPriceData.prediction.expectedPriceBand.high,
+                guaranteedPrice: pendingPriceData.prediction.minGuaranteedPrice
+            });
+
+            setEthTx(tx);
+            setPendingPriceData(null);
+        } catch (e: any) {
+            setError(e.message || 'Failed to store on blockchain');
+        } finally {
+            setIsStoringOnChain(false);
+            setStatus('');
+        }
+    };
+
+    const handleSearch = async (crop: string, district: string, state: string, quality: number, quantity: number = 1) => {
         setIsLoading(true);
         setError(null);
         setPrediction(null);
+        setEthTx(null);
+        setPendingPriceData(null);
+        setCurrentQuality(quality);
+        setQuantityQuintals(quantity);
 
         try {
             setStatus('Connecting to Mandi Data Sources...');
@@ -42,6 +103,16 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) =>
             }
 
             setPrediction(result);
+
+            // Store pending data for blockchain storage
+            setPendingPriceData({
+                crop,
+                location: `${district}, ${state}`,
+                quality,
+                quantity,
+                prediction: result
+            });
+
         } catch (e) {
             console.error(e);
             setError('Failed to fetch pricing intelligence. Please try again.');
@@ -80,6 +151,12 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) =>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Panel: Input Form and Value Prop */}
                     <div className="lg:col-span-1 space-y-6">
+                        {/* Wallet Connect */}
+                        <WalletConnect 
+                            onWalletConnected={handleWalletConnected}
+                            onWalletDisconnected={handleWalletDisconnected}
+                        />
+
                         <PricingForm onSearch={handleSearch} isLoading={isLoading} />
 
                         {/* Value Props */}
@@ -149,7 +226,16 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) =>
 
                         {prediction && (
                             <>
-                                <PricingResult prediction={prediction} />
+                                <PricingResult 
+                                    prediction={prediction} 
+                                    ethTx={ethTx}
+                                    qualityScore={currentQuality}
+                                    quantityQuintals={quantityQuintals}
+                                    walletConnected={walletState?.isConnected && walletState?.isCorrectNetwork}
+                                    onStoreOnChain={storeOnEthereum}
+                                    isStoringOnChain={isStoringOnChain}
+                                    pendingStore={!!pendingPriceData}
+                                />
                                 <PriceHistoryChart crop={prediction.crop} />
                             </>
                         )}
