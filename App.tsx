@@ -159,13 +159,6 @@ const App: React.FC = () => {
     const renderPage = () => {
         switch (view) {
             case 'dashboard': return <Dashboard setView={setView} user={user} lang={lang} />;
-            case 'disease-detection': return <DiseaseDetection lang={lang} onBack={goBack} />;
-            case 'yield-prediction': return <YieldPrediction lang={lang} onBack={goBack} />;
-            case 'smart-advisory': return <SmartAdvisory lang={lang} onBack={goBack} />;
-            case 'chatbot': return <Chatbot lang={lang} />;
-            case 'crop-recommendation': return <CropRecommendation lang={lang} onBack={goBack} />;
-            case 'weather': return <Weather lang={lang} onBack={goBack} />;
-            case 'analytics': return <Analytics lang={lang} onBack={goBack} />;
             case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
             default: return <Dashboard setView={setView} user={user} lang={lang} />;
         }
