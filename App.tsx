@@ -7,13 +7,14 @@ import { CropAnalysis } from './pages/cropanalysis';
 import { Marketplace } from './pages/Marketplace';
 import { SeedScout } from './pages/SeedScout';
 import { PricingEngine } from './pages/PricingEngine';
+import { Chatbot } from './pages/Chatbot';
 import { PageView, User, Language } from './types';
 import { translations } from './utils/translations';
 import { api } from './services/api';
 import { isConfigured } from './services/geminiService';
 import { Languages, Mail, Lock, User as UserIcon, MapPin, ArrowRight, Sprout, Droplets, Layers, AlertTriangle } from 'lucide-react';
 
-const App: React.FC = () => {
+const App: React.FC = () => { 
     const [view, setView] = useState<PageView>('language');
     // Default Guest User
     const [user, setUser] = useState<User | null>({
@@ -157,17 +158,11 @@ const App: React.FC = () => {
     const renderPage = () => {
         switch (view) {
             case 'dashboard': return <Dashboard setView={setView} user={user} lang={lang} />;
-            case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />; case 'disease-detection': return <DiseaseDetection lang={lang} onBack={goBack} />;
-            case 'yield-prediction': return <YieldPrediction lang={lang} onBack={goBack} />;
-            case 'smart-advisory': return <SmartAdvisory lang={lang} onBack={goBack} />;
+            case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
             case 'chatbot': return <Chatbot lang={lang} />;
-            case 'crop-recommendation': return <CropRecommendation lang={lang} onBack={goBack} />;
-            case 'weather': return <Weather lang={lang} onBack={goBack} />;
-            case 'analytics': return <Analytics lang={lang} onBack={goBack} />;
             case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
             case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} />;
             case 'marketplace': return <Marketplace user={user} lang={lang} onBack={goBack} />;
-            case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
             case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
             case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} />;
             default: return <Dashboard setView={setView} user={user} lang={lang} />;

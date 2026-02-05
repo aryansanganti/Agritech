@@ -46,7 +46,8 @@ export type PageView =
     | 'profile'
     | 'soil-analysis'
     | 'seedscout'
-    | 'crop-analysis';
+    | 'crop-analysis'
+    | 'pricing-engine';
 
 export interface Detection {
     label: string;
