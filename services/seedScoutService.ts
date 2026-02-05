@@ -1,6 +1,7 @@
-import { SeedScoutQuery, HotspotResult } from '../types';
+import { SeedScoutQuery, HotspotResult, TopologyResult, RecommendationResponse } from '../types';
 
-const API_URL = 'http://localhost:3000/api/seedscout';
+const SEED_API_URL = 'http://localhost:3000/api/seedscout';
+const TOPO_API_URL = 'http://localhost:3000/api/topology';
 
 // Call the backend to get calculated hotspots
 export const searchHotspotsDynamic = async (
@@ -10,7 +11,7 @@ export const searchHotspotsDynamic = async (
     try {
         if (onProgress) onProgress(1, 100, "Sending criteria to SeedScout Engine...");
 
-        const response = await fetch(`${API_URL}/calculate`, {
+        const response = await fetch(`${SEED_API_URL}/calculate`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(query)
@@ -26,6 +27,42 @@ export const searchHotspotsDynamic = async (
         console.error("Backend Error:", e);
         // Fallback to empty or throw
         return [];
+    }
+};
+
+// --- Topo-Seed Engine Methods ---
+
+export const identifyTopology = async (lat: number, lng: number): Promise<TopologyResult> => {
+    try {
+        const response = await fetch(`${TOPO_API_URL}/identify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lat, lng })
+        });
+        if (!response.ok) throw new Error("Failed to identify topology");
+        return await response.json();
+    } catch (e) {
+        console.error("Topology ID Error:", e);
+        throw e;
+    }
+};
+
+export const getTopoRecommendations = async (
+    lat: number,
+    lng: number,
+    weather?: { humidity: number; temp: number }
+): Promise<RecommendationResponse> => {
+    try {
+        const response = await fetch(`${TOPO_API_URL}/recommend`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lat, lng, weather })
+        });
+        if (!response.ok) throw new Error("Failed to get recommendations");
+        return await response.json();
+    } catch (e) {
+        console.error("Recommendation Error:", e);
+        throw e;
     }
 };
 
