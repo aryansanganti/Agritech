@@ -18,7 +18,7 @@ const apiKey = getApiKey();
 const ai = new GoogleGenAI({ apiKey });
 
 const MODEL_REASONING = 'gemini-3-pro-preview';
-const MODEL_VISION = 'gemini-3-flash-preview'; 
+const MODEL_VISION = 'gemini-3-flash-preview';
 const MODEL_FAST = 'gemini-3-flash-preview';
 
 // Helper to check if key is present for UI indicators
@@ -26,8 +26,8 @@ export const isConfigured = () => !!apiKey && apiKey.length > 0;
 
 const getLangName = (code: string) => {
     const map: Record<string, string> = {
-        en: 'English', hi: 'Hindi', or: 'Odia', bn: 'Bengali', 
-        zh: 'Mandarin Chinese', es: 'Spanish', ru: 'Russian', 
+        en: 'English', hi: 'Hindi', or: 'Odia', bn: 'Bengali',
+        zh: 'Mandarin Chinese', es: 'Spanish', ru: 'Russian',
         ja: 'Japanese', pt: 'Portuguese'
     };
     return map[code] || 'English';
@@ -71,7 +71,7 @@ export const analyzeCropDisease = async (base64Image: string, language: string):
                 }
             }
         });
-        
+
         const text = response.text;
         if (!text) throw new Error("No response from Gemini");
         return JSON.parse(text) as DiseaseResult;
@@ -118,7 +118,7 @@ export const getCropRecommendations = async (soil: string, season: string, locat
     }
 };
 
-export const chatWithBhumi = async (history: {role: string, parts: {text: string}[]}[], message: string, language: string) => {
+export const chatWithBhumi = async (history: { role: string, parts: { text: string }[] }[], message: string, language: string) => {
     checkApiKey();
     try {
         const langName = getLangName(language);
@@ -151,7 +151,7 @@ export const voiceAgentChat = async (message: string) => {
         const chat = ai.chats.create({
             model: MODEL_FAST,
             config: {
-                 systemInstruction: `You are Bhumi, a magical farm spirit voice. 
+                systemInstruction: `You are Bhumi, a magical farm spirit voice. 
                  Keep answers VERY short (1-2 sentences), conversational, and helpful. 
                  You are talking to a farmer. Be instant and warm.`
             }
@@ -177,7 +177,7 @@ export const getYieldPrediction = async (data: any, language: string): Promise<Y
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
-                 responseSchema: {
+                responseSchema: {
                     type: Type.OBJECT,
                     properties: {
                         predicted_yield: { type: Type.STRING, description: "e.g. 2.5 - 3.0" },
@@ -273,7 +273,7 @@ export const getWeatherForecast = async (location: string, language: string): Pr
                 }
             }
         });
-        
+
         const grounding = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
         const sourceUrls = grounding?.map((g: any) => g.web?.uri).filter((u: any) => u) || [];
 
@@ -305,5 +305,54 @@ export const getAnalyticsInsight = async (data: any, language: string): Promise<
         return response.text || "Analysis unavailable.";
     } catch (e) {
         return "Could not generate analysis.";
+    }
+};
+
+export const analyzeSoilHealth = async (metrics: any, language: string): Promise<any> => {
+    checkApiKey();
+    try {
+        const langName = getLangName(language);
+        // Hybrid Prompt: We provide the "Hard Metrics" from CV, GenAI gives the "Soft Advice".
+        const prompt = `Act as an expert Agronomist. I have analyzed a soil sample using Computer Vision and extracted these metrics:
+        - Organic Carbon Proxy (Darkness/Value): ${metrics.soc}% (Higher is better)
+        - Moisture Index: ${metrics.moisture}%
+        - Salinity Probability (White Crust): ${metrics.salinity}%
+        - Texture/Clod Index: ${metrics.texture} (0=Fine, 100=Very Rough)
+        - Surface Cracks Detected: ${metrics.cracks}
+
+        Based ONLY on these metrics, provide a detailed analysis in ${langName} JSON format:
+        1. "aiAdvice": A conversational summary paragraph explaining what these numbers mean for the farmer. Be specific (e.g., "Your soil is quite pale, indicating low organic carbon.").
+        2. "soilType": Best guess of soil type (Clay, Loamy, Sandy, Silt) based on the texture/moisture profile.
+        3. "recommendedCrops": Array of 3 suitable crops.
+
+        JSON Schema: { aiAdvice: string, soilType: string, recommendedCrops: string[] }
+        `;
+
+        const response = await ai.models.generateContent({
+            model: MODEL_REASONING,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        aiAdvice: { type: Type.STRING },
+                        soilType: { type: Type.STRING },
+                        recommendedCrops: {
+                            type: Type.ARRAY,
+                            items: { type: Type.STRING }
+                        }
+                    },
+                    required: ["aiAdvice", "soilType", "recommendedCrops"]
+                }
+            }
+        });
+
+        const text = response.text;
+        if (!text) throw new Error("No response from Gemini");
+        return JSON.parse(text);
+    } catch (error) {
+        console.error("Gemini Soil Analysis Error:", error);
+        throw error;
     }
 };

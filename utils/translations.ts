@@ -33,7 +33,14 @@ export const translations: Record<Language, Translations> = {
         pesticides: 'Pesticides',
         lightMode: 'Light Mode',
         darkMode: 'Dark Mode',
-        activeAlerts: 'Active Alerts'
+        activeAlerts: 'Active Alerts',
+        soilAnalysis: 'Soil Analysis',
+        nutrientMirror: 'Nutrient Mirror',
+        thirstTracker: 'Thirst Tracker',
+        rootComfort: 'Root Comfort',
+        salinityAlarm: 'Salinity Alarm',
+        analyzeSoil: 'Analyze Soil',
+        analyzing: 'Analyzing...'
     },
     hi: {
         welcome: 'भूमि',
@@ -66,7 +73,14 @@ export const translations: Record<Language, Translations> = {
         pesticides: 'कीटनाशक',
         lightMode: 'लाइट मोड',
         darkMode: 'डार्क मोड',
-        activeAlerts: 'सक्रिय चेतावनियाँ'
+        activeAlerts: 'सक्रिय चेतावनियाँ',
+        soilAnalysis: 'मृदा विश्लेषण',
+        nutrientMirror: 'पोषक तत्व',
+        thirstTracker: 'नमी ट्रैकर',
+        rootComfort: 'जड़ आराम',
+        salinityAlarm: 'लवणता चेतावनी',
+        analyzeSoil: 'मिट्टी विश्लेषण करें',
+        analyzing: 'विश्लेषण हो रहा है...'
     },
     or: {
         welcome: 'ଭୂମି',
@@ -99,7 +113,14 @@ export const translations: Record<Language, Translations> = {
         pesticides: 'କୀଟନାଶକ',
         lightMode: 'ଲାଇଟ୍ ମୋଡ୍',
         darkMode: 'ଡାର୍କ ମୋଡ୍',
-        activeAlerts: 'ସକ୍ରିୟ ସତର୍କତା'
+        activeAlerts: 'ସକ୍ରିୟ ସତର୍କତା',
+        soilAnalysis: 'Soil Analysis',
+        nutrientMirror: 'Nutrient Mirror',
+        thirstTracker: 'Thirst Tracker',
+        rootComfort: 'Root Comfort',
+        salinityAlarm: 'Salinity Alarm',
+        analyzeSoil: 'Analyze Soil',
+        analyzing: 'Analyzing...'
     },
     bn: {
         welcome: 'ভূমি',
@@ -132,7 +153,14 @@ export const translations: Record<Language, Translations> = {
         pesticides: 'কীটনাশক',
         lightMode: 'লাইট মোড',
         darkMode: 'ডার্ক মোড',
-        activeAlerts: 'সক্রিয় সতর্কতা'
+        activeAlerts: 'সক্রিয় সতর্কতা',
+        soilAnalysis: 'Soil Analysis',
+        nutrientMirror: 'Nutrient Mirror',
+        thirstTracker: 'Thirst Tracker',
+        rootComfort: 'Root Comfort',
+        salinityAlarm: 'Salinity Alarm',
+        analyzeSoil: 'Analyze Soil',
+        analyzing: 'Analyzing...'
     },
     zh: {
         welcome: 'Bhumi',
@@ -165,7 +193,14 @@ export const translations: Record<Language, Translations> = {
         pesticides: '杀虫剂',
         lightMode: '日间模式',
         darkMode: '夜间模式',
-        activeAlerts: '活动警报'
+        activeAlerts: '活动警报',
+        soilAnalysis: 'Soil Analysis',
+        nutrientMirror: 'Nutrient Mirror',
+        thirstTracker: 'Thirst Tracker',
+        rootComfort: 'Root Comfort',
+        salinityAlarm: 'Salinity Alarm',
+        analyzeSoil: 'Analyze Soil',
+        analyzing: 'Analyzing...'
     },
     es: {
         welcome: 'Bhumi',
@@ -198,7 +233,14 @@ export const translations: Record<Language, Translations> = {
         pesticides: 'Pesticidas',
         lightMode: 'Modo Claro',
         darkMode: 'Modo Oscuro',
-        activeAlerts: 'Alertas Activas'
+        activeAlerts: 'Alertas Activas',
+        soilAnalysis: 'Análisis de Suelo',
+        nutrientMirror: 'Espejo de Nutrientes',
+        thirstTracker: 'Rastreador de Sed',
+        rootComfort: 'Confort de Raíz',
+        salinityAlarm: 'Alarma de Salinidad',
+        analyzeSoil: 'Analizar Suelo',
+        analyzing: 'Analizando...'
     },
     ru: {
         welcome: 'Bhumi',
@@ -231,7 +273,14 @@ export const translations: Record<Language, Translations> = {
         pesticides: 'Пестициды',
         lightMode: 'Светлый режим',
         darkMode: 'Темный режим',
-        activeAlerts: 'Активные предупреждения'
+        activeAlerts: 'Активные предупреждения',
+        soilAnalysis: 'Soil Analysis',
+        nutrientMirror: 'Nutrient Mirror',
+        thirstTracker: 'Thirst Tracker',
+        rootComfort: 'Root Comfort',
+        salinityAlarm: 'Salinity Alarm',
+        analyzeSoil: 'Analyze Soil',
+        analyzing: 'Analyzing...'
     },
     ja: {
         welcome: 'Bhumi',
@@ -264,7 +313,14 @@ export const translations: Record<Language, Translations> = {
         pesticides: '農薬',
         lightMode: 'ライトモード',
         darkMode: 'ダークモード',
-        activeAlerts: 'アクティブなアラート'
+        activeAlerts: 'アクティブなアラート',
+        soilAnalysis: 'Soil Analysis',
+        nutrientMirror: 'Nutrient Mirror',
+        thirstTracker: 'Thirst Tracker',
+        rootComfort: 'Root Comfort',
+        salinityAlarm: 'Salinity Alarm',
+        analyzeSoil: 'Analyze Soil',
+        analyzing: 'Analyzing...'
     },
     pt: {
         welcome: 'Bhumi',
@@ -297,6 +353,13 @@ export const translations: Record<Language, Translations> = {
         pesticides: 'Pesticidas',
         lightMode: 'Modo Claro',
         darkMode: 'Modo Escuro',
-        activeAlerts: 'Alertas Ativos'
+        activeAlerts: 'Alertas Ativos',
+        soilAnalysis: 'Análise de Solo',
+        nutrientMirror: 'Espelho de Nutrientes',
+        thirstTracker: 'Rastreador de Sede',
+        rootComfort: 'Conforto da Raiz',
+        salinityAlarm: 'Alarme de Salinidade',
+        analyzeSoil: 'Analisar Solo',
+        analyzing: 'Analisando...'
     }
 };
