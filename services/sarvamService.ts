@@ -74,6 +74,9 @@ export const generateSpeech = async (text: string, language: Language): Promise<
 
     const targetLang = getSarvamLang(language);
 
+    // Sarvam TTS has a 500 character limit per input
+    const truncatedText = text.length > 500 ? text.substring(0, 497) + '...' : text;
+
     try {
         const response = await fetch('https://api.sarvam.ai/text-to-speech', {
             method: 'POST',
@@ -82,7 +85,7 @@ export const generateSpeech = async (text: string, language: Language): Promise<
                 'api-subscription-key': SARVAM_API_KEY
             },
             body: JSON.stringify({
-                inputs: [text],
+                inputs: [truncatedText],
                 target_language_code: targetLang,
                 speaker: 'anushka',
                 pitch: 0,
