@@ -1,16 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, X, MessageSquareText, Minimize2, Mic, Volume2, StopCircle } from 'lucide-react';
-import { chatWithBhumi } from '../services/geminiService';
+import { Send, Bot, User, X, MessageSquareText, Minimize2, Mic, Volume2, StopCircle, Loader2 } from 'lucide-react';
+import { transcribeAudio, generateSpeech, chatWithSarvam } from '../services/sarvamService';
 import { ChatMessage, Language } from '../types';
 
 interface Props {
     lang: Language;
 }
-
-const speechLangMap: Record<Language, string> = {
-    en: 'en-US', hi: 'hi-IN', or: 'or-IN', bn: 'bn-IN',
-    zh: 'zh-CN', es: 'es-ES', ru: 'ru-RU', ja: 'ja-JP', pt: 'pt-BR'
-};
 
 export const ChatWidget: React.FC<Props> = ({ lang }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,9 +14,12 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
     const [isTyping, setIsTyping] = useState(false);
     const [isListening, setIsListening] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
-    
+    const [isProcessingVoice, setIsProcessingVoice] = useState(false);
+
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const recognitionRef = useRef<any>(null);
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+    const audioChunksRef = useRef<Blob[]>([]);
+    const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
         const greetings: Record<Language, string> = {
@@ -48,7 +46,10 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
 
     useEffect(() => {
         return () => {
-            window.speechSynthesis.cancel();
+            if (audioPlayerRef.current) {
+                audioPlayerRef.current.pause();
+                audioPlayerRef.current = null;
+            }
         };
     }, []);
 
@@ -77,13 +78,15 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
         setIsTyping(true);
 
         try {
-            const history = messages.map(m => ({
-                role: m.role,
-                parts: [{ text: m.text }]
-            }));
+            const history = messages
+                .filter((_, i) => i > 0)
+                .map(m => ({
+                    role: m.role === 'model' ? 'assistant' as const : 'user' as const,
+                    content: m.text
+                }));
 
-            const responseText = await chatWithBhumi(history, userMsg.text, lang);
-            
+            const responseText = await chatWithSarvam(history, userMsg.text, lang);
+
             const botMsg: ChatMessage = {
                 id: (Date.now() + 1).toString(),
                 role: 'model',
@@ -98,62 +101,96 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
         }
     };
 
-    const toggleVoiceInput = () => {
-        if (isListening) {
-            recognitionRef.current?.stop();
-            setIsListening(false);
-            return;
+    const startRecording = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorderRef.current = mediaRecorder;
+            audioChunksRef.current = [];
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    audioChunksRef.current.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+                setIsProcessingVoice(true);
+                try {
+                    const transcript = await transcribeAudio(audioBlob, lang);
+                    if (transcript) {
+                        setInput(transcript);
+                    }
+                } catch (error) {
+                    console.error("Voice input failed", error);
+                    alert("Could not process voice input. Please try again.");
+                } finally {
+                    setIsProcessingVoice(false);
+                    // Stop all tracks
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            };
+
+            mediaRecorder.start();
+            setIsListening(true);
+        } catch (error) {
+            console.error("Error accessing microphone:", error);
+            alert("Microphone access denied or not available.");
         }
-
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            alert("Voice input not supported in this browser.");
-            return;
-        }
-
-        const recognition = new SpeechRecognition();
-        recognition.lang = speechLangMap[lang];
-        recognition.continuous = false;
-        recognition.interimResults = false;
-
-        recognition.onstart = () => setIsListening(true);
-        recognition.onend = () => setIsListening(false);
-        recognition.onresult = (event: any) => {
-            const transcript = event.results[0][0].transcript;
-            setInput(transcript);
-            // Optional: Auto send
-        };
-
-        recognitionRef.current = recognition;
-        recognition.start();
     };
 
-    const speakText = (text: string) => {
-        if (isSpeaking) {
-            window.speechSynthesis.cancel();
+    const stopRecording = () => {
+        if (mediaRecorderRef.current && isListening) {
+            mediaRecorderRef.current.stop();
+            setIsListening(false);
+        }
+    };
+
+    const toggleVoiceInput = () => {
+        if (isListening) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+    };
+
+    const speakText = async (text: string) => {
+        // Stop any current audio
+        if (audioPlayerRef.current) {
+            audioPlayerRef.current.pause();
+            audioPlayerRef.current = null;
             setIsSpeaking(false);
-            return;
+            return; // Toggle capability: if speaking, just stop.
         }
 
-        // Clean markdown
-        const cleanText = text.replace(/\*/g, '');
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        
-        // Strictly find voice match
-        const targetLang = speechLangMap[lang];
-        const voices = window.speechSynthesis.getVoices();
-        const voice = voices.find(v => v.lang.includes(targetLang) || v.lang.includes(targetLang.split('-')[0]));
-        
-        if (voice) {
-            utterance.voice = voice;
-        }
-        utterance.lang = targetLang;
-        
-        utterance.onend = () => setIsSpeaking(false);
-        utterance.onerror = () => setIsSpeaking(false);
-        
         setIsSpeaking(true);
-        window.speechSynthesis.speak(utterance);
+        try {
+            // Clean markdown for better speech approximation if needed, 
+            // but Sarvam might handle clean text better.
+            const cleanText = text.replace(/\*/g, '');
+            const audioDataUrl = await generateSpeech(cleanText, lang);
+
+            const audio = new Audio(audioDataUrl);
+            audioPlayerRef.current = audio;
+
+            audio.onended = () => {
+                setIsSpeaking(false);
+                audioPlayerRef.current = null;
+            };
+
+            audio.onerror = () => {
+                console.error("Audio playback error");
+                setIsSpeaking(false);
+                audioPlayerRef.current = null;
+            };
+
+            await audio.play();
+        } catch (error) {
+            console.error("TTS Error:", error);
+            alert("Unable to play audio at this moment.");
+            setIsSpeaking(false);
+        }
     };
 
     return (
@@ -184,20 +221,19 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-gray-50 dark:bg-black/40">
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                            <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${
-                                msg.role === 'user' 
-                                ? 'bg-bhumi-green text-white rounded-tr-none' 
+                            <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${msg.role === 'user'
+                                ? 'bg-bhumi-green text-white rounded-tr-none'
                                 : 'bg-white dark:bg-white/10 text-gray-800 dark:text-gray-200 rounded-tl-none border border-gray-200 dark:border-white/5'
-                            }`}>
+                                }`}>
                                 {formatText(msg.text)}
                             </div>
-                             {msg.role === 'model' && (
-                                <button 
+                            {msg.role === 'model' && (
+                                <button
                                     onClick={() => speakText(msg.text)}
                                     className={`mt-1 transition-colors ${isSpeaking ? 'text-bhumi-green' : 'text-gray-400 hover:text-bhumi-green'}`}
                                     title="Read aloud"
                                 >
-                                    <Volume2 size={14} />
+                                    {isSpeaking && audioPlayerRef.current ? <Loader2 size={14} className="animate-spin" /> : <Volume2 size={14} />}
                                 </button>
                             )}
                         </div>
@@ -216,23 +252,28 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
 
                 <div className="p-3 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F1419]">
                     <div className="relative flex items-center gap-2">
-                         <button 
+                        <button
                             onClick={toggleVoiceInput}
-                            className={`p-3 rounded-full transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'}`}
+                            disabled={isProcessingVoice}
+                            className={`p-3 rounded-full transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' :
+                                isProcessingVoice ? 'bg-gray-200 animate-pulse' :
+                                    'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'
+                                }`}
                             title="Voice Input"
                         >
-                            {isListening ? <StopCircle size={20} /> : <Mic size={20} />}
+                            {isProcessingVoice ? <Loader2 size={20} className="animate-spin" /> :
+                                isListening ? <StopCircle size={20} /> : <Mic size={20} />}
                         </button>
                         <div className="relative flex-1">
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                                placeholder="Ask Bhumi..."
+                                placeholder={isListening ? "Listening..." : "Ask Bhumi..."}
                                 className="w-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full py-3 pl-4 pr-12 text-sm text-gray-900 dark:text-white focus:border-bhumi-green dark:focus:border-bhumi-gold outline-none transition-colors"
                             />
-                            <button 
+                            <button
                                 onClick={handleSend}
                                 disabled={!input.trim() || isTyping}
                                 className="absolute right-1 top-1 p-2 bg-bhumi-green text-white rounded-full hover:bg-green-700 transition-colors disabled:opacity-50"
@@ -244,7 +285,7 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
                 </div>
             </div>
 
-            <button 
+            <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`
                     pointer-events-auto

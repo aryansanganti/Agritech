@@ -18,9 +18,10 @@ import {
 interface SeedScoutProps {
     lang: Language;
     onBack: () => void;
+    onNavigateToReplication?: (crop: string, sourceLocation: string) => void;
 }
 
-export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
+export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateToReplication }) => {
     const t = translations[lang];
 
     // Query state
@@ -614,6 +615,34 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack }) => {
                                     </div>
                                 )}
                             </div>
+
+                            {/* Replication Planner CTA */}
+                            {onNavigateToReplication && (
+                                <div className="md:col-span-2 glass-panel rounded-2xl p-5 border-2 border-dashed border-bhumi-green/50 bg-gradient-to-r from-green-500/5 to-emerald-500/5 hover:border-bhumi-green transition-all cursor-pointer group"
+                                    onClick={() => onNavigateToReplication(
+                                        cropTypes.find(c => c.id === query.cropType)?.name || query.cropType,
+                                        `${selectedDistrict.district.name}, ${selectedDistrict.district.state}`
+                                    )}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                <Compass size={28} className="text-white" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Plan Crop Replication</h3>
+                                                <p className="text-sm text-gray-500">
+                                                    Get a complete cultivation blueprint to replicate {cropTypes.find(c => c.id === query.cropType)?.name || 'this crop'} from {selectedDistrict.district.name}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="hidden md:flex items-center gap-2 text-bhumi-green font-medium">
+                                            <span>Create Plan</span>
+                                            <ArrowLeft className="rotate-180" size={20} />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 

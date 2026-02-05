@@ -11,13 +11,31 @@ export interface User {
     soilType?: string;
     mainCrop?: string;
     irrigationSource?: string;
+    role?: 'farmer' | 'vendor'; // Added for Marketplace
     [key: string]: any; // Allow extensibility for API
+}
+
+export interface Listing {
+    id: string;
+    farmerName: string;
+    crop: string;
+    variety: string;
+    grade: 'A' | 'B' | 'C' | 'D';
+    price: number; // Farmer's price in ₹/q
+    marketPrice: number; // Avg Mandi Price in ₹/q
+    quantity: number; // in Quintals
+    location: { district: string; state: string };
+    image: string; // Base64 or URL
+    analysisId?: string; // Link to crop analysis
+    blockchainHash: string; // Fake hash for verification
+    harvestDate: string;
 }
 
 export type PageView =
     | 'language'
     | 'auth'
     | 'dashboard'
+    | 'marketplace'
     | 'disease-detection'
     | 'yield-prediction'
     | 'smart-advisory'
@@ -28,7 +46,15 @@ export type PageView =
     | 'profile'
     | 'soil-analysis'
     | 'seedscout'
-    | 'crop-analysis';
+    | 'crop-analysis'
+    | 'pricing-engine'
+    | 'replication-planner';
+
+export interface Detection {
+    label: string;
+    bbox: number[]; // [ymin, xmin, ymax, xmax]
+    confidence: number;
+}
 
 export interface CropAnalysisResult {
     grading: {
@@ -38,7 +64,8 @@ export interface CropAnalysisResult {
         textureCheck: string;
         shapeCheck: string;
     };
-    bbox?: number[];
+    bbox?: number[]; // Legacy support
+    detections?: Detection[]; // New multi-object support
     health: {
         lesions: string;
         chlorosis: string;
@@ -107,6 +134,38 @@ export interface ChatMessage {
     timestamp: number;
 }
 
+// Pricing Engine Types
+export interface MandiPriceRecord {
+    state: string;
+    district: string;
+    market: string;
+    commodity: string;
+    variety: string;
+    minPrice: number;
+    maxPrice: number;
+    modalPrice: number;
+    date: string;
+    source: string;
+}
+
+export interface PricingPrediction {
+    crop: string;
+    location: string;
+    minGuaranteedPrice: number;
+    expectedPriceBand: {
+        low: number;
+        high: number;
+    };
+    confidenceScore: number;
+    arbitrationReasoning: string;
+    sourceAnalysis: Array<{
+        name: string;
+        reliability: number;
+        contribution: string;
+    }>;
+    timestamp: string;
+}
+
 export interface DiseaseResult {
     disease: string;
     confidence: number;
@@ -141,6 +200,40 @@ export interface AnalyticsData {
     expenses: Array<{ category: string; amount: number }>;
 }
 
+// Blockchain Types
+export interface BlockchainTransaction {
+    transactionHash: string;
+    blockNumber: number;
+    timestamp: string;
+    data: {
+        crop: string;
+        location: string;
+        qualityScore: number;
+        amount: number;
+        pricePerQuintal: {
+            min: number;
+            max: number;
+            guaranteed: number;
+        };
+        farmerUpiId?: string;
+        confidenceScore: number;
+    };
+    verified: boolean;
+}
+
+export interface QRCodeData {
+    type: 'quality' | 'payment';
+    transactionHash: string;
+    data: {
+        crop?: string;
+        qualityScore?: number;
+        amount?: number;
+        verificationUrl?: string;
+        upiId?: string;
+        payeeName?: string;
+        transactionNote?: string;
+    };
+}
 
 export interface SoilMetrics {
     soc: number;         // 0-100 (Derived from Value)

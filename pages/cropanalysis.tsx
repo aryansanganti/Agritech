@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, RefreshCw, ArrowLeft, CheckCircle, AlertTriangle, Scale, DollarSign, Activity } from 'lucide-react';
+import { Camera, Upload, RefreshCw, ArrowLeft, CheckCircle, AlertTriangle, Scale, DollarSign, Activity, ArrowRight } from 'lucide-react';
 import { analyzeCropQuality } from '../services/geminiService';
 import { getMarketPrice, STATES, getCommodities } from '../services/agmarknetService';
+import { storeQualityGrading, gradeToScore } from '../services/qualityGradingService';
 import { Language, CropAnalysisResult } from '../types';
 
 interface Props {
     lang: Language;
     onBack: () => void;
+    onNavigateToPricing?: () => void;
 }
 
-export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
+export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricing }) => {
     // Form State
     const [state, setState] = useState('');
     const [district, setDistrict] = useState('');
@@ -63,6 +65,32 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
 
             const data = await analyzeCropQuality(base64Data, context, lang);
             setResult(data);
+
+            // Store quality grading for use in Pricing Engine
+            const qualityScore = gradeToScore(data.grading.overallGrade);
+            storeQualityGrading({
+                crop: commodity,
+                state: state,
+                district: district,
+                qualityScore: qualityScore,
+                overallGrade: data.grading.overallGrade,
+                estimatedPrice: data.market.estimatedPrice,
+                timestamp: new Date().toISOString(),
+                image: image,  // Store the crop image for marketplace
+                gradingDetails: {
+                    colorChecking: data.grading.colorChecking,
+                    sizeCheck: data.grading.sizeCheck,
+                    textureCheck: data.grading.textureCheck,
+                    shapeCheck: data.grading.shapeCheck,
+                },
+                healthStatus: {
+                    lesions: data.health.lesions,
+                    chlorosis: data.health.chlorosis,
+                    pestDamage: data.health.pestDamage,
+                    mechanicalDamage: data.health.mechanicalDamage,
+                    diseaseName: data.health.diseaseName,
+                },
+            });
         } catch (error) {
             console.error(error);
             alert("Analysis failed. Please try again.");
@@ -73,7 +101,11 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
 
     // Calculate Bounding Box Style
     const getBBoxStyle = (bbox: number[]) => {
-        const [ymin, xmin, ymax, xmax] = bbox;
+        let [ymin, xmin, ymax, xmax] = bbox;
+        // Auto-normalize if using 1000 scale
+        if (ymin > 1 || xmin > 1 || ymax > 1 || xmax > 1) {
+            ymin /= 1000; xmin /= 1000; ymax /= 1000; xmax /= 1000;
+        }
         return {
             top: `${ymin * 100}%`,
             left: `${xmin * 100}%`,
@@ -164,14 +196,26 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
                             {image ? (
                                 <div className="relative w-full h-full">
                                     <img src={image} alt="Crop" className="w-full h-full object-contain" />
-                                    {result?.bbox && (
+                                    {result?.detections && result.detections.length > 0 ? (
+                                        result.detections.map((det, i) => (
+                                            <div
+                                                key={i}
+                                                className="absolute border-2 border-red-500 shadow-[0_0_5px_rgba(255,0,0,0.5)] group hover:z-10"
+                                                style={getBBoxStyle(det.bbox)}
+                                            >
+                                                <span className="absolute -top-6 left-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    {det.label} ({det.confidence}%)
+                                                </span>
+                                            </div>
+                                        ))
+                                    ) : result?.bbox ? (
                                         <div
                                             className="absolute border-4 border-red-500 shadow-[0_0_10px_rgba(255,0,0,0.5)] animate-pulse"
                                             style={getBBoxStyle(result.bbox)}
                                         >
                                             <span className="absolute -top-6 left-0 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded">Detected</span>
                                         </div>
-                                    )}
+                                    ) : null}
                                 </div>
                             ) : (
                                 <div className="text-center p-6">
@@ -315,6 +359,28 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
                                     )}
                                 </div>
                             </div>
+
+                            {/* Navigate to Pricing Engine Button */}
+                            {onNavigateToPricing && (
+                                <div className="mt-6 p-6 glass-panel rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-500/30">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">
+                                                Quality Score: {gradeToScore(result.grading.overallGrade)}/10
+                                            </h3>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                Your crop grading is saved. Get fair market price with blockchain verification.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={onNavigateToPricing}
+                                            className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-emerald-500/30 transition-all"
+                                        >
+                                            Get Price <ArrowRight size={20} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
