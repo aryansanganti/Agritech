@@ -1,0 +1,37 @@
+crop,topology_zone,topology_description,salinity_relevance,heat_relevance,drought_relevance,genetic_hotspot_score,reason
+Rice,Coastal Plains,"High humidity, saline pockets, cyclone exposure",0.35,0.61,0.49,0.85,Traditional Rice varieties evolved under coastal plains conditions
+Rice,Deccan Plateau,"Heat stress, drought-prone basalt soils",0.58,0.66,0.49,0.88,Traditional Rice varieties evolved under deccan plateau conditions
+Rice,Central Tribal Belt,"Rainfed farming, genetic landraces",0.37,0.63,0.49,0.77,Traditional Rice varieties evolved under central tribal belt conditions
+Rice,Indo-Gangetic Plains,"Alluvial soils, temperature extremes",0.32,0.4,0.49,0.52,Traditional Rice varieties evolved under indo-gangetic plains conditions
+Rice,Arid & Semi-Arid Zones,"Low rainfall, high evapotranspiration",0.45,0.69,0.49,0.45,Traditional Rice varieties evolved under arid & semi-arid zones conditions
+Rice,Eastern Ghats & Hills,"Undulating terrain, microclimates",0.42,0.55,0.49,0.52,Traditional Rice varieties evolved under eastern ghats & hills conditions
+Pearl Millet (Bajra),Coastal Plains,"High humidity, saline pockets, cyclone exposure",0.46,0.61,0.35,0.66,Traditional Pearl Millet (Bajra) varieties evolved under coastal plains conditions
+Pearl Millet (Bajra),Deccan Plateau,"Heat stress, drought-prone basalt soils",0.37,0.41,0.35,0.87,Traditional Pearl Millet (Bajra) varieties evolved under deccan plateau conditions
+Pearl Millet (Bajra),Central Tribal Belt,"Rainfed farming, genetic landraces",0.48,0.61,0.35,0.68,Traditional Pearl Millet (Bajra) varieties evolved under central tribal belt conditions
+Pearl Millet (Bajra),Indo-Gangetic Plains,"Alluvial soils, temperature extremes",0.41,0.46,0.35,0.51,Traditional Pearl Millet (Bajra) varieties evolved under indo-gangetic plains conditions
+Pearl Millet (Bajra),Arid & Semi-Arid Zones,"Low rainfall, high evapotranspiration",0.36,0.41,0.35,0.56,Traditional Pearl Millet (Bajra) varieties evolved under arid & semi-arid zones conditions
+Pearl Millet (Bajra),Eastern Ghats & Hills,"Undulating terrain, microclimates",0.32,0.33,0.35,0.82,Traditional Pearl Millet (Bajra) varieties evolved under eastern ghats & hills conditions
+Sorghum (Jowar),Coastal Plains,"High humidity, saline pockets, cyclone exposure",0.3,0.67,0.66,0.7,Traditional Sorghum (Jowar) varieties evolved under coastal plains conditions
+Sorghum (Jowar),Deccan Plateau,"Heat stress, drought-prone basalt soils",0.38,0.52,0.66,0.78,Traditional Sorghum (Jowar) varieties evolved under deccan plateau conditions
+Sorghum (Jowar),Central Tribal Belt,"Rainfed farming, genetic landraces",0.63,0.54,0.66,0.73,Traditional Sorghum (Jowar) varieties evolved under central tribal belt conditions
+Sorghum (Jowar),Indo-Gangetic Plains,"Alluvial soils, temperature extremes",0.54,0.39,0.66,0.44,Traditional Sorghum (Jowar) varieties evolved under indo-gangetic plains conditions
+Sorghum (Jowar),Arid & Semi-Arid Zones,"Low rainfall, high evapotranspiration",0.41,0.48,0.66,0.51,Traditional Sorghum (Jowar) varieties evolved under arid & semi-arid zones conditions
+Sorghum (Jowar),Eastern Ghats & Hills,"Undulating terrain, microclimates",0.3,0.35,0.66,0.6,Traditional Sorghum (Jowar) varieties evolved under eastern ghats & hills conditions
+Finger Millet (Ragi),Coastal Plains,"High humidity, saline pockets, cyclone exposure",0.62,0.35,0.5,0.52,Traditional Finger Millet (Ragi) varieties evolved under coastal plains conditions
+Finger Millet (Ragi),Deccan Plateau,"Heat stress, drought-prone basalt soils",0.66,0.56,0.5,0.56,Traditional Finger Millet (Ragi) varieties evolved under deccan plateau conditions
+Finger Millet (Ragi),Central Tribal Belt,"Rainfed farming, genetic landraces",0.36,0.5,0.5,0.76,Traditional Finger Millet (Ragi) varieties evolved under central tribal belt conditions
+Finger Millet (Ragi),Indo-Gangetic Plains,"Alluvial soils, temperature extremes",0.46,0.39,0.5,0.46,Traditional Finger Millet (Ragi) varieties evolved under indo-gangetic plains conditions
+Finger Millet (Ragi),Arid & Semi-Arid Zones,"Low rainfall, high evapotranspiration",0.46,0.47,0.5,0.56,Traditional Finger Millet (Ragi) varieties evolved under arid & semi-arid zones conditions
+Finger Millet (Ragi),Eastern Ghats & Hills,"Undulating terrain, microclimates",0.34,0.68,0.5,0.84,Traditional Finger Millet (Ragi) varieties evolved under eastern ghats & hills conditions
+Maize,Coastal Plains,"High humidity, saline pockets, cyclone exposure",0.58,0.47,0.48,0.58,Traditional Maize varieties evolved under coastal plains conditions
+Maize,Deccan Plateau,"Heat stress, drought-prone basalt soils",0.56,0.48,0.48,0.46,Traditional Maize varieties evolved under deccan plateau conditions
+Maize,Central Tribal Belt,"Rainfed farming, genetic landraces",0.31,0.54,0.48,0.41,Traditional Maize varieties evolved under central tribal belt conditions
+Maize,Indo-Gangetic Plains,"Alluvial soils, temperature extremes",0.3,0.51,0.48,0.5,Traditional Maize varieties evolved under indo-gangetic plains conditions
+Maize,Arid & Semi-Arid Zones,"Low rainfall, high evapotranspiration",0.4,0.35,0.48,0.6,Traditional Maize varieties evolved under arid & semi-arid zones conditions
+Maize,Eastern Ghats & Hills,"Undulating terrain, microclimates",0.3,0.68,0.48,0.5,Traditional Maize varieties evolved under eastern ghats & hills conditions
+Cotton,Coastal Plains,"High humidity, saline pockets, cyclone exposure",0.54,0.51,0.48,0.54,Traditional Cotton varieties evolved under coastal plains conditions
+Cotton,Deccan Plateau,"Heat stress, drought-prone basalt soils",0.46,0.35,0.48,0.76,Traditional Cotton varieties evolved under deccan plateau conditions
+Cotton,Central Tribal Belt,"Rainfed farming, genetic landraces",0.4,0.32,0.48,0.8,Traditional Cotton varieties evolved under central tribal belt conditions
+Cotton,Indo-Gangetic Plains,"Alluvial soils, temperature extremes",0.61,0.46,0.48,0.61,Traditional Cotton varieties evolved under indo-gangetic plains conditions
+Cotton,Arid & Semi-Arid Zones,"Low rainfall, high evapotranspiration",0.64,0.47,0.48,0.84,Traditional Cotton varieties evolved under arid & semi-arid zones conditions
+Cotton,Eastern Ghats & Hills,"Undulating terrain, microclimates",0.35,0.57,0.48,0.55,Traditional Cotton varieties evolved under eastern ghats & hills conditions
