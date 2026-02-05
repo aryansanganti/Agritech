@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { User, Language, Listing } from '../types';
-import { ArrowLeft, ShoppingBag, Plus, QrCode, ShieldCheck, TrendingUp, MapPin, ExternalLink, Trash2 } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Plus, QrCode, ShieldCheck, TrendingUp, MapPin, ExternalLink, Trash2, Leaf, Truck, Route } from 'lucide-react';
 import { MARKETPLACE_LISTINGS } from '../data/listings';
 import { getMarketplaceListings, MarketplaceListing, removeMarketplaceListing } from '../services/marketplaceService';
+import { CarbonLogistics } from '../components/CarbonLogistics';
+import { DISTRICT_COORDINATES } from '../services/carbonLogisticsService';
 
 interface Props {
     user: User | null;
@@ -16,6 +18,16 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
     const [selectedListing, setSelectedListing] = useState<Listing | MarketplaceListing | null>(null);
     const [showQR, setShowQR] = useState(false);
     const [blockchainListings, setBlockchainListings] = useState<MarketplaceListing[]>([]);
+    const [showCarbonLogistics, setShowCarbonLogistics] = useState(false);
+    const [selectedForLogistics, setSelectedForLogistics] = useState<MarketplaceListing | null>(null);
+    const [vendorDistrict, setVendorDistrict] = useState('Mumbai');
+    const [vendorState, setVendorState] = useState('Maharashtra');
+    const [showVendorLocationModal, setShowVendorLocationModal] = useState(false);
+
+    // Available districts for vendor location selection
+    const availableDistricts = Object.keys(DISTRICT_COORDINATES).map(d => 
+        d.charAt(0).toUpperCase() + d.slice(1)
+    );
 
     useEffect(() => {
         const loadListings = () => {
@@ -101,9 +113,25 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                         )}
                         <div className="py-4">
                             <div className="w-48 h-48 bg-white p-2 mx-auto border-4 border-gray-900 rounded-lg">
-                                <div className="w-full h-full bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BhumiVerified')` }} />
+                                <div 
+                                    className="w-full h-full bg-contain bg-no-repeat bg-center" 
+                                    style={{ 
+                                        backgroundImage: `url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+                                            isBlockchain && selectedListing.etherscanUrl 
+                                                ? selectedListing.etherscanUrl 
+                                                : `https://bhumi.app/verify/${selectedListing.blockchainHash || 'unknown'}`
+                                        )}')`
+                                    }} 
+                                />
                             </div>
-                            <p className="text-xs text-gray-400 mt-2">Scan to verify on ledger</p>
+                            <p className="text-xs text-gray-400 mt-2">
+                                {isBlockchain ? 'Scan to view on Etherscan' : 'Scan to verify on ledger'}
+                            </p>
+                            {isBlockchain && selectedListing.etherscanUrl && (
+                                <p className="text-[10px] text-purple-500 mt-1 font-mono truncate max-w-[200px] mx-auto">
+                                    {selectedListing.transactionHash?.slice(0, 20)}...
+                                </p>
+                            )}
                         </div>
                         <button onClick={() => setShowQR(false)} className="w-full py-3 bg-bhumi-green hover:bg-green-700 text-white font-bold rounded-xl transition-colors">
                             Close Passport
@@ -112,6 +140,89 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                 </div>
             </div>
         );
+    };
+
+    // Vendor Location Modal for Carbon Footprint calculation
+    const renderVendorLocationModal = () => {
+        if (!showVendorLocationModal || !selectedForLogistics) return null;
+
+        return (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowVendorLocationModal(false)}>
+                <div className="bg-white dark:bg-[#1A202C] rounded-2xl p-6 max-w-md w-full shadow-2xl relative border border-green-500/30" onClick={e => e.stopPropagation()}>
+                    <div className="text-center space-y-6">
+                        <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                            <MapPin className="w-10 h-10 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Set Your Location</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Enter your warehouse/delivery location to calculate optimal route</p>
+                        </div>
+                        
+                        <div className="space-y-4 text-left">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">District</label>
+                                <select
+                                    value={vendorDistrict}
+                                    onChange={(e) => setVendorDistrict(e.target.value)}
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                >
+                                    {availableDistricts.map(district => (
+                                        <option key={district} value={district}>{district}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">State</label>
+                                <input
+                                    type="text"
+                                    value={vendorState}
+                                    onChange={(e) => setVendorState(e.target.value)}
+                                    placeholder="Enter state"
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl">
+                            <div className="flex items-center gap-3 text-left">
+                                <Leaf className="w-8 h-8 text-green-600 flex-shrink-0" />
+                                <div>
+                                    <div className="font-medium text-green-800 dark:text-green-200">Carbon Footprint Analysis</div>
+                                    <div className="text-sm text-green-600 dark:text-green-400">
+                                        We'll calculate the shortest path using Dijkstra's algorithm to minimize CO₂ emissions
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button 
+                                onClick={() => setShowVendorLocationModal(false)} 
+                                className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-bold rounded-xl transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setShowVendorLocationModal(false);
+                                    setShowCarbonLogistics(true);
+                                }} 
+                                className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
+                            >
+                                <Route size={18} />
+                                Calculate Route
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    // Handle opening carbon logistics
+    const handleOpenCarbonLogistics = (item: MarketplaceListing) => {
+        setSelectedForLogistics(item);
+        setShowVendorLocationModal(true);
     };
 
     const BlockchainListingCard: React.FC<{ item: MarketplaceListing; isOwner: boolean }> = ({ item, isOwner }) => {
@@ -158,7 +269,17 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                             <Trash2 size={16} />
                         </button>
                     ) : (
-                        <button className="flex-1 py-2.5 bg-bhumi-green hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-green-500/20">Buy Now</button>
+                        <>
+                            <button 
+                                onClick={() => handleOpenCarbonLogistics(item)} 
+                                className="py-2.5 px-3 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1"
+                                title="Calculate Carbon Footprint"
+                            >
+                                <Leaf size={16} />
+                                <Truck size={14} />
+                            </button>
+                            <button className="flex-1 py-2.5 bg-bhumi-green hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-green-500/20">Buy Now</button>
+                        </>
                     )}
                 </div>
             </div>
@@ -212,6 +333,17 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
     return (
         <div className="p-4 md:p-6 max-w-7xl mx-auto min-h-screen">
             {renderVerificationModal()}
+            {renderVendorLocationModal()}
+            {showCarbonLogistics && selectedForLogistics && (
+                <CarbonLogistics
+                    listing={selectedForLogistics}
+                    vendorLocation={{ district: vendorDistrict, state: vendorState }}
+                    onClose={() => {
+                        setShowCarbonLogistics(false);
+                        setSelectedForLogistics(null);
+                    }}
+                />
+            )}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-3">
                     <button onClick={onBack} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
@@ -254,6 +386,34 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
             )}
             {role === 'vendor' && (
                 <div className="animate-fade-in">
+                    {/* Carbon Footprint Info Banner */}
+                    <div className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-5 border border-green-200 dark:border-green-800">
+                        <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 bg-green-100 dark:bg-green-800/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <Leaf className="w-7 h-7 text-green-600" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-bold text-green-800 dark:text-green-200 flex items-center gap-2">
+                                    🌱 Carbon-Optimized Delivery
+                                </h3>
+                                <p className="text-sm text-green-700 dark:text-green-300 mt-1">
+                                    Click the <span className="inline-flex items-center gap-1 bg-green-200 dark:bg-green-700 px-1.5 py-0.5 rounded text-xs font-medium"><Leaf size={12}/><Truck size={10}/></span> button on any listing to calculate the shortest route using <span className="font-semibold">Dijkstra's Algorithm</span> and reduce your carbon footprint!
+                                </p>
+                            </div>
+                            <div className="hidden md:flex items-center gap-3 text-green-700 dark:text-green-300">
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold">30%</div>
+                                    <div className="text-xs">CO₂ Saved</div>
+                                </div>
+                                <div className="w-px h-10 bg-green-300 dark:bg-green-600" />
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold">A+</div>
+                                    <div className="text-xs">Efficiency</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white">Premium Certified Crops</h2>
                         <button className="flex items-center gap-2 text-sm text-bhumi-green font-medium hover:underline"><TrendingUp size={16} /> Market Trends</button>
