@@ -26,8 +26,8 @@ export const isConfigured = () => !!apiKey && apiKey.length > 0;
 
 const getLangName = (code: string) => {
     const map: Record<string, string> = {
-        en: 'English', hi: 'Hindi', or: 'Odia', bn: 'Bengali', 
-        zh: 'Mandarin Chinese', es: 'Spanish', ru: 'Russian', 
+        en: 'English', hi: 'Hindi', or: 'Odia', bn: 'Bengali',
+        zh: 'Mandarin Chinese', es: 'Spanish', ru: 'Russian',
         ja: 'Japanese', pt: 'Portuguese'
     };
     return map[code] || 'English';
@@ -71,7 +71,7 @@ export const analyzeCropDisease = async (base64Image: string, language: string):
                 }
             }
         });
-        
+
         const text = response.text;
         if (!text) throw new Error("No response from Gemini");
         return JSON.parse(text) as DiseaseResult;
@@ -118,7 +118,7 @@ export const getCropRecommendations = async (soil: string, season: string, locat
     }
 };
 
-export const chatWithBhumi = async (history: {role: string, parts: {text: string}[]}[], message: string, language: string) => {
+export const chatWithBhumi = async (history: { role: string, parts: { text: string }[] }[], message: string, language: string) => {
     checkApiKey();
     try {
         const langName = getLangName(language);
@@ -151,7 +151,7 @@ export const voiceAgentChat = async (message: string) => {
         const chat = ai.chats.create({
             model: MODEL_FAST,
             config: {
-                 systemInstruction: `You are Bhumi, a magical farm spirit voice. 
+                systemInstruction: `You are Bhumi, a magical farm spirit voice. 
                  Keep answers VERY short (1-2 sentences), conversational, and helpful. 
                  You are talking to a farmer. Be instant and warm.`
             }
@@ -177,7 +177,7 @@ export const getYieldPrediction = async (data: any, language: string): Promise<Y
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
-                 responseSchema: {
+                responseSchema: {
                     type: Type.OBJECT,
                     properties: {
                         predicted_yield: { type: Type.STRING, description: "e.g. 2.5 - 3.0" },
@@ -273,7 +273,7 @@ export const getWeatherForecast = async (location: string, language: string): Pr
                 }
             }
         });
-        
+
         const grounding = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
         const sourceUrls = grounding?.map((g: any) => g.web?.uri).filter((u: any) => u) || [];
 
@@ -306,4 +306,148 @@ export const getAnalyticsInsight = async (data: any, language: string): Promise<
     } catch (e) {
         return "Could not generate analysis.";
     }
+};
+
+export const getSeedScoutInsights = async (district: any, crop: string, language: string): Promise<string> => {
+    checkApiKey();
+    try {
+        const langName = getLangName(language);
+        const prompt = `Act as a senior agricultural geneticist. Analyze this region for "SeedScout" - a project finding climate-resilient genes in tribal areas.
+        
+        Target Region: ${district.name}, ${district.state}
+        Environmental Data:
+        - Salinity: ${district.salinity} dS/m (High > 4)
+        - Max Temp: ${district.maxTemp}°C (High > 40)
+        - Rainfall: ${district.rainfall} mm
+        - Tribal Population: ${district.tribalPercent}%
+        
+        Target Crop: ${crop}
+        
+        Task:
+        1. Explain WHY this specific district is a "Genetic Goldmine" for ${crop}.
+        2. Hypothesize what specific genes (e.g., "HKT1;5 gene for salinity") might have evolved here due to the environment.
+        3. Provide a brief "Field Survey Strategy" for scientists visiting this tribal belt.
+        
+        Language: ${langName}.
+        Format: Markdown. Keep it inspiring and scientific.`;
+
+        const response = await ai.models.generateContent({
+            model: MODEL_REASONING,
+            contents: prompt,
+            config: {
+                tools: [{ googleSearch: {} }] // Use Search to find real gene info if possible
+            }
+        });
+        return response.text || "Insight generation failed.";
+    } catch (e) {
+        console.error("SeedScout Insight Error:", e);
+        return "Unable to generate insights at this moment.";
+    }
+};
+
+// NEW: Fetch real environmental data for a district using Gemini with Google Search
+export interface DistrictEnvironmentalData {
+    salinity: number;      // EC in dS/m
+    maxTemp: number;       // Maximum temperature in °C
+    rainfall: number;      // Annual rainfall in mm
+    tribalPercent: number; // Tribal population percentage
+    lat: number;
+    lng: number;
+    dataSource: 'gemini' | 'cached' | 'fallback';
+    confidence: number;    // 0-100 confidence in data accuracy
+}
+
+export const getDistrictEnvironmentalData = async (
+    districtName: string,
+    state: string
+): Promise<DistrictEnvironmentalData> => {
+    checkApiKey();
+    try {
+        const prompt = `You are an agricultural data expert. Use Google Search to find REAL environmental data for ${districtName} district, ${state}, India.
+
+        Find and return:
+        1. Soil salinity (EC in dS/m) - Check Soil Health Card data, ICAR reports
+        2. Maximum summer temperature (°C) - Check IMD historical data  
+        3. Average annual rainfall (mm) - Check IMD or state agriculture department
+        4. Tribal population percentage (%) - Check Census 2011 data
+        5. District centroid coordinates (lat, lng)
+
+        BE ACCURATE. Use real data from search results. If exact data unavailable, use best estimate based on nearby districts.
+        
+        Respond in JSON format with confidence level (0-100).`;
+
+        const response = await ai.models.generateContent({
+            model: MODEL_REASONING,
+            contents: prompt,
+            config: {
+                tools: [{ googleSearch: {} }],
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        salinity: { type: Type.NUMBER },
+                        maxTemp: { type: Type.NUMBER },
+                        rainfall: { type: Type.NUMBER },
+                        tribalPercent: { type: Type.NUMBER },
+                        lat: { type: Type.NUMBER },
+                        lng: { type: Type.NUMBER },
+                        confidence: { type: Type.NUMBER }
+                    },
+                    required: ["salinity", "maxTemp", "rainfall", "tribalPercent", "lat", "lng", "confidence"]
+                }
+            }
+        });
+
+        const data = JSON.parse(response.text || '{}');
+        return {
+            ...data,
+            dataSource: 'gemini'
+        } as DistrictEnvironmentalData;
+    } catch (e) {
+        console.error("District Data Fetch Error:", e);
+        // Return fallback data
+        return {
+            salinity: 4.0,
+            maxTemp: 40,
+            rainfall: 800,
+            tribalPercent: 15,
+            lat: 20.5937,
+            lng: 78.9629,
+            dataSource: 'fallback',
+            confidence: 20
+        };
+    }
+};
+
+// Batch fetch for multiple districts (with caching)
+const districtCache: Map<string, DistrictEnvironmentalData> = new Map();
+
+export const getMultipleDistrictData = async (
+    districts: Array<{ name: string; state: string }>
+): Promise<Map<string, DistrictEnvironmentalData>> => {
+    const results = new Map<string, DistrictEnvironmentalData>();
+
+    for (const district of districts) {
+        const key = `${district.name}-${district.state}`;
+
+        // Check cache first
+        if (districtCache.has(key)) {
+            results.set(key, districtCache.get(key)!);
+            continue;
+        }
+
+        // Fetch from Gemini
+        try {
+            const data = await getDistrictEnvironmentalData(district.name, district.state);
+            districtCache.set(key, data);
+            results.set(key, data);
+        } catch (e) {
+            console.error(`Failed to fetch data for ${key}`, e);
+        }
+
+        // Rate limiting - wait 500ms between calls
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    return results;
 };
