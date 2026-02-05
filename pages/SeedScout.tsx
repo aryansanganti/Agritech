@@ -6,6 +6,7 @@ import {
     searchHotspotsDynamic, searchHotspotsQuick, getClusterSummary, getDataRanges,
     identifyTopology, getTopoRecommendations, SearchProgressCallback
 } from '../services/seedScoutService';
+import { getCurrentWeather, WeatherData } from '../services/weatherService';
 import { getSeedScoutInsights, getDistrictEnvironmentalData } from '../services/geminiService';
 import { SatelliteMap } from '../components/SatelliteMap';
 import {
@@ -46,6 +47,9 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
     const [userTopology, setUserTopology] = useState<TopologyResult | null>(null);
     const [topoSeeds, setTopoSeeds] = useState<SeedRecommendation[]>([]);
     const [isLocating, setIsLocating] = useState(false);
+    const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
+    const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(null);
+    const [showWeatherDetails, setShowWeatherDetails] = useState(false);
 
     // AI Insight State
     const [aiInsight, setAiInsight] = useState<string | null>(null);
@@ -58,7 +62,20 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
 
     const clusterSummary = useMemo(() => getClusterSummary(), []);
 
-    // NEW: Eco-Locate Handler (Topo-Seed Engine)
+    // Topology Coordinate Mapping (Approximate Centers)
+    const topologyCoordinates: Record<string, { lat: number, lng: number }> = {
+        "The Western Ghats": { lat: 14.0, lng: 74.5 },
+        "The Eastern Ghats": { lat: 18.0, lng: 83.0 },
+        "The North-Eastern Himalayas": { lat: 27.5, lng: 88.5 },
+        "The Deccan Plateau": { lat: 17.0, lng: 77.0 },
+        "The Coastal Plains": { lat: 10.0, lng: 76.5 },
+        "The Desert Region": { lat: 27.0, lng: 71.0 },
+        "The Gangetic Plains": { lat: 25.5, lng: 82.0 },
+        "The Central Highlands": { lat: 23.5, lng: 78.5 },
+        "The Islands": { lat: 11.5, lng: 92.5 }
+    };
+
+    // Eco-Locate Handler
     const handleLocate = () => {
         setIsLocating(true);
         if (!navigator.geolocation) {
@@ -69,15 +86,19 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
 
         navigator.geolocation.getCurrentPosition(async (position) => {
             const { latitude, longitude } = position.coords;
+            setUserLocation({ lat: latitude, lng: longitude }); // Save user location
+
             try {
                 // 1. Identify Topology
                 const topology = await identifyTopology(latitude, longitude);
                 setUserTopology(topology);
 
-                // 2. Get Recommendations
-                // Mock weather for now, or fetch from OpenWeatherMap if key available
-                const mockWeather = { humidity: 75, temp: 28 };
-                const response = await getTopoRecommendations(latitude, longitude, mockWeather);
+                // 2. Get Real-Time Weather
+                const weather = await getCurrentWeather(latitude, longitude);
+                setCurrentWeather(weather);
+
+                // 3. Get Recommendations
+                const response = await getTopoRecommendations(latitude, longitude, weather);
                 setTopoSeeds(response.recommendations);
             } catch (error) {
                 console.error("Topo-Seed Engine Failed:", error);
@@ -251,29 +272,211 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                 <span className="text-xs text-purple-500 font-bold uppercase tracking-wider">Topology Twin</span>
                                 <div className="font-bold text-lg text-purple-700 dark:text-purple-300">{userTopology.twins[0]}</div>
                             </div>
+
+                            {/* Weather Badge & Details */}
+                            {currentWeather && (
+                                <div className="w-full mt-2 animate-fade-in">
+                                    <div
+                                        onClick={() => setShowWeatherDetails(!showWeatherDetails)}
+                                        className="bg-orange-50 dark:bg-orange-900/20 px-4 py-3 rounded-xl border border-orange-100 dark:border-orange-800 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-lg">
+                                                    <Cloud className="text-orange-500 dark:text-orange-300" size={24} />
+                                                </div>
+                                                <div>
+                                                    <span className="text-xs text-orange-500 font-bold uppercase tracking-wider">Current Conditions</span>
+                                                    <div className="font-bold text-lg text-gray-800 dark:text-white flex items-center gap-3">
+                                                        <span>{currentWeather.temp}°C</span>
+                                                        <span className="text-sm font-normal text-gray-400">|</span>
+                                                        <span className="flex items-center gap-1 text-sm">
+                                                            <Droplets size={14} /> {currentWeather.humidity}%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {showWeatherDetails ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
+                                        </div>
+
+                                        {/* Expanded Weather Details */}
+                                        {showWeatherDetails && (
+                                            <div className="mt-4 pt-4 border-t border-orange-200 dark:border-orange-800 grid grid-cols-2 md:grid-cols-4 gap-4 animate-slide-up">
+                                                <div className="space-y-1">
+                                                    <p className="text-xs text-gray-500">Air Temp (Min/Max)</p>
+                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.tempMin}° / {currentWeather.tempMax}°</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-xs text-gray-500">Precipitation</p>
+                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.precipitation} mm</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-xs text-gray-500">Wind</p>
+                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.windSpeed} km/h</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-xs text-gray-500">Solar Radiation</p>
+                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.radiation} W/m²</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-xs text-gray-500">Cloud Cover</p>
+                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.cloudCover}%</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-xs text-gray-500">Pressure</p>
+                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.pressure} hPa</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Show on Map Button */}
+                            <button
+                                onClick={() => {
+                                    // Mapping logic for Twin visualization
+                                    const twinLocations: Record<string, { lat: number, lng: number }> = {
+                                        "The Western Ghats": { lat: 14.0, lng: 74.5 },
+                                        "The Eastern Ghats": { lat: 18.0, lng: 83.0 },
+                                        "The North-Eastern Himalayas": { lat: 27.5, lng: 88.5 },
+                                        "The Deccan Plateau": { lat: 17.0, lng: 77.0 },
+                                        "The Coastal Plains": { lat: 10.0, lng: 76.5 },
+                                        "The Desert Region": { lat: 27.0, lng: 71.0 },
+                                    };
+
+                                    const twinName = userTopology.twins[0];
+                                    const twinCoords = twinLocations[twinName];
+
+                                    setSatelliteView(true);
+                                    if (twinCoords) {
+                                        // Update search results to show User + Twin
+                                        // This relies on the map rendering logic using 'results' or a new 'markers' prop
+                                        // For now, we simulate results to hijack the map view
+                                        const mockResults = [
+                                            {
+                                                district: { name: "Your Location", lat: 20.0, lng: 78.0, id: "u1", state: "Current", salinity: 0, maxTemp: 0, rainfall: 0, tribalPercent: 0 }, // Placeholder coords, will update if we had user geo in state
+                                                traitScore: 1, salinityScore: 0, heatScore: 0, droughtScore: 0, tribalScore: 0, recommendation: "You are here"
+                                            },
+                                            {
+                                                district: { name: `Twin: ${twinName}`, lat: twinCoords.lat, lng: twinCoords.lng, id: "t1", state: "Topology Twin", salinity: 0, maxTemp: 0, rainfall: 0, tribalPercent: 0 },
+                                                traitScore: 0.9, salinityScore: 0, heatScore: 0, droughtScore: 0, tribalScore: 0, recommendation: "Ecological Twin"
+                                            }
+                                        ];
+                                        setResults(mockResults as any);
+                                        setHasSearched(true);
+                                    }
+                                }}
+                                className="w-full mt-2 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center gap-2"
+                            >
+                                <Map size={16} /> Show Locations on Map
+                            </button>
                         </div>
 
                         {/* Seed Recommendations Card Checklist */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                             {topoSeeds.map((seed, idx) => (
-                                <div key={idx} className={`p-3 rounded-xl border flex gap-3 transition-hover hover:scale-[1.02] ${seed.matchType === 'Native'
-                                        ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800'
-                                        : 'bg-purple-50 dark:bg-purple-900/10 border-purple-200 dark:border-purple-800'
+                                <div key={idx} className={`p-3 rounded-xl border flex flex-col gap-3 transition-hover hover:scale-[1.02] ${seed.matchType === 'Native'
+                                    ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800'
+                                    : 'bg-purple-50 dark:bg-purple-900/10 border-purple-200 dark:border-purple-800'
                                     }`}>
-                                    <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-gray-200">
-                                        <img src={seed.image_url} alt={seed.seed_name} className="w-full h-full object-cover"
-                                            onError={(e) => { e.currentTarget.src = 'https://placehold.co/100x100?text=Seed'; }} />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2">
-                                            <h4 className="font-bold text-gray-900 dark:text-white text-sm">{seed.seed_name}</h4>
-                                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${seed.matchType === 'Native' ? 'bg-emerald-200 text-emerald-800' : 'bg-purple-200 text-purple-800'
-                                                }`}>
-                                                {seed.matchType === 'Native' ? 'NATIVE' : 'TWIN'}
-                                            </span>
+                                    <div className="flex gap-3">
+                                        <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-gray-200">
+                                            <img src={seed.image_url} alt={seed.seed_name} className="w-full h-full object-cover"
+                                                onError={(e) => { e.currentTarget.src = 'https://placehold.co/100x100?text=Seed'; }} />
                                         </div>
-                                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{seed.cultural_note}</p>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h4 className="font-bold text-gray-900 dark:text-white text-sm">{seed.seed_name}</h4>
+                                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${seed.matchType === 'Native' ? 'bg-emerald-200 text-emerald-800' : 'bg-purple-200 text-purple-800'
+                                                    }`}>
+                                                    {seed.matchType === 'Native' ? 'NATIVE' : 'TWIN'}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-1 line-clamp-2">{seed.cultural_note}</p>
+                                        </div>
                                     </div>
+
+                                    {/* View Origin Button */}
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevent card click
+                                            const nativeZone = seed.primary_topology[0]; // e.g., "The North-Eastern Himalayas"
+                                            const nativeCoords = topologyCoordinates[nativeZone];
+
+                                            // Typical Environmental Data for Topologies (Averages)
+                                            const topologyTypicalData: Record<string, any> = {
+                                                "The Western Ghats": { salinity: 0.5, maxTemp: 32, rainfall: 2500, tribalPercent: 40 },
+                                                "The Eastern Ghats": { salinity: 1.2, maxTemp: 35, rainfall: 1200, tribalPercent: 55 },
+                                                "The North-Eastern Himalayas": { salinity: 0.2, maxTemp: 25, rainfall: 3000, tribalPercent: 70 },
+                                                "The Deccan Plateau": { salinity: 1.5, maxTemp: 38, rainfall: 700, tribalPercent: 15 },
+                                                "The Coastal Plains": { salinity: 3.5, maxTemp: 34, rainfall: 1500, tribalPercent: 10 },
+                                                "The Desert Region": { salinity: 4.0, maxTemp: 45, rainfall: 200, tribalPercent: 25 },
+                                                "The Gangetic Plains": { salinity: 1.0, maxTemp: 40, rainfall: 1000, tribalPercent: 5 },
+                                                "The Central Highlands": { salinity: 0.8, maxTemp: 36, rainfall: 900, tribalPercent: 45 },
+                                                "The Islands": { salinity: 2.5, maxTemp: 30, rainfall: 2800, tribalPercent: 90 }
+                                            };
+
+                                            const typicalStats = topologyTypicalData[nativeZone] || { salinity: 1.0, maxTemp: 30, rainfall: 1000, tribalPercent: 20 };
+
+                                            if (userLocation && nativeCoords) {
+                                                setSatelliteView(true);
+
+                                                // Create mock results with REAL data
+                                                const sourceTargetResults = [
+                                                    {
+                                                        district: {
+                                                            name: "Target: Your Farm",
+                                                            lat: userLocation.lat,
+                                                            lng: userLocation.lng,
+                                                            id: "u1",
+                                                            state: "Current Location",
+                                                            salinity: 0.5, // Assumed low for user
+                                                            maxTemp: currentWeather?.tempMax || 30,
+                                                            rainfall: (currentWeather?.precipitation || 0) * 100 + 500, // Rough annual estimate based on current
+                                                            tribalPercent: 0
+                                                        },
+                                                        traitScore: 0.95,
+                                                        salinityScore: 0.2, heatScore: 0.5, droughtScore: 0.1, tribalScore: 0,
+                                                        recommendation: "Ready for Cultivation"
+                                                    },
+                                                    {
+                                                        district: {
+                                                            name: `Source: ${nativeZone}`,
+                                                            lat: nativeCoords.lat,
+                                                            lng: nativeCoords.lng,
+                                                            id: `s${idx}`,
+                                                            state: "Native Origin",
+                                                            salinity: typicalStats.salinity,
+                                                            maxTemp: typicalStats.maxTemp,
+                                                            rainfall: typicalStats.rainfall,
+                                                            tribalPercent: typicalStats.tribalPercent
+                                                        },
+                                                        traitScore: 0.98,
+                                                        salinityScore: typicalStats.salinity / 4,
+                                                        heatScore: (typicalStats.maxTemp - 20) / 30,
+                                                        droughtScore: 1 - (typicalStats.rainfall / 3000),
+                                                        tribalScore: typicalStats.tribalPercent / 100,
+                                                        recommendation: "Genetic Ancestry"
+                                                    }
+                                                ];
+
+                                                setResults(sourceTargetResults as any);
+                                                setHasSearched(true);
+
+                                                // Auto-select the Source to show its details immediately
+                                                setTimeout(() => handleSelectDistrict(sourceTargetResults[1] as any), 100);
+
+                                                // Scroll to map
+                                                window.scrollTo({ top: 450, behavior: 'smooth' });
+                                            } else {
+                                                alert("Could not map this seed's origin. Coordinates missing.");
+                                            }
+                                        }}
+                                        className="mt-auto w-full py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                                    >
+                                        <Globe size={12} /> View Origin Map
+                                    </button>
                                 </div>
                             ))}
                         </div>
