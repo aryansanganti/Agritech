@@ -6,13 +6,13 @@ import { translations } from '../utils/translations';
 import { VoiceAgent } from '../components/VoiceAgent';
 
 const mockData = [
-  { name: 'Jan', yield: 40 },
-  { name: 'Feb', yield: 30 },
-  { name: 'Mar', yield: 20 },
-  { name: 'Apr', yield: 27 },
-  { name: 'May', yield: 18 },
-  { name: 'Jun', yield: 23 },
-  { name: 'Jul', yield: 34 },
+    { name: 'Jan', yield: 40 },
+    { name: 'Feb', yield: 30 },
+    { name: 'Mar', yield: 20 },
+    { name: 'Apr', yield: 27 },
+    { name: 'May', yield: 18 },
+    { name: 'Jun', yield: 23 },
+    { name: 'Jul', yield: 34 },
 ];
 
 interface DashboardProps {
@@ -138,11 +138,25 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                         <span className="font-medium text-sm text-center z-10 text-gray-800 dark:text-white">{t.pesticides}</span>
                     </button>
 
-                     <button onClick={() => setView('analytics')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
+                    <button onClick={() => setView('analytics')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
                         <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform z-10">
                             <BarChart3 size={24} />
                         </div>
                         <span className="font-medium text-sm text-center z-10 text-gray-800 dark:text-white">{t.analytics}</span>
+                    </button>
+
+                    <button onClick={() => setView('marketplace')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
+                        <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform z-10">
+                            <span className="text-2xl">🛒</span>
+                        </div>
+                        <span className="font-medium text-sm text-center z-10 text-gray-800 dark:text-white">Market</span>
+                    </button>
+
+                    <button onClick={() => setView('marketplace')} className="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 aspect-square md:aspect-auto md:h-32 group relative overflow-hidden shadow-sm hover:shadow-md">
+                        <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform z-10">
+                            <span className="text-2xl">🛒</span>
+                        </div>
+                        <span className="font-medium text-sm text-center z-10 text-gray-800 dark:text-white">Market</span>
                     </button>
                 </div>
             </div> */}
@@ -161,14 +175,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                             <AreaChart data={mockData}>
                                 <defs>
                                     <linearGradient id="colorYield" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3}/>
-                                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0}/>
+                                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.2)" />
                                 <XAxis dataKey="name" stroke="#888" />
                                 <YAxis stroke="#888" />
-                                <Tooltip 
+                                <Tooltip
                                     contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff' }}
                                 />
                                 <Area type="monotone" dataKey="yield" stroke="#D4AF37" fillOpacity={1} fill="url(#colorYield)" />
@@ -204,7 +218,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
 
             {/* Voice Agent Trigger */}
             <div className="flex justify-center mt-8 pb-8">
-                <button 
+                <button
                     onClick={() => setShowVoiceAgent(true)}
                     className="group relative flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-bhumi-green to-emerald-600 rounded-full text-white font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all overflow-hidden"
                 >

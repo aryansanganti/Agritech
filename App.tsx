@@ -4,6 +4,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Profile } from './pages/Profile';
 import { SoilAnalysis } from './pages/SoilAnalysis';
 import { CropAnalysis } from './pages/cropanalysis';
+import { Marketplace } from './pages/Marketplace';
 import { SeedScout } from './pages/SeedScout';
 import { PricingEngine } from './pages/PricingEngine';
 import { PageView, User, Language } from './types';
@@ -165,6 +166,7 @@ const App: React.FC = () => {
             case 'analytics': return <Analytics lang={lang} onBack={goBack} />;
             case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
             case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} />;
+            case 'marketplace': return <Marketplace user={user} lang={lang} onBack={goBack} />;
             case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
             case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
             case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} />;
