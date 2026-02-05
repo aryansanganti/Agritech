@@ -73,7 +73,11 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
 
     // Calculate Bounding Box Style
     const getBBoxStyle = (bbox: number[]) => {
-        const [ymin, xmin, ymax, xmax] = bbox;
+        let [ymin, xmin, ymax, xmax] = bbox;
+        // Auto-normalize if using 1000 scale
+        if (ymin > 1 || xmin > 1 || ymax > 1 || xmax > 1) {
+            ymin /= 1000; xmin /= 1000; ymax /= 1000; xmax /= 1000;
+        }
         return {
             top: `${ymin * 100}%`,
             left: `${xmin * 100}%`,
@@ -164,14 +168,26 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
                             {image ? (
                                 <div className="relative w-full h-full">
                                     <img src={image} alt="Crop" className="w-full h-full object-contain" />
-                                    {result?.bbox && (
+                                    {result?.detections && result.detections.length > 0 ? (
+                                        result.detections.map((det, i) => (
+                                            <div
+                                                key={i}
+                                                className="absolute border-2 border-red-500 shadow-[0_0_5px_rgba(255,0,0,0.5)] group hover:z-10"
+                                                style={getBBoxStyle(det.bbox)}
+                                            >
+                                                <span className="absolute -top-6 left-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    {det.label} ({det.confidence}%)
+                                                </span>
+                                            </div>
+                                        ))
+                                    ) : result?.bbox ? (
                                         <div
                                             className="absolute border-4 border-red-500 shadow-[0_0_10px_rgba(255,0,0,0.5)] animate-pulse"
                                             style={getBBoxStyle(result.bbox)}
                                         >
                                             <span className="absolute -top-6 left-0 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded">Detected</span>
                                         </div>
-                                    )}
+                                    ) : null}
                                 </div>
                             ) : (
                                 <div className="text-center p-6">
