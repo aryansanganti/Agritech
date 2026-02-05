@@ -11,13 +11,31 @@ export interface User {
     soilType?: string;
     mainCrop?: string;
     irrigationSource?: string;
+    role?: 'farmer' | 'vendor'; // Added for Marketplace
     [key: string]: any; // Allow extensibility for API
+}
+
+export interface Listing {
+    id: string;
+    farmerName: string;
+    crop: string;
+    variety: string;
+    grade: 'A' | 'B' | 'C' | 'D';
+    price: number; // Farmer's price in ₹/q
+    marketPrice: number; // Avg Mandi Price in ₹/q
+    quantity: number; // in Quintals
+    location: { district: string; state: string };
+    image: string; // Base64 or URL
+    analysisId?: string; // Link to crop analysis
+    blockchainHash: string; // Fake hash for verification
+    harvestDate: string;
 }
 
 export type PageView =
     | 'language'
     | 'auth'
     | 'dashboard'
+    | 'marketplace'
     | 'disease-detection'
     | 'yield-prediction'
     | 'smart-advisory'

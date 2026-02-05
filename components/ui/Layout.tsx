@@ -22,7 +22,8 @@ import {
     QrCode,
     Copy,
     Check,
-    Compass
+    Compass,
+    ShoppingBag
 } from 'lucide-react';
 import { ChatWidget } from '../ChatWidget';
 
@@ -118,6 +119,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
 
         { id: 'seedscout', label: 'SeedScout', icon: Compass },
         { id: 'pricing-engine', label: 'Pricing Engine', icon: TrendingUp },
+        { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
         { id: 'profile', label: t.profile, icon: UserIcon },
     ];
 
