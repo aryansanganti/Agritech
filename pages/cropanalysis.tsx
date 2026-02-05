@@ -120,24 +120,24 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
             <div className="flex items-center justify-between">
                 <button
                     onClick={onBack}
-                    className="flex items-center gap-2 text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:text-bhumi-fg dark:hover:text-bhumi-darkFg transition-colors"
+                    className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                     <ArrowLeft size={20} /> Back
                 </button>
-                <h2 className="text-2xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">AI Crop Quality Analysis</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">AI Crop Quality Analysis</h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Column: Input & Image */}
                 <div className="lg:col-span-1 space-y-6">
                     {/* Market Context Form */}
-                    <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-6 border-2 border-bhumi-border dark:border-bhumi-darkBorder">
-                        <h3 className="text-lg font-heading font-bold mb-4 text-bhumi-fg dark:text-bhumi-darkFg">1. Market Details</h3>
+                    <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">1. Market Details</h3>
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mb-1">State</label>
+                                <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">State</label>
                                 <select
-                                    className="w-full bg-bhumi-muted dark:bg-bhumi-darkMuted border-2 border-bhumi-border dark:border-bhumi-darkBorder p-3 text-bhumi-fg dark:text-bhumi-darkFg focus:ring-2 focus:ring-bhumi-primary dark:focus:ring-bhumi-darkPrimary outline-none"
+                                    className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white"
                                     value={state}
                                     onChange={(e) => setState(e.target.value)}
                                 >
@@ -147,19 +147,19 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mb-1">District</label>
+                                    <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">District</label>
                                     <input
                                         type="text"
-                                        className="w-full bg-bhumi-muted dark:bg-bhumi-darkMuted border-2 border-bhumi-border dark:border-bhumi-darkBorder p-3 text-bhumi-fg dark:text-bhumi-darkFg focus:ring-2 focus:ring-bhumi-primary dark:focus:ring-bhumi-darkPrimary outline-none"
+                                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white"
                                         value={district}
                                         onChange={(e) => setDistrict(e.target.value)}
                                         placeholder="e.g. Khordha"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mb-1">Market</label>
+                                    <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Market</label>
                                     <select
-                                        className="w-full bg-bhumi-muted dark:bg-bhumi-darkMuted border-2 border-bhumi-border dark:border-bhumi-darkBorder p-3 text-bhumi-fg dark:text-bhumi-darkFg"
+                                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white"
                                         value={market}
                                         onChange={(e) => setMarket(e.target.value)}
                                     >
@@ -169,9 +169,9 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mb-1">Commodity</label>
+                                <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Commodity</label>
                                 <select
-                                    className="w-full bg-bhumi-muted dark:bg-bhumi-darkMuted border-2 border-bhumi-border dark:border-bhumi-darkBorder p-3 text-bhumi-fg dark:text-bhumi-darkFg"
+                                    className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white"
                                     value={commodity}
                                     onChange={(e) => setCommodity(e.target.value)}
                                 >
@@ -180,19 +180,19 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                 </select>
                             </div>
                             {marketPrice && (
-                                <div className="p-3 bg-bhumi-accent dark:bg-bhumi-darkAccent border-2 border-bhumi-border dark:border-bhumi-darkBorder flex justify-between items-center">
-                                    <span className="text-sm text-bhumi-primary dark:text-bhumi-darkPrimary">Avg. Mandi Price</span>
-                                    <span className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">₹{marketPrice}/q</span>
+                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800 flex justify-between items-center">
+                                    <span className="text-sm text-blue-700 dark:text-blue-300">Avg. Mandi Price</span>
+                                    <span className="font-bold text-blue-800 dark:text-blue-200">₹{marketPrice}/q</span>
                                 </div>
                             )}
                         </div>
                     </div>
 
                     {/* Image Upload */}
-                    <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-6 border-2 border-bhumi-border dark:border-bhumi-darkBorder">
-                        <h3 className="text-lg font-heading font-bold mb-4 text-bhumi-fg dark:text-bhumi-darkFg">2. Upload Sample</h3>
+                    <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">2. Upload Sample</h3>
 
-                        <div className="relative min-h-[250px] bg-bhumi-muted dark:bg-bhumi-darkMuted overflow-hidden flex items-center justify-center border-dashed border-2 border-bhumi-border dark:border-bhumi-darkBorder">
+                        <div className="relative min-h-[250px] bg-gray-100 dark:bg-black/40 rounded-xl overflow-hidden flex items-center justify-center border-dashed border-2 border-gray-300 dark:border-gray-700">
                             {image ? (
                                 <div className="relative w-full h-full">
                                     <img src={image} alt="Crop" className="w-full h-full object-contain" />
@@ -200,27 +200,27 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                         result.detections.map((det, i) => (
                                             <div
                                                 key={i}
-                                                className="absolute border-2 border-bhumi-destructive shadow-[0_0_5px_rgba(201,123,123,0.5)] group hover:z-10"
+                                                className="absolute border-2 border-red-500 shadow-[0_0_5px_rgba(255,0,0,0.5)] group hover:z-10"
                                                 style={getBBoxStyle(det.bbox)}
                                             >
-                                                <span className="absolute -top-6 left-0 bg-bhumi-destructive text-bhumi-destructiveFg text-[10px] font-bold px-1.5 py-0.5 shadow-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span className="absolute -top-6 left-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
                                                     {det.label} ({det.confidence}%)
                                                 </span>
                                             </div>
                                         ))
                                     ) : result?.bbox ? (
                                         <div
-                                            className="absolute border-4 border-bhumi-destructive shadow-[0_0_10px_rgba(201,123,123,0.5)] animate-pulse"
+                                            className="absolute border-4 border-red-500 shadow-[0_0_10px_rgba(255,0,0,0.5)] animate-pulse"
                                             style={getBBoxStyle(result.bbox)}
                                         >
-                                            <span className="absolute -top-6 left-0 bg-bhumi-destructive text-bhumi-destructiveFg text-xs font-bold px-2 py-0.5">Detected</span>
+                                            <span className="absolute -top-6 left-0 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded">Detected</span>
                                         </div>
                                     ) : null}
                                 </div>
                             ) : (
                                 <div className="text-center p-6">
-                                    <Upload size={40} className="mx-auto text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mb-2" />
-                                    <p className="text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Tap to upload photo</p>
+                                    <Upload size={40} className="mx-auto text-gray-400 mb-2" />
+                                    <p className="text-sm text-gray-500">Tap to upload photo</p>
                                 </div>
                             )}
 
@@ -236,7 +236,7 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                         <div className="mt-4 flex gap-3">
                             <button
                                 onClick={() => fileInputRef.current?.click()}
-                                className="flex-1 py-2.5 bg-bhumi-muted dark:bg-bhumi-darkMuted hover:bg-bhumi-accent dark:hover:bg-bhumi-darkAccent text-bhumi-fg dark:text-bhumi-darkFg font-medium transition-colors border-2 border-bhumi-border dark:border-bhumi-darkBorder"
+                                className="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             >
                                 {image ? 'Change Photo' : 'Select Photo'}
                             </button>
@@ -244,10 +244,10 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                 <button
                                     onClick={handleAnalyze}
                                     disabled={analyzing}
-                                    className="flex-1 py-2.5 bg-bhumi-primary dark:bg-bhumi-darkPrimary hover:bg-bhumi-primaryHover dark:hover:bg-bhumi-darkPrimaryHover text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 border-2 border-bhumi-primary dark:border-bhumi-darkPrimary"
+                                    className="flex-1 py-2 bg-bhumi-green hover:bg-green-700 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                                 >
                                     {analyzing ? (
-                                        <div className="w-5 h-5 border-2 border-current border-t-transparent animate-spin"></div>
+                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                     ) : (
                                         <>
                                             <Scale size={18} /> Analyze
@@ -262,16 +262,16 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                 {/* Right Column: Analysis Results */}
                 <div className="lg:col-span-2">
                     {!result && !analyzing && (
-                        <div className="h-full flex flex-col items-center justify-center text-bhumi-mutedFg dark:text-bhumi-darkMutedFg border-2 border-dashed border-bhumi-border dark:border-bhumi-darkBorder p-12">
-                            <Activity size={64} className="mb-4 opacity-30" />
-                            <p className="text-lg font-medium opacity-60">Upload an image and analyze to see Grading Report</p>
+                        <div className="h-full flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl p-12">
+                            <Activity size={64} className="mb-4 opacity-20" />
+                            <p className="text-lg font-medium opacity-50">Upload an image and analyze to see Grading Report</p>
                         </div>
                     )}
 
                     {analyzing && (
                         <div className="h-full flex flex-col items-center justify-center space-y-4">
-                            <div className="w-20 h-20 border-4 border-bhumi-primary dark:border-bhumi-darkPrimary border-t-transparent animate-spin"></div>
-                            <p className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-accent italic">Scanning crop texture, color, and size...</p>
+                            <div className="w-20 h-20 border-4 border-bhumi-green border-t-transparent rounded-full animate-spin"></div>
+                            <p className="text-gray-500">Scanning crop texture, color, and size...</p>
                         </div>
                     )}
 
@@ -279,30 +279,30 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                         <div className="space-y-6 animate-slide-up">
                             {/* Top Stats */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className={`bg-bhumi-card dark:bg-bhumi-darkCard p-6 border-2 border-bhumi-border dark:border-bhumi-darkBorder border-l-[6px] ${result.grading.overallGrade === 'A' ? 'border-l-bhumi-primary bg-bhumi-primary/5 dark:bg-bhumi-darkPrimary/10' :
-                                    result.grading.overallGrade === 'B' ? 'border-l-bhumi-secondary bg-bhumi-secondary/10 dark:bg-bhumi-darkSecondary/10' :
-                                        'border-l-bhumi-destructive bg-bhumi-destructive/10'
+                                <div className={`glass-panel p-6 rounded-2xl border-l-[6px] ${result.grading.overallGrade === 'A' ? 'border-green-500 bg-green-50/50 dark:bg-green-900/10' :
+                                    result.grading.overallGrade === 'B' ? 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-900/10' :
+                                        'border-red-500 bg-red-50/50 dark:bg-red-900/10'
                                     }`}>
-                                    <div className="text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mb-1 uppercase tracking-wide">Quality Grade</div>
-                                    <div className="text-4xl font-heading font-black text-bhumi-fg dark:text-bhumi-darkFg flex items-center gap-2">
+                                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Quality Grade</div>
+                                    <div className="text-4xl font-black text-gray-900 dark:text-white flex items-center gap-2">
                                         {result.grading.overallGrade}
-                                        <span className="text-base font-normal opacity-60 bg-bhumi-muted dark:bg-bhumi-darkMuted px-2 py-0.5">Grade</span>
+                                        <span className="text-base font-normal opacity-60 bg-black/10 dark:bg-white/10 px-2 py-0.5 rounded-md">Grade</span>
                                     </div>
                                 </div>
 
-                                <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-6 border-2 border-bhumi-primary/30 dark:border-bhumi-darkPrimary/30">
-                                    <div className="text-sm text-bhumi-primary dark:text-bhumi-darkPrimary mb-1 uppercase tracking-wide flex items-center gap-1">
+                                <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-indigo-200 dark:border-indigo-500/30">
+                                    <div className="text-sm text-indigo-600 dark:text-indigo-400 mb-1 uppercase tracking-wide flex items-center gap-1">
                                         <DollarSign size={14} /> Estimated Price
                                     </div>
-                                    <div className="text-3xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">
-                                        ₹{result.market.estimatedPrice} <span className="text-lg text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">/ q</span>
+                                    <div className="text-3xl font-bold text-gray-900 dark:text-white">
+                                        ₹{result.market.estimatedPrice} <span className="text-lg text-gray-500">/ q</span>
                                     </div>
-                                    <div className="text-xs text-bhumi-primary dark:text-bhumi-darkPrimary mt-1">{result.market.priceDriver}</div>
+                                    <div className="text-xs text-green-600 mt-1">{result.market.priceDriver}</div>
                                 </div>
 
-                                <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-6 border-2 border-bhumi-border dark:border-bhumi-darkBorder">
-                                    <div className="text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mb-1 uppercase tracking-wide">Market Demand</div>
-                                    <div className="text-xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg line-clamp-2">
+                                <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Market Demand</div>
+                                    <div className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2">
                                         {result.market.demandFactor}
                                     </div>
                                 </div>
@@ -310,9 +310,9 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Visual Inspection */}
-                                <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-6 border-2 border-bhumi-border dark:border-bhumi-darkBorder">
-                                    <h3 className="font-heading font-bold text-lg mb-4 flex items-center gap-2 text-bhumi-fg dark:text-bhumi-darkFg">
-                                        <CheckCircle className="text-bhumi-primary dark:text-bhumi-darkPrimary" size={20} />
+                                <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
+                                        <CheckCircle className="text-bhumi-green" size={20} />
                                         Visual Grading
                                     </h3>
                                     <div className="space-y-4">
@@ -322,18 +322,18 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                             { label: 'Surface Texture', val: result.grading.textureCheck },
                                             { label: 'Shape', val: result.grading.shapeCheck }
                                         ].map((item, i) => (
-                                            <div key={i} className="flex justify-between items-start border-b border-bhumi-border dark:border-bhumi-darkBorder pb-2 last:border-0 last:pb-0">
-                                                <span className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg text-sm">{item.label}</span>
-                                                <span className="text-bhumi-fg dark:text-bhumi-darkFg font-medium text-right max-w-[60%]">{item.val}</span>
+                                            <div key={i} className="flex justify-between items-start border-b border-gray-100 dark:border-white/5 pb-2 last:border-0 last:pb-0">
+                                                <span className="text-gray-500 dark:text-gray-400 text-sm">{item.label}</span>
+                                                <span className="text-gray-900 dark:text-white font-medium text-right max-w-[60%]">{item.val}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
                                 {/* Health & Defects */}
-                                <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-6 border-2 border-bhumi-border dark:border-bhumi-darkBorder">
-                                    <h3 className="font-heading font-bold text-lg mb-4 flex items-center gap-2 text-bhumi-fg dark:text-bhumi-darkFg">
-                                        <AlertTriangle className="text-bhumi-secondary dark:text-bhumi-darkSecondary" size={20} />
+                                <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
+                                        <AlertTriangle className="text-orange-500" size={20} />
                                         Health & Defects
                                     </h3>
                                     <div className="space-y-4">
@@ -343,9 +343,9 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                             { label: 'Pest Damage', val: result.health.pestDamage, good: result.health.pestDamage.toLowerCase().includes('none') },
                                             { label: 'Chlorosis', val: result.health.chlorosis, good: result.health.chlorosis.toLowerCase().includes('none') }
                                         ].map((item, i) => (
-                                            <div key={i} className="flex justify-between items-start border-b border-bhumi-border dark:border-bhumi-darkBorder pb-2 last:border-0 last:pb-0">
-                                                <span className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg text-sm">{item.label}</span>
-                                                <span className={`font-medium text-right max-w-[60%] px-2 py-0.5 text-xs ${item.good ? 'bg-bhumi-primary/10 text-bhumi-primary dark:bg-bhumi-darkPrimary/20 dark:text-bhumi-darkPrimary' : 'bg-bhumi-destructive/10 text-bhumi-destructive'
+                                            <div key={i} className="flex justify-between items-start border-b border-gray-100 dark:border-white/5 pb-2 last:border-0 last:pb-0">
+                                                <span className="text-gray-500 dark:text-gray-400 text-sm">{item.label}</span>
+                                                <span className={`font-medium text-right max-w-[60%] px-2 py-0.5 rounded text-xs ${item.good ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                                                     }`}>
                                                     {item.val}
                                                 </span>
@@ -353,7 +353,7 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                         ))}
                                     </div>
                                     {result.health.diseaseName && (
-                                        <div className="mt-4 p-3 bg-bhumi-destructive/10 text-sm text-bhumi-destructive border-2 border-bhumi-destructive/20">
+                                        <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm text-red-700 dark:text-red-300">
                                             <strong>Detected Disease:</strong> {result.health.diseaseName} ({result.health.confidence}%)
                                         </div>
                                     )}

@@ -165,19 +165,19 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
             <div className="flex items-center gap-4 mb-6">
                 <button
                     onClick={onBack}
-                    className="p-2 hover:bg-bhumi-muted dark:hover:bg-bhumi-darkMuted transition-colors border-2 border-transparent hover:border-bhumi-border dark:hover:border-bhumi-darkBorder"
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
                 >
-                    <RefreshCw className="w-6 h-6 rotate-90 text-bhumi-mutedFg dark:text-bhumi-darkMutedFg" />
+                    <RefreshCw className="w-6 h-6 rotate-90" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">{t.soilAnalysis}</h1>
-                    <p className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-accent italic">Hybrid AI: Vision + GenAI</p>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t.soilAnalysis}</h1>
+                    <p className="text-gray-500 dark:text-gray-400">Hybrid AI: Vision + GenAI</p>
                 </div>
             </div>
 
             {/* Input Section */}
             {!image ? (
-                <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-12 border-2 border-dashed border-bhumi-border dark:border-bhumi-darkBorder flex flex-col items-center justify-center gap-6 hover:border-bhumi-primary dark:hover:border-bhumi-darkPrimary transition-colors cursor-pointer group"
+                <div className="glass-panel p-10 rounded-3xl border-2 border-dashed border-gray-300 dark:border-white/20 flex flex-col items-center justify-center gap-6 hover:border-bhumi-green transition-colors cursor-pointer"
                     onClick={() => fileInputRef.current?.click()}>
                     <input
                         type="file"
@@ -186,19 +186,19 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                         accept="image/*"
                         onChange={handleImageUpload}
                     />
-                    <div className="p-6 bg-bhumi-accent dark:bg-bhumi-darkAccent border-2 border-bhumi-border dark:border-bhumi-darkBorder group-hover:scale-105 transition-transform">
-                        <Camera size={48} className="text-bhumi-primary dark:text-bhumi-darkPrimary" />
+                    <div className="p-6 bg-green-50 dark:bg-green-900/20 rounded-full">
+                        <Camera size={48} className="text-bhumi-green" />
                     </div>
                     <div className="text-center">
-                        <h3 className="text-xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg mb-2">Take a Photo of Soil</h3>
-                        <p className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-accent italic">or upload from gallery</p>
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Take a Photo of Soil</h3>
+                        <p className="text-gray-500 dark:text-gray-400">or upload from gallery</p>
                     </div>
                 </div>
             ) : (
                 <div className="grid md:grid-cols-2 gap-8">
                     {/* Image View */}
                     <div className="space-y-4">
-                        <div className="relative overflow-hidden bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder shadow-md aspect-[4/3]">
+                        <div className="relative rounded-3xl overflow-hidden glass-panel shadow-lg aspect-[4/3]">
                             <img src={image} alt="Soil Analysis" className="w-full h-full object-cover" />
                             <canvas ref={canvasRef} className="hidden" />
                             {/* Overlay Indicators could go here */}
@@ -207,7 +207,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                         {!result && !analyzing && (
                             <button
                                 onClick={runComputerVision}
-                                className="w-full py-4 bg-bhumi-primary dark:bg-bhumi-darkPrimary text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg font-bold text-lg shadow-md hover:bg-bhumi-primaryHover dark:hover:bg-bhumi-darkPrimaryHover transition-all flex items-center justify-center gap-2 border-2 border-bhumi-primary dark:border-bhumi-darkPrimary"
+                                className="w-full py-4 bg-bhumi-green text-white rounded-xl font-bold text-lg shadow-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2"
                             >
                                 <RefreshCw />
                                 {t.analyzeSoil}
@@ -215,7 +215,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                         )}
 
                         {analyzing && (
-                            <div className="w-full py-4 bg-bhumi-muted dark:bg-bhumi-darkMuted text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-bold flex items-center justify-center gap-3 animate-pulse border-2 border-bhumi-border dark:border-bhumi-darkBorder">
+                            <div className="w-full py-4 bg-gray-100 dark:bg-white/10 text-gray-500 rounded-xl font-bold flex items-center justify-center gap-3 animate-pulse">
                                 <RefreshCw className="animate-spin" />
                                 {t.analyzing}
                             </div>
@@ -223,7 +223,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                         {result && (
                             <button
                                 onClick={() => { setImage(null); setResult(null); }}
-                                className="w-full py-3 border-2 border-bhumi-border dark:border-bhumi-darkBorder text-bhumi-mutedFg dark:text-bhumi-darkMutedFg font-medium hover:bg-bhumi-muted dark:hover:bg-bhumi-darkMuted transition-colors"
+                                className="w-full py-3 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-white/5"
                             >
                                 Analyze Another Sample
                             </button>
@@ -235,14 +235,14 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                         {result && (
                             <div className="animate-slide-up space-y-6">
                                 {/* AI Insight Card */}
-                                <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-6 border-2 border-bhumi-border dark:border-bhumi-darkBorder border-l-4 border-l-bhumi-secondary dark:border-l-bhumi-darkSecondary">
+                                <div className="glass-panel p-6 rounded-3xl border-l-4 border-bhumi-gold bg-gradient-to-br from-yellow-50/50 to-transparent dark:from-yellow-900/20">
                                     <div className="flex items-start gap-4">
-                                        <div className="p-3 bg-bhumi-secondary/20 dark:bg-bhumi-darkSecondary/30">
-                                            <Sun className="text-bhumi-secondaryFg dark:text-bhumi-darkSecondary" />
+                                        <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-full">
+                                            <Sun className="text-yellow-600 dark:text-yellow-400" />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg mb-2">Agronomist Insight</h3>
-                                            <p className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg leading-relaxed">
+                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Agronomist Insight</h3>
+                                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                                                 {result.aiAdvice}
                                             </p>
                                         </div>
@@ -285,12 +285,12 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                                     />
                                 </div>
 
-                                {/* Recommended Crops */}
-                                <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-6 border-2 border-bhumi-border dark:border-bhumi-darkBorder">
-                                    <h3 className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg mb-4">Recommended Crops</h3>
+                                {/* Recommendations */}
+                                <div className="glass-panel p-6 rounded-3xl">
+                                    <h3 className="font-bold text-gray-900 dark:text-white mb-4">Recommended Crops</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {result.recommendedCrops.map((crop, i) => (
-                                            <span key={i} className="px-4 py-2 bg-bhumi-primary/10 dark:bg-bhumi-darkPrimary/20 text-bhumi-primary dark:text-bhumi-darkPrimary font-medium border-2 border-bhumi-primary/20 dark:border-bhumi-darkPrimary/30">
+                                            <span key={i} className="px-4 py-2 bg-bhumi-green/10 text-bhumi-green dark:text-green-400 rounded-full font-medium border border-bhumi-green/20">
                                                 {crop}
                                             </span>
                                         ))}
@@ -307,19 +307,19 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
 
 // Helper Component for Metrics
 const MetricCard = ({ icon: Icon, label, value, sub, color, score }: any) => (
-    <div className="bg-bhumi-card dark:bg-bhumi-darkCard p-4 border-2 border-bhumi-border dark:border-bhumi-darkBorder flex flex-col gap-3">
+    <div className="glass-panel p-4 rounded-2xl flex flex-col gap-3">
         <div className="flex justify-between items-start">
-            <div className={`p-2 bg-bhumi-muted dark:bg-bhumi-darkMuted ${color}`}>
+            <div className={`p-2 rounded-xl bg-gray-50 dark:bg-white/5 ${color}`}>
                 <Icon size={20} />
             </div>
-            <span className="text-xs font-mono text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">{sub}</span>
+            <span className="text-xs font-mono text-gray-400">{sub}</span>
         </div>
         <div>
-            <div className="text-xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">{value}</div>
-            <div className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">{label}</div>
+            <div className="text-xl font-bold text-gray-900 dark:text-white">{value}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
         </div>
-        {/* Progress Bar */}
-        <div className="h-1.5 w-full bg-bhumi-muted dark:bg-bhumi-darkMuted overflow-hidden">
+        {/* Mini Bar */}
+        <div className="h-1.5 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
             <div
                 className={`h-full ${color.replace('text-', 'bg-')}`}
                 style={{ width: `${Math.min(100, Math.max(0, score))}%` }}

@@ -93,10 +93,10 @@ const App: React.FC = () => {
     // Show loading spinner while checking auth status
     if (!initialCheckDone) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-bhumi-bg dark:bg-bhumi-darkBg">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0F1419]">
                 <div className="flex flex-col items-center gap-4 animate-pulse">
                     <BhumiLogo size={60} />
-                    <div className="text-bhumi-primary dark:text-bhumi-darkPrimary font-heading font-bold">Loading Bhumi...</div>
+                    <div className="text-bhumi-green font-bold">Loading Bhumi...</div>
                 </div>
             </div>
         );
@@ -104,9 +104,9 @@ const App: React.FC = () => {
 
     const ApiKeyBanner = () => (
         apiKeyMissing ? (
-            <div className="bg-bhumi-destructive text-bhumi-destructiveFg text-xs md:text-sm font-bold text-center p-2.5 fixed top-0 w-full z-50 flex items-center justify-center gap-2 shadow-lg">
+            <div className="bg-red-500 text-white text-xs md:text-sm font-bold text-center p-2 fixed top-0 w-full z-50 flex items-center justify-center gap-2 shadow-lg">
                 <AlertTriangle size={16} />
-                <span>Setup Required: Add <code className="bg-white/20 px-1.5 py-0.5 rounded">VITE_API_KEY</code> to your environment variables.</span>
+                <span>Setup Required: Add <code>VITE_API_KEY</code> to your environment variables.</span>
             </div>
         ) : null
     );
@@ -114,18 +114,16 @@ const App: React.FC = () => {
     // Language Selection Screen
     if (view === 'language') {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-bhumi-bg dark:bg-bhumi-darkBg transition-colors duration-500">
+            <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-white dark:bg-[#0F1419] transition-colors duration-500">
                 <ApiKeyBanner />
-                <div className="z-10 text-center space-y-10 animate-fade-in w-full max-w-4xl mt-6">
-                    <div className="flex justify-center mb-8 animate-float">
-                        <BhumiLogo size={100} />
+                <div className="z-10 text-center space-y-8 animate-fade-in w-full max-w-4xl mt-6">
+                    <div className="flex justify-center mb-6 animate-float">
+                        <BhumiLogo size={120} />
                     </div>
                     <div>
-                        <h1 className="text-5xl md:text-7xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg tracking-tight mb-3">BHUMI</h1>
-                        <p className="text-bhumi-primary dark:text-bhumi-darkPrimary text-lg font-accent italic tracking-wide">Smart Farming Assistant</p>
+                        <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">BHUMI</h1>
+                        <p className="text-bhumi-green dark:text-bhumi-gold text-xl font-light tracking-widest uppercase">Smart Farming Assistant</p>
                     </div>
-
-                    <div className="decorative-line w-32 mx-auto my-8"></div>
 
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-8">
                         {[
@@ -138,18 +136,17 @@ const App: React.FC = () => {
                             { code: 'ru', label: 'Russian', native: 'Русский' },
                             { code: 'ja', label: 'Japanese', native: '日本語' },
                             { code: 'pt', label: 'Portuguese', native: 'Português' },
-                        ].map((l, index) => (
+                        ].map((l) => (
                             <button
                                 key={l.code}
                                 onClick={() => selectLanguage(l.code as Language)}
-                                style={{ animationDelay: `${index * 0.05}s` }}
-                                className="p-6 bg-bhumi-card dark:bg-bhumi-darkCard hover:bg-bhumi-muted dark:hover:bg-bhumi-darkMuted transition-all border-2 border-bhumi-border dark:border-bhumi-darkBorder hover:border-bhumi-primary dark:hover:border-bhumi-darkPrimary group relative overflow-hidden animate-fade-in opacity-0"
+                                className="glass-panel p-6 rounded-2xl bg-white/50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 hover:border-bhumi-green dark:hover:border-bhumi-gold group relative overflow-hidden"
                             >
-                                <div className="absolute inset-0 bg-bhumi-primary/5 dark:bg-bhumi-darkPrimary/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-                                <span className="relative text-lg font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg group-hover:text-bhumi-primary dark:group-hover:text-bhumi-darkPrimary transition-colors">
+                                <div className="absolute inset-0 bg-bhumi-green/5 dark:bg-bhumi-gold/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                                <span className="relative text-lg font-bold text-gray-800 dark:text-gray-100 group-hover:text-bhumi-green dark:group-hover:text-bhumi-gold transition-colors">
                                     {l.native}
                                 </span>
-                                <div className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg mt-1 font-accent italic">{l.label}</div>
+                                <div className="text-xs text-gray-500 mt-1">{l.label}</div>
                             </button>
                         ))}
                     </div>

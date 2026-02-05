@@ -130,23 +130,23 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
     };
 
     return (
-        <div className="min-h-screen animate-fade-in pb-10 bg-bhumi-bg dark:bg-bhumi-darkBg">
+        <div className="min-h-screen animate-fade-in pb-10">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <button
                     onClick={onBack}
-                    className="flex items-center gap-2 text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:text-bhumi-primary dark:hover:text-bhumi-darkPrimary transition-colors"
+                    className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-bhumi-green dark:hover:text-bhumi-gold transition-colors"
                 >
                     <ArrowLeft size={20} />
                     <span>Back</span>
                 </button>
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-bhumi-primary dark:bg-bhumi-darkPrimary flex items-center justify-center shadow-lg">
-                        <Compass className="text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg" size={24} />
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+                        <Compass className="text-white" size={24} />
                     </div>
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">SeedScout</h1>
-                        <p className="text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Genetic Hotspot Locator</p>
+                        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">SeedScout</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Genetic Hotspot Locator</p>
                     </div>
                 </div>
                 <div className="w-16"></div>
@@ -156,19 +156,19 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                 {/* Search Panel */}
                 <div className="lg:col-span-1 space-y-4">
                     {/* Crop Selection */}
-                    <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-5">
-                        <h3 className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg mb-4 flex items-center gap-2">
-                            <Leaf size={18} className="text-bhumi-primary dark:text-bhumi-darkPrimary" />
+                    <div className="glass-panel rounded-2xl p-5">
+                        <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <Leaf size={18} className="text-emerald-500" />
                             Target Crop
                         </h3>
                         <select
                             value={query.cropType}
                             onChange={(e) => setQuery({ ...query, cropType: e.target.value })}
-                            className="w-full p-3 bg-bhumi-input dark:bg-bhumi-darkInput border-2 border-bhumi-border dark:border-bhumi-darkBorder 
-                       text-bhumi-fg dark:text-bhumi-darkFg focus:ring-2 focus:ring-bhumi-primary dark:focus:ring-bhumi-darkPrimary focus:border-transparent transition-all"
+                            className="w-full p-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 
+                       text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                         >
                             {cropTypes.map((crop) => (
-                                <option key={crop.id} value={crop.id} className="bg-bhumi-card dark:bg-bhumi-darkCard">
+                                <option key={crop.id} value={crop.id} className="bg-white dark:bg-gray-800">
                                     {crop.icon} {crop.name}
                                 </option>
                             ))}
@@ -176,51 +176,51 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                     </div>
 
                     {/* Trait Selection */}
-                    <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-5">
-                        <h3 className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg mb-4 flex items-center gap-2">
-                            <Target size={18} className="text-bhumi-secondary dark:text-bhumi-darkSecondary" />
+                    <div className="glass-panel rounded-2xl p-5">
+                        <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <Target size={18} className="text-orange-500" />
                             Desired Traits
                         </h3>
                         <div className="space-y-3">
-                            <label className="flex items-center gap-3 p-3 bg-bhumi-muted dark:bg-bhumi-darkMuted hover:bg-bhumi-border dark:hover:bg-bhumi-darkBorder cursor-pointer transition-colors group">
+                            <label className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer transition-colors group">
                                 <input
                                     type="checkbox"
                                     checked={query.salinityTolerance}
                                     onChange={(e) => setQuery({ ...query, salinityTolerance: e.target.checked })}
-                                    className="w-5 h-5 border-bhumi-border dark:border-bhumi-darkBorder text-bhumi-primary dark:text-bhumi-darkPrimary focus:ring-bhumi-primary dark:focus:ring-bhumi-darkPrimary"
+                                    className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
                                 />
-                                <Droplets size={18} className="text-bhumi-destructive dark:text-bhumi-darkDestructive" />
+                                <Droplets size={18} className="text-red-500" />
                                 <div className="flex-1">
-                                    <span className="font-medium text-bhumi-fg dark:text-bhumi-darkFg">Salinity Tolerance</span>
-                                    <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">High soil EC environments</p>
+                                    <span className="font-medium text-gray-900 dark:text-white">Salinity Tolerance</span>
+                                    <p className="text-xs text-gray-500">High soil EC environments</p>
                                 </div>
                             </label>
 
-                            <label className="flex items-center gap-3 p-3 bg-bhumi-muted dark:bg-bhumi-darkMuted hover:bg-bhumi-border dark:hover:bg-bhumi-darkBorder cursor-pointer transition-colors group">
+                            <label className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer transition-colors group">
                                 <input
                                     type="checkbox"
                                     checked={query.heatTolerance}
                                     onChange={(e) => setQuery({ ...query, heatTolerance: e.target.checked })}
-                                    className="w-5 h-5 border-bhumi-border dark:border-bhumi-darkBorder text-bhumi-primary dark:text-bhumi-darkPrimary focus:ring-bhumi-primary dark:focus:ring-bhumi-darkPrimary"
+                                    className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
                                 />
-                                <Thermometer size={18} className="text-bhumi-secondary dark:text-bhumi-darkSecondary" />
+                                <Thermometer size={18} className="text-orange-500" />
                                 <div className="flex-1">
-                                    <span className="font-medium text-bhumi-fg dark:text-bhumi-darkFg">Heat Resistance</span>
-                                    <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Survives 40°C+ temperatures</p>
+                                    <span className="font-medium text-gray-900 dark:text-white">Heat Resistance</span>
+                                    <p className="text-xs text-gray-500">Survives 40°C+ temperatures</p>
                                 </div>
                             </label>
 
-                            <label className="flex items-center gap-3 p-3 bg-bhumi-muted dark:bg-bhumi-darkMuted hover:bg-bhumi-border dark:hover:bg-bhumi-darkBorder cursor-pointer transition-colors group">
+                            <label className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer transition-colors group">
                                 <input
                                     type="checkbox"
                                     checked={query.droughtTolerance}
                                     onChange={(e) => setQuery({ ...query, droughtTolerance: e.target.checked })}
-                                    className="w-5 h-5 border-bhumi-border dark:border-bhumi-darkBorder text-bhumi-primary dark:text-bhumi-darkPrimary focus:ring-bhumi-primary dark:focus:ring-bhumi-darkPrimary"
+                                    className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
                                 />
-                                <TrendingUp size={18} className="text-bhumi-accent dark:text-bhumi-darkAccent" />
+                                <TrendingUp size={18} className="text-yellow-500" />
                                 <div className="flex-1">
-                                    <span className="font-medium text-bhumi-fg dark:text-bhumi-darkFg">Drought Hardiness</span>
-                                    <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Low rainfall adaptation</p>
+                                    <span className="font-medium text-gray-900 dark:text-white">Drought Hardiness</span>
+                                    <p className="text-xs text-gray-500">Low rainfall adaptation</p>
                                 </div>
                             </label>
                         </div>
@@ -228,7 +228,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                         {/* Advanced Weights Button */}
                         <button
                             onClick={() => setShowAdvanced(!showAdvanced)}
-                            className="flex items-center gap-2 mt-4 text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:text-bhumi-primary dark:hover:text-bhumi-darkPrimary transition-colors"
+                            className="flex items-center gap-2 mt-4 text-sm text-gray-500 hover:text-emerald-500 transition-colors"
                         >
                             <Filter size={14} />
                             <span>Advanced Weights</span>
@@ -236,21 +236,21 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                         </button>
 
                         {showAdvanced && (
-                            <div className="mt-4 space-y-3 p-4 bg-bhumi-muted dark:bg-bhumi-darkMuted">
+                            <div className="mt-4 space-y-3 p-4 rounded-xl bg-gray-50 dark:bg-white/5">
                                 <div>
-                                    <label className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Salinity Weight: {query.salinityWeight.toFixed(1)}</label>
+                                    <label className="text-xs text-gray-500">Salinity Weight: {query.salinityWeight.toFixed(1)}</label>
                                     <input
                                         type="range" min="0" max="1" step="0.1" value={query.salinityWeight}
                                         onChange={(e) => setQuery({ ...query, salinityWeight: parseFloat(e.target.value) })}
-                                        className="w-full accent-bhumi-destructive dark:accent-bhumi-darkDestructive"
+                                        className="w-full accent-red-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Heat Weight: {query.heatWeight.toFixed(1)}</label>
+                                    <label className="text-xs text-gray-500">Heat Weight: {query.heatWeight.toFixed(1)}</label>
                                     <input
                                         type="range" min="0" max="1" step="0.1" value={query.heatWeight}
                                         onChange={(e) => setQuery({ ...query, heatWeight: parseFloat(e.target.value) })}
-                                        className="w-full accent-bhumi-secondary dark:accent-bhumi-darkSecondary"
+                                        className="w-full accent-orange-500"
                                     />
                                 </div>
                             </div>
@@ -260,9 +260,9 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                     <button
                         onClick={handleSearch}
                         disabled={isSearching || (!query.salinityTolerance && !query.heatTolerance && !query.droughtTolerance)}
-                        className="w-full p-4 bg-bhumi-primary dark:bg-bhumi-darkPrimary text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg font-bold 
-                     flex items-center justify-center gap-2 hover:opacity-90 
-                     transition-all shadow-lg shadow-bhumi-primary/30 dark:shadow-bhumi-darkPrimary/30 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-bhumi-primary dark:border-bhumi-darkPrimary"
+                        className="w-full p-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold 
+                     flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-700 
+                     transition-all shadow-lg shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isSearching ? (
                             <>
@@ -279,9 +279,9 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
 
                     {/* Data Source Indicator */}
                     {hasSearched && !isSearching && (
-                        <div className={`flex items-center gap-2 p-2 text-xs mt-2 ${dataSource === 'gemini' ? 'bg-bhumi-primary/10 dark:bg-bhumi-darkPrimary/10 text-bhumi-primary dark:text-bhumi-darkPrimary' :
-                            dataSource === 'cached' ? 'bg-bhumi-accent/10 dark:bg-bhumi-darkAccent/10 text-bhumi-accent dark:text-bhumi-darkAccent' :
-                                'bg-bhumi-muted dark:bg-bhumi-darkMuted text-bhumi-mutedFg dark:text-bhumi-darkMutedFg'
+                        <div className={`flex items-center gap-2 p-2 rounded-lg text-xs mt-2 ${dataSource === 'gemini' ? 'bg-emerald-500/10 text-emerald-600' :
+                            dataSource === 'cached' ? 'bg-blue-500/10 text-blue-600' :
+                                'bg-gray-500/10 text-gray-600'
                             }`}>
                             {dataSource === 'gemini' && <Cloud size={14} />}
                             {dataSource === 'cached' && <Database size={14} />}
@@ -292,7 +292,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                         'Using fallback data (API may have issues)'}
                             </span>
                             {dataSource !== 'gemini' && (
-                                <button onClick={handleSearch} className="ml-auto text-bhumi-primary dark:text-bhumi-darkPrimary hover:underline flex items-center gap-1">
+                                <button onClick={handleSearch} className="ml-auto text-emerald-500 hover:underline flex items-center gap-1">
                                     <RefreshCw size={12} /> Retry with AI
                                 </button>
                             )}
@@ -309,9 +309,9 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                 <button
                                     key={layer}
                                     onClick={() => { setActiveLayer(layer); setSatelliteView(false); }}
-                                    className={`px-3 py-1.5 text-sm font-medium transition-all ${!satelliteView && activeLayer === layer
-                                        ? 'bg-bhumi-primary dark:bg-bhumi-darkPrimary text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg shadow-md'
-                                        : 'bg-bhumi-muted dark:bg-bhumi-darkMuted text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:bg-bhumi-border dark:hover:bg-bhumi-darkBorder'
+                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${!satelliteView && activeLayer === layer
+                                        ? 'bg-emerald-500 text-white shadow-md'
+                                        : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'
                                         }`}
                                 >
                                     {layer === 'score' ? '🎯 Hotspot Score' :
@@ -323,9 +323,9 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                         </div>
                         <button
                             onClick={() => setSatelliteView(!satelliteView)}
-                            className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-all ${satelliteView
-                                ? 'bg-bhumi-fg dark:bg-bhumi-darkFg text-bhumi-bg dark:text-bhumi-darkBg ring-2 ring-bhumi-primary dark:ring-bhumi-darkPrimary'
-                                : 'bg-bhumi-muted dark:bg-bhumi-darkMuted text-bhumi-mutedFg dark:text-bhumi-darkMutedFg'
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${satelliteView
+                                ? 'bg-gray-800 text-white ring-2 ring-emerald-500'
+                                : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'
                                 }`}
                         >
                             {satelliteView ? <Satellite size={16} /> : <Map size={16} />}
@@ -335,7 +335,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
 
                     {/* Interactive Map */}
                     <div
-                        className={`bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-4 relative overflow-hidden transition-all h-[520px] ${satelliteView ? 'bg-bhumi-fg dark:bg-bhumi-darkFg border-0 p-0' : ''
+                        className={`glass-panel rounded-2xl p-4 relative overflow-hidden transition-all h-[520px] ${satelliteView ? 'bg-gray-900 border-0 p-0' : ''
                             }`}
                     >
                         {satelliteView ? (
@@ -396,8 +396,8 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                 </svg>
 
                                 {/* Legend */}
-                                <div className="absolute bottom-2 left-2 bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-2 text-xs backdrop-blur-md">
-                                    <div className="font-semibold text-bhumi-fg dark:text-bhumi-darkFg mb-1">
+                                <div className="absolute bottom-2 left-2 glass-panel rounded-lg p-2 text-xs backdrop-blur-md">
+                                    <div className="font-semibold text-gray-700 dark:text-white mb-1">
                                         {activeLayer === 'score' ? 'Hotspot Score' :
                                             activeLayer === 'salinity' ? 'Salinity (dS/m)' :
                                                 activeLayer === 'heat' ? 'Max Temperature' :
@@ -405,16 +405,16 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                     </div>
                                     {activeLayer !== 'cluster' ? (
                                         <div className="flex items-center gap-1">
-                                            <span className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Low</span>
-                                            <div className="w-16 h-2" style={{
+                                            <span className="text-gray-500">Low</span>
+                                            <div className="w-16 h-2 rounded" style={{
                                                 background: activeLayer === 'score' ? 'linear-gradient(to right, #9ca3af, #eab308, #22c55e)' :
                                                     activeLayer === 'salinity' ? 'linear-gradient(to right, rgba(239,68,68,0.2), rgba(239,68,68,1))' : 'linear-gradient(to right, gray, darkgray)'
                                             }}></div>
-                                            <span className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">High</span>
+                                            <span className="text-gray-500">High</span>
                                         </div>
                                     ) : (
                                         <div className="flex gap-2">
-                                            <span className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">4 Climate Zones</span>
+                                            <span className="text-gray-500">4 Climate Zones</span>
                                         </div>
                                     )}
                                 </div>
@@ -426,61 +426,61 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                     {selectedDistrict && hasSearched && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Metrics Panel */}
-                            <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-primary/30 dark:border-bhumi-darkPrimary/30 p-5">
+                            <div className="glass-panel rounded-2xl p-5 border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
-                                        <h3 className="text-xl font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg flex items-center gap-2">
-                                            <MapPin className="text-bhumi-primary dark:text-bhumi-darkPrimary" size={20} />
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                            <MapPin className="text-emerald-500" size={20} />
                                             {selectedDistrict.district.name}
                                         </h3>
-                                        <p className="text-sm text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">{selectedDistrict.district.state}</p>
+                                        <p className="text-sm text-gray-500">{selectedDistrict.district.state}</p>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-3xl font-heading font-bold text-bhumi-primary dark:text-bhumi-darkPrimary">
+                                        <div className="text-3xl font-bold text-emerald-500">
                                             {(selectedDistrict.traitScore * 100).toFixed(0)}%
                                         </div>
-                                        <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Match Score</p>
+                                        <p className="text-xs text-gray-500">Match Score</p>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3 mb-2">
-                                    <div className="p-2 bg-bhumi-destructive/10 dark:bg-bhumi-darkDestructive/10 text-center">
-                                        <div className="text-lg font-bold text-bhumi-fg dark:text-bhumi-darkFg">{selectedDistrict.district.salinity}</div>
-                                        <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">EC (dS/m)</p>
+                                    <div className="p-2 rounded-xl bg-red-500/10 text-center">
+                                        <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.salinity}</div>
+                                        <p className="text-xs text-gray-500">EC (dS/m)</p>
                                     </div>
-                                    <div className="p-2 bg-bhumi-secondary/30 dark:bg-bhumi-darkSecondary/30 text-center">
-                                        <div className="text-lg font-bold text-bhumi-fg dark:text-bhumi-darkFg">{selectedDistrict.district.maxTemp}°C</div>
-                                        <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Max Temp</p>
+                                    <div className="p-2 rounded-xl bg-orange-500/10 text-center">
+                                        <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.maxTemp}°C</div>
+                                        <p className="text-xs text-gray-500">Max Temp</p>
                                     </div>
-                                    <div className="p-2 bg-bhumi-accent/20 dark:bg-bhumi-darkAccent/20 text-center">
-                                        <div className="text-lg font-bold text-bhumi-fg dark:text-bhumi-darkFg">{selectedDistrict.district.tribalPercent}%</div>
-                                        <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Tribal</p>
+                                    <div className="p-2 rounded-xl bg-purple-500/10 text-center">
+                                        <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.tribalPercent}%</div>
+                                        <p className="text-xs text-gray-500">Tribal</p>
                                     </div>
-                                    <div className="p-2 bg-bhumi-primary/10 dark:bg-bhumi-darkPrimary/10 text-center">
-                                        <div className="text-lg font-bold text-bhumi-fg dark:text-bhumi-darkFg">{selectedDistrict.district.rainfall}</div>
-                                        <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Rain (mm)</p>
+                                    <div className="p-2 rounded-xl bg-blue-500/10 text-center">
+                                        <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.rainfall}</div>
+                                        <p className="text-xs text-gray-500">Rain (mm)</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* AI Insight Panel */}
-                            <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-accent/20 dark:border-bhumi-darkAccent/20 p-5 relative overflow-hidden">
-                                <h3 className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg mb-2 flex items-center gap-2">
-                                    <Sparkles size={18} className="text-bhumi-accent dark:text-bhumi-darkAccent" />
+                            <div className="glass-panel rounded-2xl p-5 border border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-transparent relative overflow-hidden">
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                                    <Sparkles size={18} className="text-purple-500" />
                                     AI Genetic Analysis
                                 </h3>
 
                                 {loadingInsight ? (
-                                    <div className="flex flex-col items-center justify-center h-40 text-bhumi-accent dark:text-bhumi-darkAccent">
+                                    <div className="flex flex-col items-center justify-center h-40 text-purple-500">
                                         <Loader2 size={32} className="animate-spin mb-2" />
                                         <span className="text-sm animate-pulse">Analyzing gene evolution...</span>
                                     </div>
                                 ) : aiInsight ? (
-                                    <div className="text-sm text-bhumi-fg dark:text-bhumi-darkFg prose prose-sm dark:prose-invert max-h-60 overflow-y-auto custom-scrollbar">
+                                    <div className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-h-60 overflow-y-auto custom-scrollbar">
                                         <div dangerouslySetInnerHTML={{ __html: aiInsight.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') }} />
                                     </div>
                                 ) : (
-                                    <div className="flex flex-col items-center justify-center h-40 text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">
+                                    <div className="flex flex-col items-center justify-center h-40 text-gray-400">
                                         <p>Select a hotspot to generate insights</p>
                                     </div>
                                 )}
@@ -518,9 +518,9 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
 
                     {/* Top Results List */}
                     {hasSearched && results.length > 0 && (
-                        <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-5">
-                            <h3 className="font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg mb-4 flex items-center gap-2">
-                                <TrendingUp size={18} className="text-bhumi-primary dark:text-bhumi-darkPrimary" />
+                        <div className="glass-panel rounded-2xl p-5">
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                <TrendingUp size={18} className="text-emerald-500" />
                                 Top Genetic Hotspots
                             </h3>
                             <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
@@ -528,21 +528,21 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                     <button
                                         key={result.district.id}
                                         onClick={() => handleSelectDistrict(result)}
-                                        className={`w-full flex items-center gap-3 p-3 transition-all text-left ${selectedDistrict?.district.id === result.district.id
-                                            ? 'bg-bhumi-primary/20 dark:bg-bhumi-darkPrimary/20 border-2 border-bhumi-primary/30 dark:border-bhumi-darkPrimary/30'
-                                            : 'bg-bhumi-muted dark:bg-bhumi-darkMuted hover:bg-bhumi-border dark:hover:bg-bhumi-darkBorder'
+                                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left ${selectedDistrict?.district.id === result.district.id
+                                            ? 'bg-emerald-500/20 border border-emerald-500/30'
+                                            : 'bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10'
                                             }`}
                                     >
-                                        <div className={`w-6 h-6 flex items-center justify-center text-xs font-bold ${index < 3 ? 'bg-bhumi-primary dark:bg-bhumi-darkPrimary text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg' : 'bg-bhumi-border dark:bg-bhumi-darkBorder text-bhumi-mutedFg dark:text-bhumi-darkMutedFg'
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${index < 3 ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300'
                                             }`}>
                                             {index + 1}
                                         </div>
                                         <div className="flex-1">
-                                            <span className="font-medium text-sm text-bhumi-fg dark:text-bhumi-darkFg">{result.district.name}</span>
-                                            <span className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg ml-2">{result.district.state}</span>
+                                            <span className="font-medium text-sm text-gray-900 dark:text-white">{result.district.name}</span>
+                                            <span className="text-xs text-gray-500 ml-2">{result.district.state}</span>
                                         </div>
                                         <div className="text-right">
-                                            <span className={`text-sm font-bold ${result.traitScore >= 0.7 ? 'text-bhumi-primary dark:text-bhumi-darkPrimary' : 'text-bhumi-mutedFg dark:text-bhumi-darkMutedFg'
+                                            <span className={`text-sm font-bold ${result.traitScore >= 0.7 ? 'text-emerald-500' : 'text-gray-400'
                                                 }`}>{(result.traitScore * 100).toFixed(0)}%</span>
                                         </div>
                                     </button>

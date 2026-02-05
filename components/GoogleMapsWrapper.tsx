@@ -19,10 +19,10 @@ export const GoogleMapsWrapper: React.FC<GoogleMapsWrapperProps> = ({
 
     if (!apiKey) {
         return (
-            <div className="w-full h-full flex items-center justify-center bg-bhumi-muted dark:bg-bhumi-darkMuted">
-                <div className="text-center text-bhumi-mutedFg dark:text-bhumi-darkMutedFg p-8">
+            <div className="w-full h-full flex items-center justify-center bg-gray-900 rounded-2xl">
+                <div className="text-center text-gray-400 p-8">
                     <p className="text-lg font-semibold mb-2">🗺️ Google Maps API Key Required</p>
-                    <p className="text-sm">Add <code className="bg-bhumi-card dark:bg-bhumi-darkCard px-2 py-1">VITE_GOOGLE_MAPS_API_KEY</code> to your .env file</p>
+                    <p className="text-sm">Add <code className="bg-gray-800 px-2 py-1 rounded">VITE_GOOGLE_MAPS_API_KEY</code> to your .env file</p>
                 </div>
             </div>
         );
@@ -31,7 +31,7 @@ export const GoogleMapsWrapper: React.FC<GoogleMapsWrapperProps> = ({
     return (
         <APIProvider apiKey={apiKey}>
             <Map
-                style={{ width: '100%', height: '100%' }}
+                style={{ width: '100%', height: '100%', borderRadius: '1rem' }}
                 defaultCenter={center}
                 defaultZoom={zoom}
                 mapId="seedscout-satellite-map"

@@ -57,7 +57,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
     // Add null checks for transaction data
     if (!transaction || !transaction.data) {
         return (
-            <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder p-8 text-center">
+            <div className="glass-panel rounded-3xl p-8 text-center">
                 <p className="text-gray-500">Loading transaction data...</p>
             </div>
         );
@@ -107,17 +107,17 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
     const shortHash = `${transactionHash.slice(0, 10)}...${transactionHash.slice(-8)}`;
 
     return (
-        <div className="bg-bhumi-card dark:bg-bhumi-darkCard border-2 border-bhumi-border dark:border-bhumi-darkBorder overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="glass-panel rounded-3xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
-            <div className="bg-bhumi-accent dark:bg-bhumi-darkAccent p-6 text-white">
+            <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 p-6 text-white">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-white/20 p-3 border-2 border-white/30">
+                    <div className="bg-white/20 p-3 rounded-xl border border-white/30">
                         <Lock size={24} />
                     </div>
                     <div>
-                        <h3 className="text-xl font-heading font-bold flex items-center gap-2">
+                        <h3 className="text-xl font-bold flex items-center gap-2">
                             Ethereum Blockchain Verified
-                            <span className="bg-white/20 text-[10px] px-2 py-0.5">
+                            <span className="bg-white/20 text-[10px] px-2 py-0.5 rounded-full">
                                 SEPOLIA
                             </span>
                         </h3>
@@ -126,7 +126,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                 </div>
                 
                 {/* Transaction Hash */}
-                <div className="bg-white/10 p-4 backdrop-blur-sm border-2 border-white/20">
+                <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
                     <div className="flex items-center justify-between mb-3">
                         <div>
                             <p className="text-xs text-white/60 uppercase tracking-widest mb-1">Transaction Hash</p>
@@ -135,7 +135,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                         <div className="flex gap-2">
                             <button 
                                 onClick={() => copyToClipboard(transactionHash)}
-                                className="p-2 hover:bg-white/20 transition-colors"
+                                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
                                 title="Copy full hash"
                             >
                                 {copied ? <CheckCircle2 size={20} /> : <Copy size={20} />}
@@ -144,7 +144,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                                 href={etherscanUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-2 hover:bg-white/20 transition-colors"
+                                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
                                 title="View on Etherscan"
                             >
                                 <ExternalLink size={20} />
@@ -172,7 +172,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                     href={etherscanUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 w-full bg-white/20 hover:bg-white/30 border-2 border-white/30 py-3 px-4 flex items-center justify-center gap-2 transition-colors"
+                    className="mt-4 w-full bg-white/20 hover:bg-white/30 border border-white/30 py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors"
                 >
                     <Link2 size={18} />
                     <span className="font-bold">View on Etherscan</span>
@@ -181,13 +181,13 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
             </div>
 
             {/* Tab Switcher */}
-            <div className="flex border-b-2 border-bhumi-border dark:border-bhumi-darkBorder">
+            <div className="flex border-b border-gray-200 dark:border-white/10">
                 <button
                     onClick={() => setActiveTab('quality')}
                     className={`flex-1 py-4 px-6 flex items-center justify-center gap-2 font-bold transition-all ${
                         activeTab === 'quality' 
-                            ? 'text-bhumi-accent dark:text-bhumi-darkAccent border-b-2 border-bhumi-accent dark:border-bhumi-darkAccent bg-bhumi-accent/10 dark:bg-bhumi-darkAccent/10' 
-                            : 'text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:text-bhumi-fg dark:hover:text-bhumi-darkFg'
+                            ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50 dark:bg-indigo-500/10' 
+                            : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
                     }`}
                 >
                     <Eye size={20} />
@@ -197,8 +197,8 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                     onClick={() => setActiveTab('payment')}
                     className={`flex-1 py-4 px-6 flex items-center justify-center gap-2 font-bold transition-all ${
                         activeTab === 'payment' 
-                            ? 'text-bhumi-primary dark:text-bhumi-darkPrimary border-b-2 border-bhumi-primary dark:border-bhumi-darkPrimary bg-bhumi-primary/10 dark:bg-bhumi-darkPrimary/10' 
-                            : 'text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:text-bhumi-fg dark:hover:text-bhumi-darkFg'
+                            ? 'text-emerald-600 border-b-2 border-emerald-600 bg-emerald-50 dark:bg-emerald-500/10' 
+                            : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
                     }`}
                 >
                     <Wallet size={20} />
@@ -212,75 +212,75 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                     <div className="space-y-6">
                         {/* Quality QR Code - Links to Etherscan */}
                         <div className="flex flex-col items-center">
-                            <div className="bg-white p-6 shadow-xl mb-4 relative">
+                            <div className="bg-white p-6 rounded-2xl shadow-xl mb-4 relative">
                                 <QRCodeSVG 
                                     value={etherscanUrl}
                                     size={200}
                                     level="H"
                                     includeMargin={true}
                                 />
-                                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-bhumi-accent dark:bg-bhumi-darkAccent text-white text-[8px] px-2 py-1 font-bold">
+                                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[8px] px-2 py-1 rounded font-bold">
                                     ETHERSCAN
                                 </div>
                             </div>
-                            <p className="text-center text-bhumi-mutedFg dark:text-bhumi-darkMutedFg text-sm max-w-xs">
-                                Scan to view crop quality & transaction details on <span className="font-bold text-bhumi-accent dark:text-bhumi-darkAccent">Etherscan</span>
+                            <p className="text-center text-gray-500 text-sm max-w-xs">
+                                Scan to view crop quality & transaction details on <span className="font-bold text-indigo-600">Etherscan</span>
                             </p>
                         </div>
 
                         {/* Quality Details */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-bhumi-muted dark:bg-bhumi-darkMuted p-4">
-                                <div className="flex items-center gap-2 text-bhumi-accent dark:text-bhumi-darkAccent mb-2">
+                            <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
+                                <div className="flex items-center gap-2 text-indigo-500 mb-2">
                                     <Package size={16} />
                                     <span className="text-xs font-bold uppercase tracking-widest">Crop</span>
                                 </div>
-                                <p className="text-lg font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">{crop}</p>
-                                <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">{location}</p>
+                                <p className="text-lg font-bold text-gray-900 dark:text-white">{crop}</p>
+                                <p className="text-xs text-gray-500">{location}</p>
                             </div>
-                            <div className="bg-bhumi-muted dark:bg-bhumi-darkMuted p-4">
-                                <div className="flex items-center gap-2 text-bhumi-primary dark:text-bhumi-darkPrimary mb-2">
+                            <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
+                                <div className="flex items-center gap-2 text-emerald-500 mb-2">
                                     <Sparkles size={16} />
                                     <span className="text-xs font-bold uppercase tracking-widest">Quality</span>
                                 </div>
-                                <p className="text-lg font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">
+                                <p className="text-lg font-bold text-gray-900 dark:text-white">
                                     {qualityScore}/10
                                 </p>
-                                <p className="text-xs text-bhumi-primary dark:text-bhumi-darkPrimary font-medium">
+                                <p className="text-xs text-emerald-500 font-medium">
                                     {getQualityGrade(qualityScore)}
                                 </p>
                             </div>
-                            <div className="bg-bhumi-muted dark:bg-bhumi-darkMuted p-4">
-                                <div className="flex items-center gap-2 text-bhumi-secondary dark:text-bhumi-darkSecondary mb-2">
+                            <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
+                                <div className="flex items-center gap-2 text-amber-500 mb-2">
                                     <CreditCard size={16} />
                                     <span className="text-xs font-bold uppercase tracking-widest">Price Range</span>
                                 </div>
-                                <p className="text-lg font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">
+                                <p className="text-lg font-bold text-gray-900 dark:text-white">
                                     ₹{minPrice.toLocaleString()} - ₹{maxPrice.toLocaleString()}
                                 </p>
-                                <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">per quintal</p>
+                                <p className="text-xs text-gray-500">per quintal</p>
                             </div>
-                            <div className="bg-bhumi-muted dark:bg-bhumi-darkMuted p-4">
-                                <div className="flex items-center gap-2 text-bhumi-destructive dark:text-bhumi-darkDestructive mb-2">
+                            <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
+                                <div className="flex items-center gap-2 text-red-500 mb-2">
                                     <Shield size={16} />
                                     <span className="text-xs font-bold uppercase tracking-widest">MGP</span>
                                 </div>
-                                <p className="text-lg font-heading font-bold text-bhumi-fg dark:text-bhumi-darkFg">
+                                <p className="text-lg font-bold text-gray-900 dark:text-white">
                                     ₹{guaranteedPrice.toLocaleString()}
                                 </p>
-                                <p className="text-xs text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">minimum guaranteed</p>
+                                <p className="text-xs text-gray-500">minimum guaranteed</p>
                             </div>
                         </div>
 
                         {/* Blockchain Verification Badge */}
-                        <div className="flex items-center justify-center gap-2 bg-bhumi-primary/10 dark:bg-bhumi-darkPrimary/10 text-bhumi-primary dark:text-bhumi-darkPrimary py-3 px-4 border-2 border-bhumi-primary/20 dark:border-bhumi-darkPrimary/20">
+                        <div className="flex items-center justify-center gap-2 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 py-3 px-4 rounded-xl border border-emerald-200 dark:border-emerald-500/20">
                             <CheckCircle2 size={20} />
                             <span className="font-bold">Verified on Ethereum Sepolia</span>
                         </div>
 
                         {/* Data Visibility Note */}
-                        <div className="bg-bhumi-accent/10 dark:bg-bhumi-darkAccent/10 border-2 border-bhumi-accent/20 dark:border-bhumi-darkAccent/20 p-4">
-                            <p className="text-bhumi-fg dark:text-bhumi-darkFg text-sm">
+                        <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-xl p-4">
+                            <p className="text-blue-700 dark:text-blue-400 text-sm">
                                 <span className="font-bold">📝 On-Chain Data:</span> All crop details including quality score ({qualityScore}/10), 
                                 quantity ({quantity} quintals), and price range are permanently stored in the transaction's input data. 
                                 View the full data by clicking "Input Data" → "Decode Input Data" on Etherscan.
@@ -291,8 +291,8 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                     <div className="space-y-6">
                         {!showUpiInput ? (
                             <div className="text-center space-y-4">
-                                <div className="bg-bhumi-secondary/30 dark:bg-bhumi-darkSecondary/30 border-2 border-bhumi-secondary dark:border-bhumi-darkSecondary p-4">
-                                    <p className="text-bhumi-fg dark:text-bhumi-darkFg text-sm">
+                                <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl p-4">
+                                    <p className="text-amber-700 dark:text-amber-400 text-sm">
                                         <span className="font-bold">Note:</span> Enter farmer's UPI ID to generate payment QR code
                                     </p>
                                 </div>
@@ -303,12 +303,12 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                                         value={upiId}
                                         onChange={(e) => setUpiId(e.target.value)}
                                         placeholder="Enter UPI ID (e.g., farmer@upi)"
-                                        className="w-full bg-bhumi-input dark:bg-bhumi-darkInput border-2 border-bhumi-border dark:border-bhumi-darkBorder px-4 py-3 focus:ring-2 focus:ring-bhumi-primary dark:focus:ring-bhumi-darkPrimary transition-all outline-none text-center text-bhumi-fg dark:text-bhumi-darkFg"
+                                        className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-center"
                                     />
                                     <button
                                         onClick={() => upiId && setShowUpiInput(true)}
                                         disabled={!upiId}
-                                        className="w-full bg-bhumi-primary dark:bg-bhumi-darkPrimary hover:opacity-90 text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg font-bold py-3 disabled:opacity-50 disabled:cursor-not-allowed transition-all border-2 border-bhumi-primary dark:border-bhumi-darkPrimary"
+                                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                     >
                                         Generate Payment QR
                                     </button>
@@ -317,26 +317,26 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                         ) : (
                             <>
                                 {/* Payment Summary */}
-                                <div className="bg-bhumi-primary dark:bg-bhumi-darkPrimary p-4 text-bhumi-primaryFg dark:text-bhumi-darkPrimaryFg">
+                                <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-4 text-white">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <p className="text-xs opacity-70">Quantity</p>
+                                            <p className="text-xs text-white/70">Quantity</p>
                                             <p className="font-bold">{quantityQuintals} Quintals</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs opacity-70">Price/Quintal</p>
+                                            <p className="text-xs text-white/70">Price/Quintal</p>
                                             <p className="font-bold">₹{midPrice.toLocaleString()}</p>
                                         </div>
                                         <div className="col-span-2 pt-2 border-t border-white/20">
-                                            <p className="text-xs opacity-70">Total Amount</p>
-                                            <p className="text-2xl font-heading font-bold">₹{totalAmount.toLocaleString()}</p>
+                                            <p className="text-xs text-white/70">Total Amount</p>
+                                            <p className="text-2xl font-black">₹{totalAmount.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* UPI QR Code */}
                                 <div className="flex flex-col items-center">
-                                    <div className="bg-white p-6 shadow-xl mb-4">
+                                    <div className="bg-white p-6 rounded-2xl shadow-xl mb-4">
                                         <QRCodeSVG 
                                             value={upiQRString}
                                             size={200}
@@ -344,30 +344,30 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                                             includeMargin={true}
                                         />
                                     </div>
-                                    <p className="text-center text-bhumi-mutedFg dark:text-bhumi-darkMutedFg text-sm max-w-xs">
+                                    <p className="text-center text-gray-500 text-sm max-w-xs">
                                         Scan with any UPI app (GPay, PhonePe, Paytm) to pay ₹{totalAmount.toLocaleString()}
                                     </p>
                                 </div>
 
                                 {/* Payment Info */}
-                                <div className="bg-bhumi-muted dark:bg-bhumi-darkMuted p-4 space-y-2">
+                                <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4 space-y-2">
                                     <div className="flex justify-between">
-                                        <span className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Pay to</span>
-                                        <span className="font-bold text-bhumi-fg dark:text-bhumi-darkFg">{upiId}</span>
+                                        <span className="text-gray-500">Pay to</span>
+                                        <span className="font-bold text-gray-900 dark:text-white">{upiId}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Tx Ref</span>
-                                        <span className="font-mono text-sm text-bhumi-fg dark:text-bhumi-darkFg">
+                                        <span className="text-gray-500">Tx Ref</span>
+                                        <span className="font-mono text-sm text-gray-700 dark:text-gray-300">
                                             {transactionHash.slice(2, 12).toUpperCase()}
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-bhumi-mutedFg dark:text-bhumi-darkMutedFg">Blockchain</span>
+                                        <span className="text-gray-500">Blockchain</span>
                                         <a 
                                             href={etherscanUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-bhumi-accent dark:text-bhumi-darkAccent hover:underline flex items-center gap-1"
+                                            className="text-indigo-600 hover:underline flex items-center gap-1"
                                         >
                                             View on Etherscan
                                             <ExternalLink size={12} />
@@ -380,7 +380,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                                         setShowUpiInput(false);
                                         setUpiId('');
                                     }}
-                                    className="w-full py-2 text-bhumi-mutedFg dark:text-bhumi-darkMutedFg hover:text-bhumi-fg dark:hover:text-bhumi-darkFg text-sm"
+                                    className="w-full py-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-sm"
                                 >
                                     Change UPI ID
                                 </button>
@@ -392,7 +392,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
 
             {/* Footer */}
             <div className="px-6 pb-6">
-                <div className="flex items-center justify-center gap-2 text-bhumi-mutedFg dark:text-bhumi-darkMutedFg text-xs">
+                <div className="flex items-center justify-center gap-2 text-gray-400 text-xs">
                     <QrCode size={14} />
                     <span>Powered by Ethereum • Sepolia Testnet • Immutable & Transparent</span>
                 </div>

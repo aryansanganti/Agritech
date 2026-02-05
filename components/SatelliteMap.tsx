@@ -59,7 +59,7 @@ export const SatelliteMap: React.FC<SatelliteMapProps> = ({
         <MapContainer
             center={[center.lat, center.lng]}
             zoom={zoom}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '100%', borderRadius: '1rem' }}
             scrollWheelZoom={true}
         >
             <MapController center={center} zoom={zoom} />

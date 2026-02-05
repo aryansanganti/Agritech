@@ -119,3 +119,6 @@ Works offline for basic functions and installs directly to your phone's home scr
 
 ## 📄 License
 Distributed under the MIT License.
+
+**Project Lead & Developer:**
+**Dipayan Sardar** - dipayansardar73@gmail.com
