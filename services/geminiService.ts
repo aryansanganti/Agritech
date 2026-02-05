@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { DiseaseResult, CropRec, YieldResult, AdvisoryResult, WeatherData } from "../types";
+import { DiseaseResult, CropRec, YieldResult, AdvisoryResult, WeatherData, CropAnalysisResult } from "../types";
 
 // ROBUST KEY RETRIEVAL:
 // 1. Check process.env.API_KEY (Node/standard envs)
@@ -38,6 +38,89 @@ const checkApiKey = () => {
     if (!apiKey) {
         console.error("API Key is missing! Please set VITE_API_KEY or API_KEY in your environment variables.");
         throw new Error("API Key missing. Please configure VITE_API_KEY in your .env file or deployment settings.");
+    }
+};
+
+export const analyzeCropQuality = async (base64Image: string, context: any, language: string): Promise<CropAnalysisResult> => {
+    checkApiKey();
+    try {
+        const langName = getLangName(language);
+        const prompt = `Act as an Agmarknet Quality Inspector. Analyze this crop image.
+        Context: Commodity=${context.commodity}, Location=${context.district}, ${context.state}. Current Mandi Price=₹${context.price}/q.
+        
+        Task:
+        1. Detect the crop and identify any visual defects (lesions, rot, pest damage, discoloration).
+        2. Grade the quality (A=Premium, B=Standard, C=Poor).
+        3. Estimate fair price based on quality vs market price.
+        4. Provide specific visual checks (Color, Size, Texture).
+        
+        Return JSON structure matching:
+        {
+          "bbox": [ymin, xmin, ymax, xmax] (Detection box for the main crop pile/item),
+          "grading": { "overallGrade": "A"|"B"|"C", "colorChecking": "", "sizeCheck": "", "textureCheck": "", "shapeCheck": "" },
+          "health": { "lesions": "None"|"Minor"|"Severe", "chlorosis": "None"|"...", "pestDamage": "...", "mechanicalDamage": "...", "diseaseName": "", "confidence": 0 },
+          "market": { "estimatedPrice": 0, "priceDriver": "Reason for price markup/markdown", "demandFactor": "High/Mod/Low based on quality" }
+        }
+        Respond in language: ${langName}`;
+
+        const response = await ai.models.generateContent({
+            model: MODEL_VISION,
+            contents: {
+                parts: [
+                    { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
+                    { text: prompt }
+                ]
+            },
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        bbox: { type: Type.ARRAY, items: { type: Type.NUMBER } },
+                        grading: {
+                            type: Type.OBJECT,
+                            properties: {
+                                overallGrade: { type: Type.STRING, enum: ["A", "B", "C"] },
+                                colorChecking: { type: Type.STRING },
+                                sizeCheck: { type: Type.STRING },
+                                textureCheck: { type: Type.STRING },
+                                shapeCheck: { type: Type.STRING }
+                            },
+                            required: ["overallGrade", "colorChecking", "sizeCheck", "textureCheck", "shapeCheck"]
+                        },
+                        health: {
+                            type: Type.OBJECT,
+                            properties: {
+                                lesions: { type: Type.STRING },
+                                chlorosis: { type: Type.STRING },
+                                pestDamage: { type: Type.STRING },
+                                mechanicalDamage: { type: Type.STRING },
+                                diseaseName: { type: Type.STRING },
+                                confidence: { type: Type.NUMBER }
+                            },
+                            required: ["lesions", "chlorosis", "pestDamage", "mechanicalDamage"]
+                        },
+                        market: {
+                            type: Type.OBJECT,
+                            properties: {
+                                estimatedPrice: { type: Type.NUMBER },
+                                priceDriver: { type: Type.STRING },
+                                demandFactor: { type: Type.STRING }
+                            },
+                            required: ["estimatedPrice", "priceDriver", "demandFactor"]
+                        }
+                    },
+                    required: ["grading", "health", "market"]
+                }
+            }
+        });
+
+        const text = response.text;
+        if (!text) throw new Error("No response from Gemini");
+        return JSON.parse(text) as CropAnalysisResult;
+    } catch (error) {
+        console.error("Gemini Crop Analysis Error:", error);
+        throw error;
     }
 };
 
@@ -327,6 +410,36 @@ export const analyzeSoilHealth = async (metrics: any, language: string): Promise
 
         JSON Schema: { aiAdvice: string, soilType: string, recommendedCrops: string[] }
         `;
+
+        const response = await ai.models.generateContent({
+            model: MODEL_REASONING,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        aiAdvice: { type: Type.STRING },
+                        soilType: { type: Type.STRING },
+                        recommendedCrops: {
+                            type: Type.ARRAY,
+                            items: { type: Type.STRING }
+                        }
+                    },
+                    required: ["aiAdvice", "soilType", "recommendedCrops"]
+                }
+            }
+        });
+
+        const text = response.text;
+        if (!text) throw new Error("No response from Gemini");
+        return JSON.parse(text);
+    } catch (error) {
+        console.error("Gemini Soil Analysis Error:", error);
+        throw error;
+    }
+};
+
 export const getSeedScoutInsights = async (district: any, crop: string, language: string): Promise<string> => {
     checkApiKey();
     try {
@@ -404,25 +517,6 @@ export const getDistrictEnvironmentalData = async (
                 responseSchema: {
                     type: Type.OBJECT,
                     properties: {
-                        aiAdvice: { type: Type.STRING },
-                        soilType: { type: Type.STRING },
-                        recommendedCrops: {
-                            type: Type.ARRAY,
-                            items: { type: Type.STRING }
-                        }
-                    },
-                    required: ["aiAdvice", "soilType", "recommendedCrops"]
-                }
-            }
-        });
-
-        const text = response.text;
-        if (!text) throw new Error("No response from Gemini");
-        return JSON.parse(text);
-    } catch (error) {
-        console.error("Gemini Soil Analysis Error:", error);
-        throw error;
-    }
                         salinity: { type: Type.NUMBER },
                         maxTemp: { type: Type.NUMBER },
                         rainfall: { type: Type.NUMBER },
@@ -436,7 +530,9 @@ export const getDistrictEnvironmentalData = async (
             }
         });
 
-        const data = JSON.parse(response.text || '{}');
+        const text = response.text;
+        if (!text) throw new Error("No response from Gemini");
+        const data = JSON.parse(text);
         return {
             ...data,
             dataSource: 'gemini'

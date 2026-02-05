@@ -236,8 +236,8 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
                             {/* Top Stats */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className={`glass-panel p-6 rounded-2xl border-l-[6px] ${result.grading.overallGrade === 'A' ? 'border-green-500 bg-green-50/50 dark:bg-green-900/10' :
-                                        result.grading.overallGrade === 'B' ? 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-900/10' :
-                                            'border-red-500 bg-red-50/50 dark:bg-red-900/10'
+                                    result.grading.overallGrade === 'B' ? 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-900/10' :
+                                        'border-red-500 bg-red-50/50 dark:bg-red-900/10'
                                     }`}>
                                     <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Quality Grade</div>
                                     <div className="text-4xl font-black text-gray-900 dark:text-white flex items-center gap-2">

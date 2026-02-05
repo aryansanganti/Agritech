@@ -40,6 +40,7 @@ export const translations: Record<Language, Translations> = {
         rootComfort: 'Root Comfort',
         salinityAlarm: 'Salinity Alarm',
         analyzeSoil: 'Analyze Soil',
+        cropAnalysis: 'Quality Grading',
         analyzing: 'Analyzing...'
     },
     hi: {
@@ -80,6 +81,7 @@ export const translations: Record<Language, Translations> = {
         rootComfort: 'जड़ आराम',
         salinityAlarm: 'लवणता चेतावनी',
         analyzeSoil: 'मिट्टी विश्लेषण करें',
+        cropAnalysis: 'फसल गुणवत्ता',
         analyzing: 'विश्लेषण हो रहा है...'
     },
     or: {
@@ -120,6 +122,7 @@ export const translations: Record<Language, Translations> = {
         rootComfort: 'Root Comfort',
         salinityAlarm: 'Salinity Alarm',
         analyzeSoil: 'Analyze Soil',
+        cropAnalysis: 'Quality Grading',
         analyzing: 'Analyzing...'
     },
     bn: {
@@ -160,6 +163,7 @@ export const translations: Record<Language, Translations> = {
         rootComfort: 'Root Comfort',
         salinityAlarm: 'Salinity Alarm',
         analyzeSoil: 'Analyze Soil',
+        cropAnalysis: 'Quality Grading',
         analyzing: 'Analyzing...'
     },
     zh: {
@@ -200,6 +204,7 @@ export const translations: Record<Language, Translations> = {
         rootComfort: 'Root Comfort',
         salinityAlarm: 'Salinity Alarm',
         analyzeSoil: 'Analyze Soil',
+        cropAnalysis: '质量分级',
         analyzing: 'Analyzing...'
     },
     es: {
@@ -240,6 +245,7 @@ export const translations: Record<Language, Translations> = {
         rootComfort: 'Confort de Raíz',
         salinityAlarm: 'Alarma de Salinidad',
         analyzeSoil: 'Analizar Suelo',
+        cropAnalysis: 'Clasificación de Calidad',
         analyzing: 'Analizando...'
     },
     ru: {
@@ -280,6 +286,7 @@ export const translations: Record<Language, Translations> = {
         rootComfort: 'Root Comfort',
         salinityAlarm: 'Salinity Alarm',
         analyzeSoil: 'Analyze Soil',
+        cropAnalysis: 'Оценка качества',
         analyzing: 'Analyzing...'
     },
     ja: {
@@ -320,6 +327,7 @@ export const translations: Record<Language, Translations> = {
         rootComfort: 'Root Comfort',
         salinityAlarm: 'Salinity Alarm',
         analyzeSoil: 'Analyze Soil',
+        cropAnalysis: '品質等級',
         analyzing: 'Analyzing...'
     },
     pt: {
@@ -360,6 +368,7 @@ export const translations: Record<Language, Translations> = {
         rootComfort: 'Conforto da Raiz',
         salinityAlarm: 'Alarme de Salinidade',
         analyzeSoil: 'Analisar Solo',
+        cropAnalysis: 'Classificação de Qualidade',
         analyzing: 'Analisando...'
     }
 };

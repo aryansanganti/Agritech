@@ -26,8 +26,33 @@ export type PageView =
     | 'weather'
     | 'analytics'
     | 'profile'
-    | 'soil-analysis';
-    | 'seedscout';
+    | 'soil-analysis'
+    | 'seedscout'
+    | 'crop-analysis';
+
+export interface CropAnalysisResult {
+    grading: {
+        overallGrade: 'A' | 'B' | 'C';
+        colorChecking: string;
+        sizeCheck: string;
+        textureCheck: string;
+        shapeCheck: string;
+    };
+    bbox?: number[];
+    health: {
+        lesions: string;
+        chlorosis: string;
+        pestDamage: string;
+        mechanicalDamage: string;
+        diseaseName?: string;
+        confidence?: number;
+    };
+    market: {
+        estimatedPrice: number;
+        priceDriver: string;
+        demandFactor: string;
+    };
+} // end CropAnalysisResult
 
 // SeedScout Types
 export interface DistrictData {
@@ -166,6 +191,7 @@ export interface Translations {
     darkMode: string;
     activeAlerts: string;
     soilAnalysis: string;
+    cropAnalysis: string;
     nutrientMirror: string;
     thirstTracker: string;
     rootComfort: string;
