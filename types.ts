@@ -57,6 +57,8 @@ export interface Detection {
 }
 
 export interface CropAnalysisResult {
+    detectedCrop: string;
+    isMatch: boolean;
     grading: {
         overallGrade: 'A' | 'B' | 'C';
         colorChecking: string;
