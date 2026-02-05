@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Search, MapPin, Leaf, Sparkles, Package } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, MapPin, Leaf, Sparkles, Package, CheckCircle2, AlertCircle } from 'lucide-react';
+import { getQualityGrading, clearQualityGrading, QualityGradingData } from '../services/qualityGradingService';
 
 interface PricingFormProps {
     onSearch: (crop: string, district: string, state: string, quality: number, quantity: number) => void;
@@ -12,18 +13,56 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
     const [district, setDistrict] = useState('Nagpur');
     const [quality, setQuality] = useState(8);
     const [quantity, setQuantity] = useState(1);
+    const [qualityGrading, setQualityGrading] = useState<QualityGradingData | null>(null);
+
+    useEffect(() => {
+        const storedGrading = getQualityGrading();
+        if (storedGrading) {
+            setQualityGrading(storedGrading);
+            setCrop(storedGrading.crop);
+            setState(storedGrading.state);
+            setDistrict(storedGrading.district);
+            setQuality(storedGrading.qualityScore);
+        }
+
+        const handleUpdate = (event: CustomEvent<QualityGradingData>) => {
+            setQualityGrading(event.detail);
+            setCrop(event.detail.crop);
+            setState(event.detail.state);
+            setDistrict(event.detail.district);
+            setQuality(event.detail.qualityScore);
+        };
+
+        const handleClear = () => {
+            setQualityGrading(null);
+        };
+
+        window.addEventListener('qualityGradingUpdated', handleUpdate as EventListener);
+        window.addEventListener('qualityGradingCleared', handleClear);
+
+        return () => {
+            window.removeEventListener('qualityGradingUpdated', handleUpdate as EventListener);
+            window.removeEventListener('qualityGradingCleared', handleClear);
+        };
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSearch(crop, district, state, quality, quantity);
     };
 
+    const handleClearGrading = () => {
+        clearQualityGrading();
+        setQualityGrading(null);
+    };
+
     const crops = [
-        'Soybean', 'Pearl Millet (Bajra)', 'Rice (Paddy)', 'Wheat', 'Cotton', 'Maize', 'Gram', 'Tur (Arhar)'
+        'Soybean', 'Pearl Millet (Bajra)', 'Rice (Paddy)', 'Wheat', 'Cotton', 'Maize', 'Gram', 'Tur (Arhar)',
+        'Tomato', 'Potato', 'Onion', 'Apple', 'Mango', 'Banana', 'Orange', 'Grapes'
     ];
 
     const states = [
-        'Maharashtra', 'Rajasthan', 'Gujarat', 'Madhya Pradesh', 'Odisha', 'Jharkhand'
+        'Maharashtra', 'Rajasthan', 'Gujarat', 'Madhya Pradesh', 'Odisha', 'Jharkhand', 'Uttar Pradesh', 'Punjab', 'Haryana'
     ];
 
     return (
@@ -33,8 +72,52 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                 Market Intelligence Input
             </div>
 
+            {qualityGrading && (
+                <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-500/30">
+                    <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                            <div className="bg-emerald-500/20 p-2 rounded-lg">
+                                <CheckCircle2 size={20} className="text-emerald-600" />
+                            </div>
+                            <div>
+                                <p className="font-bold text-emerald-700 dark:text-emerald-400 text-sm">
+                                    AI Quality Grading Applied
+                                </p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                    Grade <span className="font-bold">{qualityGrading.overallGrade}</span> • 
+                                    Score <span className="font-bold">{qualityGrading.qualityScore}/10</span> •
+                                    {' '}{qualityGrading.crop}
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleClearGrading}
+                            className="text-xs text-gray-500 hover:text-red-500 transition-colors"
+                        >
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {!qualityGrading && (
+                <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-500/30">
+                    <div className="flex items-start gap-3">
+                        <AlertCircle size={20} className="text-amber-600 mt-0.5" />
+                        <div>
+                            <p className="font-bold text-amber-700 dark:text-amber-400 text-sm">
+                                No Quality Grading Found
+                            </p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                Upload a crop image in Crop Analysis to get AI-powered quality score
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="space-y-4">
-                {/* Crop Selection */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                         <Leaf size={16} className="text-emerald-500" />
@@ -44,12 +127,15 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                         value={crop}
                         onChange={(e) => setCrop(e.target.value)}
                         className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                        disabled={!!qualityGrading}
                     >
                         {crops.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
+                    {qualityGrading && (
+                        <p className="text-xs text-emerald-600 mt-1">Auto-filled from quality grading</p>
+                    )}
                 </div>
 
-                {/* Location Selection */}
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
@@ -60,6 +146,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                             value={state}
                             onChange={(e) => setState(e.target.value)}
                             className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                            disabled={!!qualityGrading}
                         >
                             {states.map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
@@ -72,14 +159,19 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                             onChange={(e) => setDistrict(e.target.value)}
                             className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
                             placeholder="Enter district"
+                            disabled={!!qualityGrading}
                         />
                     </div>
                 </div>
 
-                {/* Quality Score */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Crop Quality Score: <span className="text-emerald-500 font-bold">{quality}/10</span>
+                        {qualityGrading && (
+                            <span className="ml-2 text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full">
+                                AI Graded
+                            </span>
+                        )}
                     </label>
                     <input
                         type="range"
@@ -87,6 +179,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                         value={quality}
                         onChange={(e) => setQuality(parseInt(e.target.value))}
                         className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                        disabled={!!qualityGrading}
                     />
                     <div className="flex justify-between text-[10px] text-gray-400 mt-1 uppercase font-bold">
                         <span>Low Quality</span>
@@ -94,7 +187,6 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                     </div>
                 </div>
 
-                {/* Quantity Input */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                         <Package size={16} className="text-emerald-500" />

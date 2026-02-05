@@ -7,6 +7,7 @@ import { CropAnalysis } from './pages/cropanalysis';
 import { Marketplace } from './pages/Marketplace';
 import { SeedScout } from './pages/SeedScout';
 import { PricingEngine } from './pages/PricingEngine';
+import { ReplicationPlanner } from './pages/ReplicationPlanner';
 import { Chatbot } from './pages/Chatbot';
 import { PageView, User, Language } from './types';
 import { translations } from './utils/translations';
@@ -161,10 +162,21 @@ const App: React.FC = () => {
             case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
             case 'chatbot': return <Chatbot lang={lang} />;
             case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
-            case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} />;
-            case 'marketplace': return <Marketplace user={user} lang={lang} onBack={goBack} />;
-            case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
-            case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} />;
+            case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} onNavigateToPricing={() => setView('pricing-engine')} />;
+            case 'marketplace': return <Marketplace user={user} lang={lang} onBack={goBack} onNavigateToQualityGrading={() => setView('crop-analysis')} />;
+            case 'seedscout': return <SeedScout lang={lang} onBack={goBack} onNavigateToReplication={(crop: string, source: string) => {
+                // Store crop and source for replication planner
+                localStorage.setItem('replication_crop', crop);
+                localStorage.setItem('replication_source', source);
+                setView('replication-planner');
+            }} />;
+            case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} onNavigateToMarketplace={() => setView('marketplace')} onNavigateToQualityGrading={() => setView('crop-analysis')} />;
+            case 'replication-planner': return <ReplicationPlanner 
+                lang={lang} 
+                onBack={goBack} 
+                initialCrop={localStorage.getItem('replication_crop') || ''} 
+                initialSource={localStorage.getItem('replication_source') || ''} 
+            />;
             default: return <Dashboard setView={setView} user={user} lang={lang} />;
         }
     };

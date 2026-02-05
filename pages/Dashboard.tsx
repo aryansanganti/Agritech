@@ -1,5 +1,5 @@
 import React from 'react';
-import { CloudRain, Wind, Droplets, ThermometerSun, AlertTriangle, TrendingUp, ScanLine, Sprout, BarChart3, CloudSun, Bug, FlaskConical, Mic } from 'lucide-react';
+import { CloudRain, Wind, Droplets, ThermometerSun, AlertTriangle, TrendingUp, ScanLine, Sprout, BarChart3, CloudSun, Bug, FlaskConical, Mic, MapPin, ArrowRight, Compass } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { PageView, User, Language } from '../types';
 import { translations } from '../utils/translations';
@@ -81,6 +81,76 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                     <div>
                         <span className="text-2xl font-bold block text-gray-900 dark:text-white">10%</span>
                         <span className="text-xs text-gray-500 dark:text-gray-400">{t.rain}</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Featured: Crop Replication Planner */}
+            <div 
+                onClick={() => setView('replication-planner')}
+                className="glass-panel rounded-2xl p-6 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-blue-500/10 border-2 border-dashed border-purple-500/30 hover:border-purple-500 transition-all cursor-pointer group relative overflow-hidden"
+            >
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
+                
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+                    <div className="flex items-start gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <Sprout className="text-white" size={28} />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                                🌱 Crop Replication Planner
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400 text-sm max-w-lg">
+                                Replicate any famous crop anywhere! Get complete cultivation plans with climate adjustments, 
+                                week-by-week schedules, fertilizer calendars & pest management.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                                <span className="px-2 py-1 bg-purple-500/20 text-purple-600 dark:text-purple-400 rounded-lg text-xs font-medium">🍓 Strawberry from Mahabaleshwar</span>
+                                <span className="px-2 py-1 bg-orange-500/20 text-orange-600 dark:text-orange-400 rounded-lg text-xs font-medium">🥭 Alphonso from Ratnagiri</span>
+                                <span className="px-2 py-1 bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg text-xs font-medium">🍎 Apple from Shimla</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold rounded-xl shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all">
+                        <span>Try Now</span>
+                        <ArrowRight size={18} />
+                    </div>
+                </div>
+            </div>
+
+            {/* Quick Actions - SeedScout & Marketplace */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div 
+                    onClick={() => setView('seedscout')}
+                    className="glass-panel rounded-2xl p-5 hover:shadow-lg transition-all cursor-pointer group border border-emerald-500/20 hover:border-emerald-500/50"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Compass className="text-emerald-600" size={24} />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-gray-900 dark:text-white">SeedScout</h3>
+                            <p className="text-sm text-gray-500">Find genetic hotspots for stress-tolerant seeds</p>
+                        </div>
+                        <ArrowRight size={20} className="text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
+                    </div>
+                </div>
+                
+                <div 
+                    onClick={() => setView('marketplace')}
+                    className="glass-panel rounded-2xl p-5 hover:shadow-lg transition-all cursor-pointer group border border-blue-500/20 hover:border-blue-500/50"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span className="text-2xl">🛒</span>
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-gray-900 dark:text-white">Marketplace</h3>
+                            <p className="text-sm text-gray-500">Buy & sell blockchain-verified produce</p>
+                        </div>
+                        <ArrowRight size={20} className="text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
                     </div>
                 </div>
             </div>

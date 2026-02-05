@@ -47,7 +47,8 @@ export type PageView =
     | 'soil-analysis'
     | 'seedscout'
     | 'crop-analysis'
-    | 'pricing-engine';
+    | 'pricing-engine'
+    | 'replication-planner';
 
 export interface Detection {
     label: string;
@@ -232,6 +233,7 @@ export interface QRCodeData {
         payeeName?: string;
         transactionNote?: string;
     };
+}
 
 export interface SoilMetrics {
     soc: number;         // 0-100 (Derived from Value)

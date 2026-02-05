@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Language, PricingPrediction } from '../types';
 import { translations } from '../utils/translations';
-import { ArrowLeft, BarChart3, ShieldCheck, Zap, Info, Loader2, Sparkles, Link2 } from 'lucide-react';
+import { ArrowLeft, BarChart3, ShieldCheck, Zap, Info, Loader2, Sparkles, Link2, AlertCircle } from 'lucide-react';
 import { PricingForm } from '../components/PricingForm';
 import { PricingResult } from '../components/PricingResult';
 import { PriceHistoryChart } from '../components/PriceHistoryChart';
 import { WalletConnect } from '../components/WalletConnect';
 import { getMandiPrices } from '../services/mandiService';
 import { getPriceArbitration } from '../services/geminiService';
+import { getQualityGrading, hasQualityGrading, clearQualityGrading } from '../services/qualityGradingService';
+import { addMarketplaceListing, scoreToGrade } from '../services/marketplaceService';
 import { 
     WalletState, 
     BlockchainTransactionResult,
@@ -18,9 +20,11 @@ import {
 interface PricingEngineProps {
     lang: Language;
     onBack: () => void;
+    onNavigateToMarketplace?: () => void;
+    onNavigateToQualityGrading?: () => void;
 }
 
-export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) => {
+export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNavigateToMarketplace, onNavigateToQualityGrading }) => {
     const t = translations[lang];
     const [prediction, setPrediction] = useState<PricingPrediction | null>(null);
     const [ethTx, setEthTx] = useState<BlockchainTransactionResult | null>(null);
@@ -31,6 +35,7 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) =>
     const [isStoringOnChain, setIsStoringOnChain] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [status, setStatus] = useState<string>('');
+    const [hasGrading, setHasGrading] = useState(false);
     const [pendingPriceData, setPendingPriceData] = useState<{
         crop: string;
         location: string;
@@ -38,6 +43,11 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) =>
         quantity: number;
         prediction: PricingPrediction;
     } | null>(null);
+
+    // Check for quality grading on mount
+    useEffect(() => {
+        setHasGrading(hasQualityGrading());
+    }, []);
 
     const handleWalletConnected = (state: WalletState) => {
         setWalletState(state);
@@ -74,6 +84,64 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) =>
         } finally {
             setIsStoringOnChain(false);
             setStatus('');
+        }
+    };
+
+    // Handler for adding to marketplace
+    const handleAddToMarketplace = () => {
+        if (!ethTx || (!pendingPriceData && !prediction)) return;
+        
+        const qualityGrading = getQualityGrading();
+        
+        // Default crop image based on crop type
+        const getCropDefaultImage = (crop: string): string => {
+            const cropImages: Record<string, string> = {
+                'Rice': 'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=400&h=300&fit=crop',
+                'Wheat': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop',
+                'Maize': 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&h=300&fit=crop',
+                'Tomato': 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&h=300&fit=crop',
+                'Potato': 'https://images.unsplash.com/photo-1518977676601-b53f82ber608?w=400&h=300&fit=crop',
+                'Onion': 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400&h=300&fit=crop',
+                'Soybean': 'https://images.unsplash.com/photo-1599150468774-a57fd6d2ae06?w=400&h=300&fit=crop',
+                'Cotton': 'https://images.unsplash.com/photo-1594897030264-ab7d87efc473?w=400&h=300&fit=crop',
+                'Sugarcane': 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=400&h=300&fit=crop',
+            };
+            return cropImages[crop] || 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop';
+        };
+        
+        // Add listing to marketplace
+        addMarketplaceListing({
+            farmerName: walletState?.address ? `Farmer ${walletState.address.slice(0, 6)}...` : 'Anonymous Farmer',
+            farmerAddress: walletState?.address || undefined,
+            crop: ethTx.data.crop,
+            grade: qualityGrading?.overallGrade || scoreToGrade(currentQuality),
+            qualityScore: currentQuality,
+            price: Math.round((ethTx.data.minPrice + ethTx.data.maxPrice) / 2),
+            minPrice: ethTx.data.minPrice,
+            maxPrice: ethTx.data.maxPrice,
+            guaranteedPrice: ethTx.data.guaranteedPrice,
+            marketPrice: Math.round((ethTx.data.minPrice + ethTx.data.maxPrice) / 2),
+            quantity: ethTx.data.quantity,
+            location: {
+                district: qualityGrading?.district || ethTx.data.location.split(',')[0]?.trim() || 'Unknown',
+                state: qualityGrading?.state || ethTx.data.location.split(',')[1]?.trim() || 'Unknown'
+            },
+            blockchainHash: ethTx.transactionHash,
+            transactionHash: ethTx.transactionHash,
+            etherscanUrl: ethTx.etherscanUrl,
+            contractAddress: '0xA12AF30a5B555540e3D2013c7FB3eb793ff4b3B5',
+            recordId: ethTx.blockNumber,
+            gradingDetails: qualityGrading?.gradingDetails,
+            harvestDate: new Date().toISOString().split('T')[0],
+            image: qualityGrading?.image || getCropDefaultImage(ethTx.data.crop)
+        });
+        
+        // Clear quality grading data after adding to marketplace
+        clearQualityGrading();
+        
+        // Navigate to marketplace
+        if (onNavigateToMarketplace) {
+            onNavigateToMarketplace();
         }
     };
 
@@ -148,6 +216,33 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) =>
             </header>
 
             <main className="max-w-7xl mx-auto px-4 py-8">
+                {/* Quality Grading Required Banner */}
+                {!hasGrading && (
+                    <div className="mb-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-500/30">
+                        <div className="flex items-center justify-between gap-4">
+                            <div className="flex items-start gap-3">
+                                <AlertCircle size={24} className="text-amber-600 mt-0.5" />
+                                <div>
+                                    <p className="font-bold text-amber-700 dark:text-amber-400">
+                                        Quality Grading Required for Marketplace
+                                    </p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                        To add crops to the marketplace, first complete AI quality grading in Crop Analysis
+                                    </p>
+                                </div>
+                            </div>
+                            {onNavigateToQualityGrading && (
+                                <button
+                                    onClick={onNavigateToQualityGrading}
+                                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition-colors whitespace-nowrap"
+                                >
+                                    Go to Quality Grading
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Panel: Input Form and Value Prop */}
                     <div className="lg:col-span-1 space-y-6">
@@ -235,6 +330,7 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack }) =>
                                     onStoreOnChain={storeOnEthereum}
                                     isStoringOnChain={isStoringOnChain}
                                     pendingStore={!!pendingPriceData}
+                                    onAddToMarketplace={ethTx ? handleAddToMarketplace : undefined}
                                 />
                                 <PriceHistoryChart crop={prediction.crop} />
                             </>

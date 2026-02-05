@@ -1,7 +1,7 @@
 import React from 'react';
 import { PricingPrediction } from '../types';
 import { BlockchainTransactionResult } from '../services/ethereumService';
-import { AlertCircle, CheckCircle2, TrendingUp, Info, ShieldAlert, Loader2, Link2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, TrendingUp, Info, ShieldAlert, Loader2, Link2, ShoppingBag, ArrowRight } from 'lucide-react';
 import { EthereumBlockchainQR } from './EthereumBlockchainQR';
 
 interface PricingResultProps {
@@ -13,6 +13,7 @@ interface PricingResultProps {
     onStoreOnChain?: () => void;
     isStoringOnChain?: boolean;
     pendingStore?: boolean;
+    onAddToMarketplace?: () => void;
 }
 
 export const PricingResult: React.FC<PricingResultProps> = ({ 
@@ -23,7 +24,8 @@ export const PricingResult: React.FC<PricingResultProps> = ({
     walletConnected = false,
     onStoreOnChain,
     isStoringOnChain = false,
-    pendingStore = false
+    pendingStore = false,
+    onAddToMarketplace
 }) => {
     const {
         minGuaranteedPrice,
@@ -121,11 +123,43 @@ export const PricingResult: React.FC<PricingResultProps> = ({
 
             {/* Blockchain QR Code Section */}
             {ethTx ? (
-                <EthereumBlockchainQR 
-                    transaction={ethTx}
-                    farmerName="Farmer"
-                    quantityQuintals={quantityQuintals}
-                />
+                <div className="space-y-6">
+                    <EthereumBlockchainQR 
+                        transaction={ethTx}
+                        farmerName="Farmer"
+                        quantityQuintals={quantityQuintals}
+                    />
+                    
+                    {/* Add to Marketplace Button */}
+                    {onAddToMarketplace && (
+                        <div className="glass-panel rounded-3xl p-8 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-500/30">
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="bg-emerald-500/20 p-4 rounded-xl">
+                                        <ShoppingBag size={32} className="text-emerald-600" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                                            Blockchain Verified ✓
+                                        </h3>
+                                        <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md">
+                                            Your crop is now verified on Ethereum blockchain. Add it to the 
+                                            marketplace to connect with buyers directly.
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={onAddToMarketplace}
+                                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-emerald-500/30 transition-all flex items-center gap-2 whitespace-nowrap"
+                                >
+                                    <ShoppingBag size={20} />
+                                    Add to Marketplace
+                                    <ArrowRight size={18} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
             ) : pendingStore && (
                 <div className="glass-panel rounded-3xl p-8 text-center">
                     {walletConnected ? (

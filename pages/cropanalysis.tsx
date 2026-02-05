@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, RefreshCw, ArrowLeft, CheckCircle, AlertTriangle, Scale, DollarSign, Activity } from 'lucide-react';
+import { Camera, Upload, RefreshCw, ArrowLeft, CheckCircle, AlertTriangle, Scale, DollarSign, Activity, ArrowRight } from 'lucide-react';
 import { analyzeCropQuality } from '../services/geminiService';
 import { getMarketPrice, STATES, getCommodities } from '../services/agmarknetService';
+import { storeQualityGrading, gradeToScore } from '../services/qualityGradingService';
 import { Language, CropAnalysisResult } from '../types';
 
 interface Props {
     lang: Language;
     onBack: () => void;
+    onNavigateToPricing?: () => void;
 }
 
-export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
+export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricing }) => {
     // Form State
     const [state, setState] = useState('');
     const [district, setDistrict] = useState('');
@@ -63,6 +65,32 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
 
             const data = await analyzeCropQuality(base64Data, context, lang);
             setResult(data);
+
+            // Store quality grading for use in Pricing Engine
+            const qualityScore = gradeToScore(data.grading.overallGrade);
+            storeQualityGrading({
+                crop: commodity,
+                state: state,
+                district: district,
+                qualityScore: qualityScore,
+                overallGrade: data.grading.overallGrade,
+                estimatedPrice: data.market.estimatedPrice,
+                timestamp: new Date().toISOString(),
+                image: image,  // Store the crop image for marketplace
+                gradingDetails: {
+                    colorChecking: data.grading.colorChecking,
+                    sizeCheck: data.grading.sizeCheck,
+                    textureCheck: data.grading.textureCheck,
+                    shapeCheck: data.grading.shapeCheck,
+                },
+                healthStatus: {
+                    lesions: data.health.lesions,
+                    chlorosis: data.health.chlorosis,
+                    pestDamage: data.health.pestDamage,
+                    mechanicalDamage: data.health.mechanicalDamage,
+                    diseaseName: data.health.diseaseName,
+                },
+            });
         } catch (error) {
             console.error(error);
             alert("Analysis failed. Please try again.");
@@ -331,6 +359,28 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack }) => {
                                     )}
                                 </div>
                             </div>
+
+                            {/* Navigate to Pricing Engine Button */}
+                            {onNavigateToPricing && (
+                                <div className="mt-6 p-6 glass-panel rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-500/30">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">
+                                                Quality Score: {gradeToScore(result.grading.overallGrade)}/10
+                                            </h3>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                Your crop grading is saved. Get fair market price with blockchain verification.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={onNavigateToPricing}
+                                            className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-emerald-500/30 transition-all"
+                                        >
+                                            Get Price <ArrowRight size={20} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
