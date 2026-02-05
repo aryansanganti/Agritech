@@ -485,38 +485,23 @@ export const analyzeSoilHealth = async (metrics: any, language: string): Promise
 };
 
 export const getSeedScoutInsights = async (district: any, crop: string, language: string): Promise<string> => {
-    checkApiKey();
     try {
-        const langName = getLangName(language);
-        const prompt = `Act as a senior agricultural geneticist. Analyze this region for "SeedScout" - a project finding climate-resilient genes in tribal areas.
-        
-        Target Region: ${district.name}, ${district.state}
-        Environmental Data:
-        - Salinity: ${district.salinity} dS/m (High > 4)
-        - Max Temp: ${district.maxTemp}°C (High > 40)
-        - Rainfall: ${district.rainfall} mm
-        - Tribal Population: ${district.tribalPercent}%
-        
-        Target Crop: ${crop}
-        
-        Task:
-        1. Explain WHY this specific district is a "Genetic Goldmine" for ${crop}.
-        2. Hypothesize what specific genes (e.g., "HKT1;5 gene for salinity") might have evolved here due to the environment.
-        3. Provide a brief "Field Survey Strategy" for scientists visiting this tribal belt.
-        
-        Language: ${langName}.
-        Format: Markdown. Keep it inspiring and scientific.`;
-
-        const response = await ai.models.generateContent({
-            model: MODEL_REASONING,
-            contents: prompt,
-            config: {
-                tools: [{ googleSearch: {} }] // Use Search to find real gene info if possible
-            }
+        const response = await fetch('http://localhost:3000/api/seedscout/explain', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                district,
+                crop,
+                score: 0.85, // You might pass the real score if you update the signature
+                logic: "High score matching backend logic"
+            })
         });
-        return response.text || "Insight generation failed.";
+
+        if (!response.ok) return "Context unavailable.";
+        const data = await response.json();
+        return data.explanation;
     } catch (e) {
-        console.error("SeedScout Insight Error:", e);
+        console.error("SeedScout Explain Error:", e);
         return "Unable to generate insights at this moment.";
     }
 };

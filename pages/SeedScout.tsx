@@ -2,8 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Language, SeedScoutQuery, HotspotResult } from '../types';
 import { translations } from '../utils/translations';
 import { indianDistricts, cropTypes, clusterLabels } from '../data/districtData';
-import { searchHotspots, getClusterSummary, getDataRanges } from '../services/seedScoutService';
-import { searchHotspotsDynamic, searchHotspotsQuick, baseDistricts, SearchProgressCallback } from '../services/dynamicSeedScoutService';
+import { searchHotspotsDynamic, searchHotspotsQuick, getClusterSummary, getDataRanges, SearchProgressCallback } from '../services/seedScoutService';
 import { getSeedScoutInsights, getDistrictEnvironmentalData } from '../services/geminiService';
 import { SatelliteMap } from '../components/SatelliteMap';
 import {
@@ -126,6 +125,30 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
             case 'tribal': return getColorForValue(result.tribalScore, 'tribal');
             case 'score': return getColorForValue(result.traitScore, 'score');
             default: return 'rgba(156, 163, 175, 0.3)';
+        }
+    };
+
+    // Progressive filtering: Show only green, fallback to yellow, then gray
+    const getFilteredResults = (searchResults: HotspotResult[]) => {
+        if (!hasSearched || searchResults.length === 0) {
+            return searchResults;
+        }
+
+        // Categorize results by score tier
+        const greenHotspots = searchResults.filter(r => r.traitScore > 0.7);  // Excellent (Green)
+        const yellowHotspots = searchResults.filter(r => r.traitScore > 0.4 && r.traitScore <= 0.7);  // Good (Yellow)
+        const grayHotspots = searchResults.filter(r => r.traitScore <= 0.4);  // Moderate (Gray)
+
+        // Progressive fallback: Green → Yellow → Gray
+        if (greenHotspots.length > 0) {
+            console.log(`🟢 Showing ${greenHotspots.length} excellent hotspots (score > 70%)`);
+            return greenHotspots;
+        } else if (yellowHotspots.length > 0) {
+            console.log(`🟡 No excellent hotspots found. Showing ${yellowHotspots.length} good hotspots (score 40-70%)`);
+            return yellowHotspots;
+        } else {
+            console.log(`⚫ No good hotspots found. Showing ${grayHotspots.length} moderate hotspots (score < 40%)`);
+            return grayHotspots;
         }
     };
 
@@ -371,7 +394,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                     />
 
                                     {/* District Points */}
-                                    {(hasSearched ? results : indianDistricts.map(d => ({
+                                    {(hasSearched ? getFilteredResults(results) : indianDistricts.map(d => ({
                                         district: d, traitScore: 0.3, salinityScore: d.salinity / 10,
                                         heatScore: (d.maxTemp - 30) / 20, droughtScore: 1 - d.rainfall / 2000,
                                         tribalScore: d.tribalPercent / 100, recommendation: ''
@@ -517,39 +540,46 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                     )}
 
                     {/* Top Results List */}
-                    {hasSearched && results.length > 0 && (
-                        <div className="glass-panel rounded-2xl p-5">
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                                <TrendingUp size={18} className="text-emerald-500" />
-                                Top Genetic Hotspots
-                            </h3>
-                            <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
-                                {results.slice(0, 10).map((result, index) => (
-                                    <button
-                                        key={result.district.id}
-                                        onClick={() => handleSelectDistrict(result)}
-                                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left ${selectedDistrict?.district.id === result.district.id
-                                            ? 'bg-emerald-500/20 border border-emerald-500/30'
-                                            : 'bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10'
-                                            }`}
-                                    >
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${index < 3 ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300'
-                                            }`}>
-                                            {index + 1}
-                                        </div>
-                                        <div className="flex-1">
-                                            <span className="font-medium text-sm text-gray-900 dark:text-white">{result.district.name}</span>
-                                            <span className="text-xs text-gray-500 ml-2">{result.district.state}</span>
-                                        </div>
-                                        <div className="text-right">
-                                            <span className={`text-sm font-bold ${result.traitScore >= 0.7 ? 'text-emerald-500' : 'text-gray-400'
-                                                }`}>{(result.traitScore * 100).toFixed(0)}%</span>
-                                        </div>
-                                    </button>
-                                ))}
+                    {hasSearched && results.length > 0 && (() => {
+                        const filteredResults = getFilteredResults(results);
+                        return (
+                            <div className="glass-panel rounded-2xl p-5">
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                    <TrendingUp size={18} className="text-emerald-500" />
+                                    Top Genetic Hotspots {filteredResults.length < results.length && (
+                                        <span className="text-xs font-normal text-gray-500">
+                                            ({filteredResults.length} of {results.length} districts)
+                                        </span>
+                                    )}
+                                </h3>
+                                <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                                    {filteredResults.slice(0, 10).map((result, index) => (
+                                        <button
+                                            key={result.district.id}
+                                            onClick={() => handleSelectDistrict(result)}
+                                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left ${selectedDistrict?.district.id === result.district.id
+                                                ? 'bg-emerald-500/20 border border-emerald-500/30'
+                                                : 'bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10'
+                                                }`}
+                                        >
+                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${index < 3 ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300'
+                                                }`}>
+                                                {index + 1}
+                                            </div>
+                                            <div className="flex-1">
+                                                <span className="font-medium text-sm text-gray-900 dark:text-white">{result.district.name}</span>
+                                                <span className="text-xs text-gray-500 ml-2">{result.district.state}</span>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className={`text-sm font-bold ${result.traitScore >= 0.7 ? 'text-emerald-500' : 'text-gray-400'
+                                                    }`}>{(result.traitScore * 100).toFixed(0)}%</span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )
+                    })()}
                 </div>
             </div>
         </div>
