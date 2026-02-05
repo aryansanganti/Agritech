@@ -3,7 +3,6 @@ import { User, Language, Listing } from '../types';
 import { ArrowLeft, ShoppingBag, Plus, QrCode, ShieldCheck, TrendingUp, MapPin, ExternalLink, Trash2, Leaf, Truck, Route } from 'lucide-react';
 import { MARKETPLACE_LISTINGS } from '../data/listings';
 import { getMarketplaceListings, MarketplaceListing, removeMarketplaceListing } from '../services/marketplaceService';
-import { CarbonLogistics } from '../components/CarbonLogistics';
 import { DISTRICT_COORDINATES } from '../services/carbonLogisticsService';
 
 interface Props {
