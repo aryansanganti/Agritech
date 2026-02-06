@@ -73,10 +73,10 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
                         </button>
 
                         {/* Notifications (Mock) */}
-                        <button className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors relative">
+                        {/* <button className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors relative">
                             <Bell size={20} />
                             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-bhoomi-dark"></span>
-                        </button>
+                        </button> */}
 
                         <div className="h-8 w-[1px] bg-gray-200 dark:bg-gray-700 mx-1 hidden sm:block"></div>
 

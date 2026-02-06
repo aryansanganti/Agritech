@@ -498,7 +498,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                             >
                                 {cropTypes.map((crop) => (
                                     <option key={crop.id} value={crop.id} className="bg-white dark:bg-gray-800">
-                                        {crop.icon} {crop.name}
+                                        {crop.name}
                                     </option>
                                 ))}
                             </SelectNative>
@@ -643,15 +643,21 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                 <button
                                     key={layer}
                                     onClick={() => { setActiveLayer(layer); setSatelliteView(false); }}
-                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${!satelliteView && activeLayer === layer
+                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${!satelliteView && activeLayer === layer
                                         ? 'bg-emerald-500 text-white shadow-md'
                                         : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'
                                         }`}
                                 >
-                                    {layer === 'score' ? '🎯 Hotspot Score' :
-                                        layer === 'salinity' ? '🧂 Salinity' :
-                                            layer === 'heat' ? '🌡️ Heat' :
-                                                layer === 'tribal' ? '👥 Tribal %' : '🗺️ Clusters'}
+                                    {layer === 'score' && <Target size={16} />}
+                                    {layer === 'salinity' && <Droplets size={16} />}
+                                    {layer === 'heat' && <Thermometer size={16} />}
+                                    {layer === 'tribal' && <Users size={16} />}
+                                    {layer === 'cluster' && <Layers size={16} />}
+
+                                    {layer === 'score' ? 'Hotspot Score' :
+                                        layer === 'salinity' ? 'Salinity' :
+                                            layer === 'heat' ? 'Heat' :
+                                                layer === 'tribal' ? 'Tribal %' : 'Clusters'}
                                 </button>
                             ))}
                         </div>
