@@ -443,7 +443,95 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
 
 
 
+    const MarketplaceListingCard: React.FC<{ item: Listing; isOwner: boolean; onViewQR: () => void }> = ({ item, isOwner, onViewQR }) => {
+        const priceDiff = item.price - item.marketPrice;
+        const isCheaper = priceDiff < 0;
 
+        // Convert Listing to MarketplaceListing format for carbon logistics
+        const handleCarbonClick = () => {
+            const marketplaceListing: MarketplaceListing = {
+                id: item.id,
+                farmerName: 'Local Farmer',
+                crop: item.crop,
+                variety: item.variety,
+                quantity: item.quantity,
+                grade: item.grade as 'A' | 'B' | 'C',
+                qualityScore: item.grade === 'A' ? 9 : item.grade === 'B' ? 7 : 5,
+                price: item.price,
+                minPrice: item.price * 0.9,
+                maxPrice: item.price * 1.1,
+                guaranteedPrice: item.price * 0.85,
+                marketPrice: item.marketPrice,
+                location: item.location,
+                image: item.image,
+                blockchainHash: item.blockchainHash || '0x...',
+                transactionHash: item.blockchainHash || '0x...',
+                etherscanUrl: '',
+                contractAddress: '',
+                recordId: 0,
+                harvestDate: new Date().toISOString(),
+                listedDate: new Date().toISOString(),
+                timestamp: Date.now(),
+                verificationStatus: 'pending',
+            };
+            setSelectedForLogistics(marketplaceListing);
+            setShowVendorLocationModal(true);
+        };
+
+        return (
+            <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 border border-transparent hover:border-bhoomi-green/30">
+                <div className="relative h-48 overflow-hidden">
+                    <img src={item.image} alt={item.crop} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <Badge className="absolute top-3 right-3" variant="outline">{item.quantity} Qtl</Badge>
+                    <Badge className={cn("absolute top-3 left-3 flex items-center gap-1", item.grade === 'A' ? 'bg-green-500 text-white border-green-500' : item.grade === 'B' ? 'bg-yellow-500 text-white border-yellow-500' : 'bg-red-500 text-white border-red-500')}>
+                        <ShieldCheck size={12} /> Grade {item.grade}
+                    </Badge>
+                </div>
+                <div className="p-5">
+                    <div className="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.crop} <span className="text-sm font-normal text-gray-500">({item.variety})</span></h3>
+                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1"><MapPin size={12} /> {typeof item.location === 'string' ? item.location : `${item.location.district}, ${item.location.state}`}</div>
+                        </div>
+                    </div>
+                    <div className="my-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-end">
+                        <div>
+                            <p className="text-xs text-gray-500 mb-1">Asking Price</p>
+                            <div className="text-2xl font-bold text-bhumi-green">₹{item.price}<span className="text-sm font-normal text-gray-400">/q</span></div>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-xs text-gray-500 mb-1">Mandi Avg</p>
+                            <div className="text-sm font-medium text-gray-600 dark:text-gray-300">₹{item.marketPrice}</div>
+                            <div className={`text-[10px] font-bold ${isCheaper ? 'text-green-500' : 'text-red-500'}`}>{Math.abs(priceDiff)} {isCheaper ? 'below' : 'above'} avg</div>
+                        </div>
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                        <Button variant="secondary" size="sm" className="flex-1" onClick={onViewQR}>
+                            <QrCode size={16} /> {isOwner ? 'View Passport' : 'Verify'}
+                        </Button>
+                        {!isOwner && (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-green-700 dark:text-green-300 border-green-200 dark:border-green-700"
+                                    onClick={handleCarbonClick}
+                                    title="Calculate Carbon Footprint & Route"
+                                >
+                                    <Leaf size={16} />
+                                    <Truck size={14} />
+                                </Button>
+                                <Button variant="success" size="sm" className="flex-1" onClick={() => handleBuyNow(item)}>
+                                    <IndianRupee size={14} />
+                                    Buy Now
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </Card>
+        );
+    };
 
     return (
         <div className="min-h-screen">
