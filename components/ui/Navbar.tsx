@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell, Sun, Moon, LogOut, User as UserIcon, LayoutGrid, ShoppingBag, Sprout, ScanEye, Activity, MessageCircle, Copy, Coins } from 'lucide-react';
+import { Menu, Bell, Sun, Moon, LogOut, User as UserIcon, LayoutGrid, ShoppingBag, Sprout, ScanEye, Activity, MessageCircle, Copy, Coins, Route } from 'lucide-react';
 import { User, Language, PageView } from '../../types';
 
 interface NavbarProps {
@@ -23,6 +23,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
         { id: 'seedscout', label: 'SeedScout', icon: Sprout },
         { id: 'replication-planner', label: 'Planner', icon: Copy },
         { id: 'pricing-engine', label: 'Pricing', icon: Coins },
+        { id: 'routing-protocol', label: '3-Tier Route', icon: Route },
     ];
 
     return (

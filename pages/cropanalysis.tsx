@@ -118,10 +118,11 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
         // --- VALIDATION RULES ---
 
         // Rule 1: Is it a selfie?
-        if (skinTonePixels / pixelCount > 0.15) {
+        // REMOVED: Skin detection often causes false positives with crops (brown/red/orange produce)
+        /* if (skinTonePixels / pixelCount > 0.15) {
             setError("This looks like a photo of a person. Please upload a photo of crops or produce.");
             return false;
-        }
+        } */
 
         // Rule 2: Is it just the sky?
         if (skyBluePixels / pixelCount > 0.4) {

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { User, Language, Listing, MarketplaceListing } from '../types';
-import { ArrowLeft, ShoppingBag, Plus, QrCode, ShieldCheck, TrendingUp, MapPin, ExternalLink, Trash2, Leaf, Truck, Route, Factory } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Plus, QrCode, ShieldCheck, TrendingUp, MapPin, ExternalLink, Trash2, Leaf, Truck, Route } from 'lucide-react';
 import { MARKETPLACE_LISTINGS } from '../data/listings';
 import { getMarketplaceListings, removeMarketplaceListing } from '../services/marketplaceService';
 import { CarbonLogistics } from '../components/CarbonLogistics';
 import { DISTRICT_COORDINATES } from '../services/carbonLogisticsService';
-import { TierRoutingBadge } from '../components/TierRoutingDisplay';
 import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -245,17 +244,6 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                     <Badge className={cn("absolute top-3 left-3 flex items-center gap-1", item.grade === 'A' ? 'bg-green-500 text-white border-green-500' : item.grade === 'B' ? 'bg-yellow-500 text-white border-yellow-500' : 'bg-red-500 text-white border-red-500')}>
                         <ShieldCheck size={12} /> Grade {item.grade}
                     </Badge>
-                    {/* Tier Routing Badge */}
-                    {item.tierRouting && (
-                        <div className="absolute bottom-3 left-3">
-                            <TierRoutingBadge tier={item.tierRouting.tier} tierName={item.tierRouting.tierName} />
-                        </div>
-                    )}
-                    {item.rescueRadar && (
-                        <Badge className="absolute bottom-3 right-3 bg-red-500 text-white border-red-500 animate-pulse">
-                            ⚡ Flash Sale
-                        </Badge>
-                    )}
                 </div>
                 <div className="p-5">
                     <div className="flex justify-between items-start mb-2">
@@ -268,20 +256,6 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                             <div className="text-lg font-bold text-emerald-600">{item.qualityScore}/10</div>
                         </div>
                     </div>
-                    {/* Tier Routing Destination */}
-                    {item.tierRouting && (
-                        <div className="my-3 p-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                            <div className="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1">
-                                <Factory size={12} />
-                                <span className="font-semibold">Routed to:</span> {item.tierRouting.destination}
-                            </div>
-                            {item.tierRouting.targetBuyer && (
-                                <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                                    🎯 {item.tierRouting.targetBuyer}
-                                </div>
-                            )}
-                        </div>
-                    )}
                     <div className="my-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-end">
                         <div>
                             <p className="text-xs text-gray-500 mb-1">Listed Price</p>
@@ -350,7 +324,6 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                 harvestDate: new Date().toISOString(),
                 listedDate: new Date().toISOString(),
                 timestamp: Date.now(),
-                verificationStatus: 'unverified' as const,
             };
             setSelectedForLogistics(marketplaceListing);
             setShowVendorLocationModal(true);
@@ -364,17 +337,6 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                     <Badge className={cn("absolute top-3 left-3 flex items-center gap-1", item.grade === 'A' ? 'bg-green-500 text-white border-green-500' : item.grade === 'B' ? 'bg-yellow-500 text-white border-yellow-500' : 'bg-red-500 text-white border-red-500')}>
                         <ShieldCheck size={12} /> Grade {item.grade}
                     </Badge>
-                    {/* Tier Routing Badge */}
-                    {item.tierRouting && (
-                        <div className="absolute bottom-3 left-3">
-                            <TierRoutingBadge tier={item.tierRouting.tier} tierName={item.tierRouting.tierName} />
-                        </div>
-                    )}
-                    {item.rescueRadar && (
-                        <Badge className="absolute bottom-3 right-3 bg-red-500 text-white border-red-500 animate-pulse">
-                            ⚡ Flash Sale
-                        </Badge>
-                    )}
                 </div>
                 <div className="p-5">
                     <div className="flex justify-between items-start mb-2">
@@ -383,20 +345,6 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                             <div className="flex items-center gap-1 text-xs text-gray-500 mt-1"><MapPin size={12} /> {typeof item.location === 'string' ? item.location : `${item.location.district}, ${item.location.state}`}</div>
                         </div>
                     </div>
-                    {/* Tier Routing Destination */}
-                    {item.tierRouting && (
-                        <div className="my-3 p-2 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                            <div className="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1">
-                                <Factory size={12} />
-                                <span className="font-semibold">Routed to:</span> {item.tierRouting.destination}
-                            </div>
-                            {item.tierRouting.targetBuyer && (
-                                <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                                    🎯 {item.tierRouting.targetBuyer}
-                                </div>
-                            )}
-                        </div>
-                    )}
                     <div className="my-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-end">
                         <div>
                             <p className="text-xs text-gray-500 mb-1">Asking Price</p>

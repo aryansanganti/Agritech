@@ -8,6 +8,7 @@ import { SeedScout } from './pages/SeedScout';
 import { PricingEngine } from './pages/PricingEngine';
 import { ReplicationPlanner } from './pages/ReplicationPlanner';
 import { Chatbot } from './pages/Chatbot';
+import { RoutingProtocol } from './pages/RoutingProtocol';
 import { PageView, User, Language } from './types';
 import { LandingPage } from './pages/LandingPage';
 import { Profile } from './pages/Profile';
@@ -105,6 +106,7 @@ const App: React.FC = () => {
             case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
             case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} />;
             case 'replication-planner': return <ReplicationPlanner lang={lang} onBack={goBack} />;
+            case 'routing-protocol': return <RoutingProtocol lang={lang} onBack={goBack} />;
             default: return <Dashboard setView={setView} user={user} lang={lang} />;
         }
     };

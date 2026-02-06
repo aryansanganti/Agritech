@@ -285,7 +285,7 @@ export const ChatWidget: React.FC<Props> = ({ lang }) => {
 
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`p-4 rounded-full shadow-2xl text-white transition-all transform hover:scale-110 active:scale-90 flex items-center justify-center 
+                className={`pointer-events-auto p-4 rounded-full shadow-2xl text-white transition-all transform hover:scale-110 active:scale-90 flex items-center justify-center 
                     ${isOpen ? 'bg-red-500 rotate-90' : 'bg-bhoomi-green animate-orb-glow'}`}
             >
                 {isOpen ? <X size={24} className="text-white" /> : <MessageSquareText size={28} className="text-white" />}

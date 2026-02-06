@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CloudRain, Wind, Droplets, ThermometerSun, AlertTriangle, TrendingUp, ScanLine, Sprout, BarChart3, CloudSun, Bug, FlaskConical, Mic, ArrowRight, Compass, ShoppingBag } from 'lucide-react';
+import { CloudRain, Wind, Droplets, ThermometerSun, AlertTriangle, TrendingUp, ScanLine, Sprout, BarChart3, CloudSun, Bug, FlaskConical, Mic, ArrowRight, Compass, ShoppingBag, Route } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { PageView, User, Language } from '../types';
 import { translations } from '../utils/translations';
@@ -153,6 +153,25 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Quick Access: 3-Tier Routing Protocol */}
+            <Card
+                className="cursor-pointer group border-2 border-dashed border-orange-400/30 hover:border-orange-500 bg-gradient-to-r from-orange-500/5 to-red-500/5 transition-all"
+                onClick={() => setView('routing-protocol')}
+            >
+                <CardContent className="p-5">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Route className="text-orange-600" size={24} />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-gray-900 dark:text-white">3-Tier Routing Protocol</h3>
+                            <p className="text-sm text-gray-500">Scan → Classify → Route to Retail, Mandi, or Factory</p>
+                        </div>
+                        <ArrowRight size={20} className="text-gray-400 group-hover:text-orange-500 group-hover:translate-x-1 transition-all" />
+                    </div>
+                </CardContent>
+            </Card>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 {/* Main: Farm Simulation (Interactive) */}

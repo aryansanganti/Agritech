@@ -8,10 +8,8 @@ import { PriceHistoryChart } from '../components/PriceHistoryChart';
 import { WalletConnect } from '../components/WalletConnect';
 import { getMandiPrices } from '../services/mandiService';
 import { getPriceArbitration } from '../services/geminiService';
-import { getQualityGrading, hasQualityGrading, clearQualityGrading, scoreToGrade as qualityScoreToGrade } from '../services/qualityGradingService';
+import { getQualityGrading, hasQualityGrading, clearQualityGrading } from '../services/qualityGradingService';
 import { addMarketplaceListing, scoreToGrade } from '../services/marketplaceService';
-import { classifyHarvestIntoTiers, createSplitStreamListings, calculateUniversalPrice, mapGradeToTier } from '../services/tierRoutingService';
-import { getCropConfig } from '../services/cropRoutingConfigService';
 import {
     WalletState,
     BlockchainTransactionResult,
@@ -116,27 +114,17 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
         };
 
         // Add listing to marketplace
-        const grade = qualityGrading?.overallGrade || scoreToGrade(currentQuality);
-        const tier = mapGradeToTier(grade);
-        const cropConfig = getCropConfig(ethTx.data.crop);
-        
-        // Calculate tier-based price using Universal Pricing Algorithm
-        const basePrice = Math.round((ethTx.data.minPrice + ethTx.data.maxPrice) / 2);
-        const tierPrice = cropConfig 
-            ? calculateUniversalPrice(basePrice, tier, false)
-            : basePrice;
-
         addMarketplaceListing({
             farmerName: walletState?.address ? `Farmer ${walletState.address.slice(0, 6)}...` : 'Anonymous Farmer',
             farmerAddress: walletState?.address || undefined,
             crop: ethTx.data.crop,
-            grade: grade,
+            grade: qualityGrading?.overallGrade || scoreToGrade(currentQuality),
             qualityScore: currentQuality,
-            price: tierPrice,
+            price: Math.round((ethTx.data.minPrice + ethTx.data.maxPrice) / 2),
             minPrice: ethTx.data.minPrice,
             maxPrice: ethTx.data.maxPrice,
             guaranteedPrice: ethTx.data.guaranteedPrice,
-            marketPrice: basePrice,
+            marketPrice: Math.round((ethTx.data.minPrice + ethTx.data.maxPrice) / 2),
             quantity: ethTx.data.quantity,
             location: {
                 district: qualityGrading?.district || ethTx.data.location.split(',')[0]?.trim() || 'Unknown',
@@ -151,19 +139,7 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
             harvestDate: new Date().toISOString().split('T')[0],
             image: qualityGrading?.image || getCropDefaultImage(ethTx.data.crop),
             variety: 'Standard',
-            verificationStatus: 'verified',
-            // 3-Tier Routing Data
-            tierRouting: cropConfig ? {
-                tier: tier,
-                tierName: tier === 'tier1' ? 'Retail Grade' : tier === 'tier2' ? 'Market Grade' : 'Industrial Grade',
-                destination: tier === 'tier1' ? cropConfig.tier1_destination : 
-                             tier === 'tier2' ? cropConfig.tier2_destination : 
-                             cropConfig.tier3_industry,
-                targetBuyer: tier === 'tier1' ? 'BigBasket, Zepto, Blinkit, Export Agents' :
-                             tier === 'tier2' ? 'Local Mandi Agents, Restaurants, Hotels' :
-                             'Processing Factories (FMCG Companies)',
-                transportMethod: cropConfig.transport
-            } : undefined
+            verificationStatus: 'verified'
         });
 
         // Clear quality grading data after adding to marketplace

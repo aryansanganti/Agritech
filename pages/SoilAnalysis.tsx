@@ -163,12 +163,12 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
             }
 
             // Check 2: Is it a person/selfie?
-            // If more than 15% of pixels look like skin, reject.
-            if (skinTonePixels / pixelCount > 0.15) {
+            // REMOVED: Skin detection causes false positives with red/clay soils
+            /* if (skinTonePixels / pixelCount > 0.15) {
                 setError("This looks like a photo of a person. Please upload a photo of soil.");
                 setAnalyzing(false);
                 return;
-            }
+            } */
 
             // Check 3: Is there enough soil?
             // If less than 40% of the image is "Earth Tone", reject.
