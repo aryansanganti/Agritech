@@ -288,8 +288,8 @@ function getFollowUpQuestion(language = 'hi-IN') {
  */
 function getMainMenu(language = 'hi-IN') {
   const menus = {
-    'hi-IN': "Namaste! BHUMI mein aapka swagat hai. Kya aap janna chahte hain: Aaj ka mausam, Mandi ki keemat, Fasal ki samasya, ya Beej ki salah?",
-    'en-IN': "Namaste! Welcome to BHUMI. What would you like to know: Today's weather, Mandi prices, Crop problem, or Seed advice?"
+    'hi-IN': "Namaste! Bhumi mein aapka swagat hai. Kya aap janna chahte hain: Aaj ka mausam, Mandi ki keemat, Fasal ki samasya, ya Beej ki salah?",
+    'en-IN': "Namaste! Welcome to Bhumi. What would you like to know: Today's weather, Mandi prices, Crop problem, or Seed advice?"
   };
   return menus[language] || menus['hi-IN'];
 }

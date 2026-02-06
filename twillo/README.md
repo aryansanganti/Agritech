@@ -1,11 +1,11 @@
 # BHUMI Voice Assistant - Offline Twilio Backend
 
-A voice-first agricultural assistant accessible via regular phone calls. This backend handles incoming Twilio voice calls, uses keyword-based intent recognition (no AI), and returns hardcoded responses from mock data files.
+A voice-first agricultural assistant accessible via regular phone calls. This backend handles incoming Twilio voice calls and can use **Groq (Llama 3.3 70B Versatile)** for natural AI responses, with keyword-based fallback when AI is disabled.
 
 ## Features
 
-- **Offline-First**: No AI dependencies, pure keyword matching
-- **Hardcoded Responses**: All responses from templates and mock data
+- **AI (optional)**: Groq Llama 3.3 70B Versatile for natural responses (free tier at [console.groq.com](https://console.groq.com))
+- **Fallback**: No API key? Pure keyword matching + hardcoded responses from mock data
 - **Multi-language**: Hindi (primary) and English support
 - **Conversation Flow**: State management for multi-turn conversations
 - **Extensible**: Easy to add new intents and responses
@@ -17,7 +17,9 @@ Farmer's Phone (Voice Call)
     ↓
 Twilio Voice Gateway (STT/TTS)
     ↓
-Express.js Backend (Keyword Matching + Hardcoded Responses)
+Express.js Backend
+    ├── Groq AI (Llama 3.3 70B) if GROQ_API_KEY set
+    └── Keyword + Hardcoded Responses (fallback)
     ↓
 Mock Data Files (Weather, Mandi, Diseases, Seeds)
 ```
@@ -27,6 +29,7 @@ Mock Data Files (Weather, Mandi, Diseases, Seeds)
 - Node.js 14+ and npm
 - Twilio account with a phone number
 - ngrok (for local development)
+- (Optional) Groq API key from [console.groq.com](https://console.groq.com) for AI responses
 
 ## Setup
 
@@ -51,6 +54,7 @@ PORT=3001
 TWILIO_ACCOUNT_SID=your_account_sid_here
 TWILIO_AUTH_TOKEN=your_auth_token_here
 TWILIO_PHONE_NUMBER=+91XXXXXXXXXX
+GROQ_API_KEY=your_groq_api_key_here   # optional; get free at https://console.groq.com
 NGROK_URL=https://your-ngrok-url.ngrok.io
 ```
 
@@ -109,6 +113,15 @@ Copy the HTTPS URL (e.g., `https://abc123.ngrok.io`)
 
 Visit `http://localhost:3001/admin/active-calls` to see all active calls and their transcripts.
 
+## Using Groq AI (Llama 3.3 70B Versatile)
+
+1. Get a free API key at [console.groq.com](https://console.groq.com).
+2. Add to `.env`: `GROQ_API_KEY=gsk_...`
+3. Restart the server. When callers ask about weather, mandi, crops, or seeds, the bot will use the AI to generate natural, contextual replies based on the same mock data.
+4. If `GROQ_API_KEY` is not set or the API fails, the server falls back to keyword-based hardcoded responses.
+
+The AI is given the contents of `data/mock_*.json` in its system prompt so it uses only your data (no invented prices or weather).
+
 ## Project Structure
 
 ```
@@ -118,7 +131,8 @@ twillo/
 │   └── voice.js             # Twilio webhook handlers
 ├── services/
 │   ├── intentRecognition.js # Keyword matching engine
-│   ├── responseGenerator.js # Hardcoded response templates
+│   ├── responseGenerator.js # Hardcoded response templates (fallback)
+│   ├── groqService.js       # Groq Llama 3.3 70B AI (optional)
 │   └── conversationState.js # Call state management
 ├── data/
 │   ├── mock_weather.json    # Weather data
