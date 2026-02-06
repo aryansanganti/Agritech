@@ -270,26 +270,26 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                            <ul className="space-y-4">
-                                <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
-                                    <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
-                                        <Zap size={14} className="text-emerald-600" />
-                                    </div>
-                                    <p><span className="font-bold text-gray-900 dark:text-white">Zero Exploitation:</span> AI-driven MGP ensures agents pay fair prices.</p>
-                                </li>
-                                <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
-                                    <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
-                                        <BarChart3 size={14} className="text-emerald-600" />
-                                    </div>
-                                    <p><span className="font-bold text-gray-900 dark:text-white">Smart Aggregation:</span> We pull from 3+ official and private sources.</p>
-                                </li>
-                                <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
-                                    <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
-                                        <Sparkles size={14} className="text-emerald-600" />
-                                    </div>
-                                    <p><span className="font-bold text-gray-900 dark:text-white">AI Arbitration:</span> Models weigh sources by reliability and historical accuracy.</p>
-                                </li>
-                            </ul>
+                                <ul className="space-y-4">
+                                    <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
+                                        <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
+                                            <Zap size={14} className="text-emerald-600" />
+                                        </div>
+                                        <p><span className="font-bold text-gray-900 dark:text-white">Zero Exploitation:</span> AI-driven MGP ensures agents pay fair prices.</p>
+                                    </li>
+                                    <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
+                                        <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
+                                            <BarChart3 size={14} className="text-emerald-600" />
+                                        </div>
+                                        <p><span className="font-bold text-gray-900 dark:text-white">Smart Aggregation:</span> We pull from 3+ official and private sources.</p>
+                                    </li>
+                                    <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
+                                        <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
+                                            <Sparkles size={14} className="text-emerald-600" />
+                                        </div>
+                                        <p><span className="font-bold text-gray-900 dark:text-white">AI Arbitration:</span> Models weigh sources by reliability and historical accuracy.</p>
+                                    </li>
+                                </ul>
                             </CardContent>
                         </Card>
                     </div>

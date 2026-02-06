@@ -298,7 +298,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
     const ListingCard: React.FC<{ item: Listing; isOwner: boolean; onViewQR: () => void }> = ({ item, isOwner, onViewQR }) => {
         const priceDiff = item.price - item.marketPrice;
         const isCheaper = priceDiff < 0;
-        
+
         // Convert Listing to MarketplaceListing format for carbon logistics
         const handleCarbonClick = () => {
             const marketplaceListing: MarketplaceListing = {
@@ -324,11 +324,12 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                 harvestDate: new Date().toISOString(),
                 listedDate: new Date().toISOString(),
                 timestamp: Date.now(),
+                verificationStatus: 'pending',
             };
             setSelectedForLogistics(marketplaceListing);
             setShowVendorLocationModal(true);
         };
-        
+
         return (
             <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 border border-transparent hover:border-bhoomi-green/30">
                 <div className="relative h-48 overflow-hidden">

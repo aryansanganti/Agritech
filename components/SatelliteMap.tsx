@@ -36,6 +36,7 @@ interface SatelliteMapProps {
     zoom?: number;
     markers?: Array<{ lat: number; lng: number; title?: string; score?: number }>;
     onMarkerClick?: (marker: { lat: number; lng: number; title?: string }) => void;
+    variant?: 'satellite' | 'standard' | 'dark';
 }
 
 // Component to handle map center changes
@@ -53,30 +54,57 @@ export const SatelliteMap: React.FC<SatelliteMapProps> = ({
     center,
     zoom = 10,
     markers = [],
-    onMarkerClick
+    onMarkerClick,
+    variant = 'satellite'
 }) => {
+    // Select tile layer based on variant
+    const getTileLayer = () => {
+        switch (variant) {
+            case 'standard':
+                return {
+                    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                };
+            case 'dark':
+                return {
+                    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                };
+            case 'satellite':
+            default:
+                return {
+                    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                    attribution: '&copy; <a href="https://www.esri.com/">Esri</a> | World Imagery'
+                };
+        }
+    };
+
+    const tileConfig = getTileLayer();
+
     return (
         <MapContainer
             center={[center.lat, center.lng]}
             zoom={zoom}
             style={{ width: '100%', height: '100%', borderRadius: '1rem' }}
             scrollWheelZoom={true}
+            preferCanvas={true} // Performance optimization for many markers
         >
             <MapController center={center} zoom={zoom} />
 
-            {/* ESRI World Imagery - FREE satellite tiles */}
             <TileLayer
-                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                attribution='&copy; <a href="https://www.esri.com/">Esri</a> | World Imagery'
+                url={tileConfig.url}
+                attribution={tileConfig.attribution}
                 maxZoom={18}
             />
 
-            {/* Overlay with labels */}
-            <TileLayer
-                url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
-                attribution=''
-                maxZoom={18}
-            />
+            {/* Overlay labels for satellite view only */}
+            {variant === 'satellite' && (
+                <TileLayer
+                    url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+                    attribution=''
+                    maxZoom={18}
+                />
+            )}
 
             {markers.map((marker, index) => {
                 const score = marker.score ?? 0.5;
