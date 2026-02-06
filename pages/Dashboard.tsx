@@ -22,6 +22,7 @@ const MARKET_DATA = [
     { name: 'Onion', price: 1800, color: '#dc2626' },
     { name: 'Soy', price: 4100, color: '#0284c7' },
 ];
+import { getCurrentWeather, WeatherData } from '../services/weatherService';
 
 interface DashboardProps {
     setView: (view: PageView) => void;
@@ -33,6 +34,37 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
     const t = translations[lang];
     const firstName = user?.name ? user.name.split(' ')[0] : 'Rajesh';
     const [showVoiceAgent, setShowVoiceAgent] = useState(false);
+    const [weather, setWeather] = useState<WeatherData | null>(null);
+
+    // Fetch Weather on Mount
+    React.useEffect(() => {
+        const fetchWeather = async (lat: number, lng: number) => {
+            const data = await getCurrentWeather(lat, lng);
+            setWeather(data);
+        };
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    fetchWeather(position.coords.latitude, position.coords.longitude);
+                },
+                (error) => {
+                    console.warn("Geolocation denied, using default location (Central India)");
+                    fetchWeather(22.9734, 78.6569);
+                }
+            );
+        } else {
+            fetchWeather(22.9734, 78.6569);
+        }
+    }, []);
+
+    // Helper to determine condition string
+    const getWeatherCondition = (w: WeatherData) => {
+        if (w.precipitation > 0) return 'Rainy';
+        if (w.cloudCover > 50) return 'Cloudy';
+        if (w.windSpeed > 20) return 'Windy';
+        return 'Sunny';
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-black pb-20 font-sans">
@@ -40,6 +72,39 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
             {/* 1. Header: Rounded Box, Stretched, Accent Color */}
             <div className=" px-4 md:px-8 pt-6">
                 <div className="w-full bg-bhoomi-green text-white rounded-3xl shadow-xl p-8 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative overflow-hidden">
+                {/* Weather Widget */}
+                <Card className="flex-shrink-0 shadow-sm min-w-[200px]">
+                    <CardContent className="p-3 px-5 flex items-center gap-6">
+                        {weather ? (
+                            <>
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-orange-100 dark:bg-orange-500/10 rounded-xl text-orange-500">
+                                        {weather.precipitation > 0 ? <CloudRain size={20} /> : <ThermometerSun size={20} />}
+                                    </div>
+                                    <div>
+                                        <span className="block font-bold text-gray-900 dark:text-white">{Math.round(weather.temp)}°C</span>
+                                        <span className="text-xs text-gray-500">{getWeatherCondition(weather)}</span>
+                                    </div>
+                                </div>
+                                <Separator orientation="vertical" className="h-8" />
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-blue-100 dark:bg-blue-500/10 rounded-xl text-blue-500">
+                                        <Droplets size={20} />
+                                    </div>
+                                    <div>
+                                        <span className="block font-bold text-gray-900 dark:text-white">{weather.humidity}%</span>
+                                        <span className="text-xs text-gray-500">Humid</span>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="flex items-center gap-2 text-gray-500 animate-pulse">
+                                <CloudSun size={20} /> Loading weather...
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+            </div>
 
                     {/* Decorative Circles */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>

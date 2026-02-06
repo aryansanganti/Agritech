@@ -86,19 +86,40 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             draw(ctx: CanvasRenderingContext2D) {
                 ctx.save();
                 ctx.translate(this.x, this.y);
+
+                // Calculate tip position based on angle and height
                 const tipX = Math.sin(this.angle) * this.height;
                 const tipY = -Math.cos(this.angle) * this.height;
-                const cpX = Math.sin(this.angle) * (this.height * 0.5);
-                const cpY = -Math.cos(this.angle) * (this.height * 0.5);
 
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = this.width;
-                ctx.lineCap = 'round';
+                // Control points for the curve (midway)
+                // We shift them slightly to create a nice curve
+                const cp1x = Math.sin(this.angle * 0.5) * (this.height * 0.5);
+                const cp1y = -Math.cos(this.angle * 0.5) * (this.height * 0.5);
 
+                // Blade Gradient (Texture)
+                // Create a gradient relative to the blade's height
+                const gradient = ctx.createLinearGradient(0, 0, tipX, tipY);
+                gradient.addColorStop(0, '#022c22'); // Darker base (shadow)
+                gradient.addColorStop(0.4, this.color); // Main color
+                gradient.addColorStop(1, '#86efac'); // Lighter tip (sunlight)
+
+                ctx.fillStyle = gradient;
+
+                // Draw Tapered Blade
                 ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.quadraticCurveTo(cpX, cpY, tipX, tipY);
-                ctx.stroke();
+                // Start wide at the base (left side)
+                ctx.moveTo(-this.width, 0);
+
+                // Curve to the tip (left edge)
+                ctx.quadraticCurveTo(cp1x - this.width * 0.5, cp1y, tipX, tipY);
+
+                // Curve back to the base (right edge)
+                ctx.quadraticCurveTo(cp1x + this.width * 0.5, cp1y, this.width, 0);
+
+                // Close shape at base
+                ctx.closePath();
+                ctx.fill();
+
                 ctx.restore();
             }
         }

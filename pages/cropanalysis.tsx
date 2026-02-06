@@ -591,21 +591,30 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                 </div>
                             </div>
 
-                            {/* Pricing Result with Blockchain QR */}
-                            {pricingResult && (
-                                <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                                    <PricingResult
-                                        prediction={pricingResult}
-                                        ethTx={ethTx}
-                                        qualityScore={gradeToScore(result.grading.overallGrade)}
-                                        quantityQuintals={quantityQuintals}
-                                        walletConnected={walletState?.isConnected && walletState?.isCorrectNetwork}
-                                        onStoreOnChain={storeOnEthereum}
-                                        isStoringOnChain={isStoringOnChain}
-                                        pendingStore={!!pendingPriceData}
-                                        onAddToMarketplace={ethTx ? handleAddToMarketplace : undefined}
-                                    />
-                                </div>
+                            {/* Navigate to Pricing Engine Button */}
+                            {onNavigateToPricing && (
+                                <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200 dark:border-emerald-500/30">
+                                    <CardContent className="p-6">
+                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                            <div>
+                                                <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">
+                                                    Quality Score: {gradeToScore(result.grading.overallGrade)}/10
+                                                </h3>
+                                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                    Your crop grading is saved. Get fair market price with blockchain verification.
+                                                </p>
+                                            </div>
+                                            <Button
+                                                onClick={onNavigateToPricing}
+                                                variant="success"
+                                                size="lg"
+                                                className="shadow-lg shadow-emerald-500/30 animate-pulse hover:animate-none whitespace-nowrap"
+                                            >
+                                                Check Real Price <ArrowRight size={20} className="ml-2" />
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
                             )}
                         </div>
                     )}

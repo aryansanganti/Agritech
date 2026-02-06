@@ -139,13 +139,24 @@ export const CarbonLogistics: React.FC<Props> = ({ listing, vendorLocation, onCl
     const animationRef = useRef<NodeJS.Timeout | null>(null);
 
     // Grade segregation info
-    const gradeInfo = getGradeSegregation(listing.grade);
+    const gradeInfo = getGradeSegregation(listing.grade as 'A' | 'B' | 'C');
+
+    // Helper to safely get location string
+    const getLocationString = (loc: string | { district: string; state: string }): { district: string; state: string; name: string } => {
+        if (typeof loc === 'string') {
+            return { district: loc, state: '', name: loc };
+        }
+        return { district: loc.district, state: loc.state, name: `${loc.district}, ${loc.state}` };
+    };
 
     // Calculate initial route (sync) on mount
     useEffect(() => {
+        const loc = getLocationString(listing.location);
         const farmerLocation = {
             district: typeof listing.location === 'object' ? listing.location.district : listing.location,
             state: typeof listing.location === 'object' ? listing.location.state : '',
+            district: loc.district,
+            state: loc.state,
             name: `Farmer (${listing.crop})`
         };
 
@@ -169,9 +180,12 @@ export const CarbonLogistics: React.FC<Props> = ({ listing, vendorLocation, onCl
         setSimulationState('fetching');
 
         try {
+            const loc = getLocationString(listing.location);
             const farmerLocation = {
                 district: typeof listing.location === 'object' ? listing.location.district : listing.location,
                 state: typeof listing.location === 'object' ? listing.location.state : '',
+                district: loc.district,
+                state: loc.state,
                 name: `Farmer (${listing.crop})`
             };
 

@@ -101,10 +101,24 @@ const App: React.FC = () => {
             case 'profile': return <Profile user={user} setUser={setUser} onBack={goBack} />;
             case 'chatbot': return <Chatbot lang={lang} />;
             case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
-            case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} />;
-            case 'marketplace': return <Marketplace user={user} lang={lang} onBack={goBack} onNavigateToQualityGrading={() => setView('crop-analysis')} />;
+            case 'crop-analysis': return <CropAnalysis 
+                lang={lang} 
+                onBack={goBack} 
+                onNavigateToPricing={() => setView('pricing-engine')} 
+            />;
+            case 'marketplace': return <Marketplace 
+                user={user} 
+                lang={lang} 
+                onBack={goBack} 
+                onNavigateToQualityGrading={() => setView('crop-analysis')}
+            />;
             case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
-            case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} />;
+            case 'pricing-engine': return <PricingEngine 
+                lang={lang} 
+                onBack={goBack} 
+                onNavigateToMarketplace={() => setView('marketplace')}
+                onNavigateToQualityGrading={() => setView('crop-analysis')}
+            />;
             case 'replication-planner': return <ReplicationPlanner lang={lang} onBack={goBack} />;
             case 'routing-protocol': return <RoutingProtocol lang={lang} onBack={goBack} />;
             default: return <Dashboard setView={setView} user={user} lang={lang} />;

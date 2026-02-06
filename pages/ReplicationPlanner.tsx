@@ -6,11 +6,13 @@ import {
     AlertTriangle, CheckCircle, Loader2, ChevronDown, ChevronUp,
     FlaskConical, CloudRain, Leaf, Target, TrendingUp, Download,
     Clock, DollarSign, Bug, Shield, Lightbulb, ArrowRight, RefreshCw,
-    Globe, Layers, Zap, BookOpen, ExternalLink
+    Globe, Layers, Zap, BookOpen, ExternalLink,
+    Apple, Cherry, Citrus, Grape, Wheat, Flower2, Coffee, ClipboardList,
+    Microscope
 } from 'lucide-react';
-import { 
-    ReplicationPlan, 
-    generateReplicationPlan, 
+import {
+    ReplicationPlan,
+    generateReplicationPlan,
     quickFeasibilityCheck,
     CropProfile,
     WeeklyActivity,
@@ -32,47 +34,47 @@ interface ReplicationPlannerProps {
     initialSource?: string;
 }
 
-// Famous crop-region combinations
+// Famous crop-region combinations with farmer-friendly descriptions
 const FAMOUS_CROPS = [
-    { crop: 'Strawberry', region: 'Mahabaleshwar', icon: '🍓', description: 'Sweet hill strawberries' },
-    { crop: 'Mango (Alphonso)', region: 'Ratnagiri', icon: '🥭', description: 'King of mangoes' },
-    { crop: 'Apple', region: 'Shimla', icon: '🍎', description: 'Crisp mountain apples' },
-    { crop: 'Coffee', region: 'Coorg', icon: '☕', description: 'Aromatic arabica' },
-    { crop: 'Tea', region: 'Darjeeling', icon: '🍵', description: 'Champagne of teas' },
-    { crop: 'Grape', region: 'Nashik', icon: '🍇', description: 'Premium wine grapes' },
-    { crop: 'Saffron', region: 'Kashmir', icon: '🌸', description: 'Red gold spice' },
-    { crop: 'Cardamom', region: 'Idukki', icon: '🌿', description: 'Queen of spices' },
-    { crop: 'Orange', region: 'Nagpur', icon: '🍊', description: 'Sweet citrus' },
-    { crop: 'Rice (Basmati)', region: 'Dehradun', icon: '🌾', description: 'Aromatic long grain' },
+    { crop: 'Strawberry', region: 'Mahabaleshwar', icon: <Cherry className="text-red-500" />, description: 'High-value hill variety • 6-8 months cycle' },
+    { crop: 'Mango (Alphonso)', region: 'Ratnagiri', icon: <Citrus className="text-amber-500" />, description: 'Premium export quality • Best returns' },
+    { crop: 'Apple', region: 'Shimla', icon: <Apple className="text-red-600" />, description: 'Cold climate specialty • High demand' },
+    { crop: 'Coffee', region: 'Coorg', icon: <Coffee className="text-stone-600" />, description: 'Shade-grown arabica • Steady income' },
+    { crop: 'Tea', region: 'Darjeeling', icon: <Leaf className="text-emerald-600" />, description: 'World-famous quality • Year-round harvest' },
+    { crop: 'Grape', region: 'Nashik', icon: <Grape className="text-violet-600" />, description: 'Table & wine varieties • Export potential' },
+    { crop: 'Saffron', region: 'Kashmir', icon: <Flower2 className="text-rose-500" />, description: 'Highest value per acre • Special care needed' },
+    { crop: 'Cardamom', region: 'Idukki', icon: <Leaf className="text-green-600" />, description: 'Spice garden staple • Good shade tolerance' },
+    { crop: 'Orange', region: 'Nagpur', icon: <Citrus className="text-orange-500" />, description: 'Reliable citrus crop • Wide market' },
+    { crop: 'Rice (Basmati)', region: 'Dehradun', icon: <Wheat className="text-amber-600" />, description: 'Premium grain • High water requirement' },
 ];
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({ 
-    lang, 
-    onBack, 
-    initialCrop = '', 
-    initialSource = '' 
+export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
+    lang,
+    onBack,
+    initialCrop = '',
+    initialSource = ''
 }) => {
     const t = translations[lang];
-    
+
     // Form state
     const [selectedCrop, setSelectedCrop] = useState(initialCrop);
     const [sourceLocation, setSourceLocation] = useState(initialSource);
     const [targetLocation, setTargetLocation] = useState('');
     const [customCrop, setCustomCrop] = useState('');
     const [customSource, setCustomSource] = useState('');
-    
+
     // UI state
     const [isLoading, setIsLoading] = useState(false);
     const [progress, setProgress] = useState({ stage: '', percent: 0 });
     const [error, setError] = useState<string | null>(null);
     const [plan, setPlan] = useState<ReplicationPlan | null>(null);
-    
+
     // Expanded sections
     const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['climate', 'schedule']));
     const [selectedWeek, setSelectedWeek] = useState<number>(1);
-    
+
     // Quick feasibility
     const [quickCheck, setQuickCheck] = useState<{ score: number; summary: string; canReplicate: boolean } | null>(null);
     const [checkingFeasibility, setCheckingFeasibility] = useState(false);
@@ -97,15 +99,15 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
     const handleQuickCheck = async () => {
         const crop = customCrop || selectedCrop;
         const source = customSource || sourceLocation;
-        
+
         if (!crop || !source || !targetLocation) {
             setError('Please fill all fields');
             return;
         }
-        
+
         setCheckingFeasibility(true);
         setError(null);
-        
+
         try {
             const result = await quickFeasibilityCheck(crop, source, targetLocation);
             setQuickCheck(result);
@@ -119,16 +121,16 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
     const handleGeneratePlan = async () => {
         const crop = customCrop || selectedCrop;
         const source = customSource || sourceLocation;
-        
+
         if (!crop || !source || !targetLocation) {
             setError('Please fill all required fields');
             return;
         }
-        
+
         setIsLoading(true);
         setError(null);
         setPlan(null);
-        
+
         try {
             const result = await generateReplicationPlan(
                 crop,
@@ -172,10 +174,10 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
         <div className="min-h-screen animate-fade-in pb-10">
             {/* Header */}
             <PageHeader
-                title="Replication Planner"
+                title="Crop Success Planner"
                 onBack={onBack}
                 icon={<Sprout className="text-white" size={24} />}
-                subtitle="Replicate Any Crop Anywhere"
+                subtitle="Learn how to grow high-value crops in your region"
             />
 
             {/* Main Content */}
@@ -187,28 +189,31 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <Target size={18} className="text-purple-500" />
-                                    Select Famous Crop
+                                    <Target size={18} className="text-emerald-600" />
+                                    Choose a Proven Crop
                                 </CardTitle>
+                                <p className="text-sm text-gray-500 mt-1">These crops have excellent track records in their native regions</p>
                             </CardHeader>
                             <CardContent>
-                            <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto custom-scrollbar">
-                                {FAMOUS_CROPS.map((item) => (
-                                    <button
-                                        key={item.crop}
-                                        onClick={() => handleSelectPreset(item)}
-                                        className={`p-3 rounded-xl text-left transition-all border ${
-                                            selectedCrop === item.crop 
-                                                ? 'bg-purple-500/20 border-purple-500/50' 
-                                                : 'bg-gray-50 dark:bg-white/5 border-transparent hover:border-purple-500/30'
-                                        }`}
-                                    >
-                                        <div className="text-2xl mb-1">{item.icon}</div>
-                                        <div className="text-sm font-medium text-gray-900 dark:text-white">{item.crop}</div>
-                                        <div className="text-xs text-gray-500">{item.region}</div>
-                                    </button>
-                                ))}
-                            </div>
+                                <div className="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto custom-scrollbar">
+                                    {FAMOUS_CROPS.map((item) => (
+                                        <button
+                                            key={item.crop}
+                                            onClick={() => handleSelectPreset(item)}
+                                            className={`p-3 rounded-lg text-left transition-all border-2 ${selectedCrop === item.crop
+                                                    ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500'
+                                                    : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 hover:border-emerald-400'
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-2 mb-1">
+                                                {item.icon}
+                                                <span className="text-sm font-semibold text-gray-900 dark:text-white">{item.crop}</span>
+                                            </div>
+                                            <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">📍 {item.region}</div>
+                                            <div className="text-xs text-gray-500">{item.description}</div>
+                                        </button>
+                                    ))}
+                                </div>
                             </CardContent>
                         </Card>
 
@@ -216,31 +221,32 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <Leaf size={18} className="text-green-500" />
-                                    Or Enter Custom
+                                    <Leaf size={18} className="text-emerald-500" />
+                                    Or Enter Your Own Crop
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                            <div className="space-y-3">
-                                <div>
-                                    <Label className="mb-1 block">Crop Name</Label>
-                                    <Input
-                                        type="text"
-                                        value={customCrop}
-                                        onChange={(e) => { setCustomCrop(e.target.value); setSelectedCrop(''); }}
-                                        placeholder="e.g., Avocado, Blueberry..."
-                                    />
+                                <div className="space-y-3">
+                                    <div>
+                                        <Label className="mb-1 block text-gray-700 dark:text-gray-300">Which crop do you want to grow?</Label>
+                                        <Input
+                                            type="text"
+                                            value={customCrop}
+                                            onChange={(e) => { setCustomCrop(e.target.value); setSelectedCrop(''); }}
+                                            placeholder="e.g., Avocado, Blueberry, Dragon Fruit..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label className="mb-1 block text-gray-700 dark:text-gray-300">Where is this crop grown successfully?</Label>
+                                        <Input
+                                            type="text"
+                                            value={customSource}
+                                            onChange={(e) => { setCustomSource(e.target.value); setSourceLocation(''); }}
+                                            placeholder="e.g., California, Israel, Vietnam..."
+                                        />
+                                        <p className="text-xs text-gray-500 mt-1">We'll study the conditions there to help you replicate success</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <Label className="mb-1 block">Source Region (Famous For)</Label>
-                                    <Input
-                                        type="text"
-                                        value={customSource}
-                                        onChange={(e) => { setCustomSource(e.target.value); setSourceLocation(''); }}
-                                        placeholder="e.g., California, New Zealand..."
-                                    />
-                                </div>
-                            </div>
                             </CardContent>
                         </Card>
 
@@ -248,17 +254,19 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <MapPin size={18} className="text-red-500" />
-                                    Your Target Location
+                                    <MapPin size={18} className="text-rose-500" />
+                                    Your Farm Location
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                            <Input
-                                type="text"
-                                value={targetLocation}
-                                onChange={(e) => setTargetLocation(e.target.value)}
-                                placeholder="Where do you want to grow? e.g., Pune, Delhi..."
-                            />
+                                <Label className="mb-1 block text-gray-700 dark:text-gray-300">Where is your land located?</Label>
+                                <Input
+                                    type="text"
+                                    value={targetLocation}
+                                    onChange={(e) => setTargetLocation(e.target.value)}
+                                    placeholder="Enter your district or village name..."
+                                />
+                                <p className="text-xs text-gray-500 mt-1">We'll analyze your local climate and soil conditions</p>
                             </CardContent>
                         </Card>
 
@@ -273,21 +281,21 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                                 {checkingFeasibility ? (
                                     <><Loader2 size={18} className="animate-spin" /> Checking...</>
                                 ) : (
-                                    <><Zap size={18} /> Quick Feasibility Check</>
+                                    <><Zap size={18} /> Quick Check – Can I Grow This?</>
                                 )}
                             </Button>
-                            
+
                             <Button
                                 onClick={handleGeneratePlan}
                                 disabled={isLoading || (!selectedCrop && !customCrop) || !targetLocation}
                                 variant="premium"
                                 size="lg"
-                                className="w-full shadow-lg shadow-purple-500/30"
+                                className="w-full"
                             >
                                 {isLoading ? (
                                     <><Loader2 size={20} className="animate-spin" /> {progress.stage}</>
                                 ) : (
-                                    <><Sprout size={20} /> Generate Complete Plan</>
+                                    <><Sprout size={20} /> Create My Growing Guide</>
                                 )}
                             </Button>
                         </div>
@@ -318,84 +326,98 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                         {quickCheck ? (
                             <Card className={cn("border-2", getFeasibilityBg(quickCheck.score))}>
                                 <CardContent className="p-6">
-                                <div className="flex items-center justify-between mb-6">
-                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Quick Feasibility Check</h2>
-                                    <div className={`text-4xl font-bold ${getFeasibilityColor(quickCheck.score)}`}>
-                                        {quickCheck.score}%
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Your Growing Potential</h2>
+                                        <div className="text-center">
+                                            <div className={`text-4xl font-bold ${getFeasibilityColor(quickCheck.score)}`}>
+                                                {quickCheck.score}%
+                                            </div>
+                                            <div className="text-xs text-gray-500 mt-1">Success Score</div>
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <div className="flex items-center gap-3 mb-4">
-                                    {quickCheck.canReplicate ? (
-                                        <CheckCircle size={24} className="text-green-500" />
-                                    ) : (
-                                        <AlertTriangle size={24} className="text-red-500" />
-                                    )}
-                                    <span className="text-lg text-gray-700 dark:text-gray-300">
-                                        {quickCheck.canReplicate ? 'Replication is feasible!' : 'Challenging - see details'}
-                                    </span>
-                                </div>
-                                
-                                <p className="text-gray-600 dark:text-gray-400 mb-6">{quickCheck.summary}</p>
-                                
-                                <Button
-                                    onClick={handleGeneratePlan}
-                                    disabled={isLoading}
-                                    variant="premium"
-                                    size="lg"
-                                    className="w-full"
-                                >
-                                    <ArrowRight size={20} />
-                                    Generate Detailed Cultivation Plan
-                                </Button>
+
+                                    <div className="flex items-center gap-3 mb-4 p-3 rounded-lg bg-white dark:bg-slate-800">
+                                        {quickCheck.canReplicate ? (
+                                            <CheckCircle size={24} className="text-emerald-500 flex-shrink-0" />
+                                        ) : (
+                                            <AlertTriangle size={24} className="text-amber-500 flex-shrink-0" />
+                                        )}
+                                        <span className="text-base text-gray-700 dark:text-gray-300">
+                                            {quickCheck.canReplicate 
+                                                ? 'Good news! This crop can grow well in your area.' 
+                                                : 'This will need extra care, but it\'s possible with the right approach.'}
+                                        </span>
+                                    </div>
+
+                                    <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">{quickCheck.summary}</p>
+
+                                    <Button
+                                        onClick={handleGeneratePlan}
+                                        disabled={isLoading}
+                                        variant="premium"
+                                        size="lg"
+                                        className="w-full"
+                                    >
+                                        <ArrowRight size={20} />
+                                        Get Your Complete Growing Guide
+                                    </Button>
                                 </CardContent>
                             </Card>
                         ) : (
                             <Card>
                                 <CardContent className="p-6">
-                                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                                    <BookOpen size={20} className="text-purple-500" />
-                                    How It Works
-                                </h2>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                    <div className="p-4 rounded-xl bg-purple-500/10">
-                                        <div className="text-2xl mb-2">🌍</div>
-                                        <h3 className="font-bold text-gray-900 dark:text-white">1. Select Source</h3>
-                                        <p className="text-sm text-gray-500">Choose a famous crop from its renowned region</p>
+                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                        How This Helps You
+                                    </h2>
+                                    <p className="text-gray-500 mb-6">Get a complete roadmap to grow high-value crops on your farm</p>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                        <div className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 font-bold text-sm">1</div>
+                                                <h3 className="font-semibold text-gray-900 dark:text-white">Pick a Successful Crop</h3>
+                                            </div>
+                                            <p className="text-sm text-gray-500 ml-11">Select a crop that's thriving in another region</p>
+                                        </div>
+                                        <div className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 font-bold text-sm">2</div>
+                                                <h3 className="font-semibold text-gray-900 dark:text-white">Add Your Location</h3>
+                                            </div>
+                                            <p className="text-sm text-gray-500 ml-11">Tell us where your farm is located</p>
+                                        </div>
+                                        <div className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 font-bold text-sm">3</div>
+                                                <h3 className="font-semibold text-gray-900 dark:text-white">Smart Comparison</h3>
+                                            </div>
+                                            <p className="text-sm text-gray-500 ml-11">We compare weather, soil & conditions between locations</p>
+                                        </div>
+                                        <div className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 font-bold text-sm">4</div>
+                                                <h3 className="font-semibold text-gray-900 dark:text-white">Your Custom Plan</h3>
+                                            </div>
+                                            <p className="text-sm text-gray-500 ml-11">Get week-by-week guidance tailored to your farm</p>
+                                        </div>
                                     </div>
-                                    <div className="p-4 rounded-xl bg-indigo-500/10">
-                                        <div className="text-2xl mb-2">📍</div>
-                                        <h3 className="font-bold text-gray-900 dark:text-white">2. Enter Target</h3>
-                                        <p className="text-sm text-gray-500">Where you want to replicate this crop</p>
+
+                                    <div className="p-5 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20">
+                                        <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                            <CheckCircle size={18} className="text-emerald-600" />
+                                            Your Growing Guide Includes
+                                        </h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                            <div className="flex items-center gap-2"><span className="text-emerald-500">•</span> Weather adjustments for your area</div>
+                                            <div className="flex items-center gap-2"><span className="text-emerald-500">•</span> What to add to your soil</div>
+                                            <div className="flex items-center gap-2"><span className="text-emerald-500">•</span> Week-by-week farming tasks</div>
+                                            <div className="flex items-center gap-2"><span className="text-emerald-500">•</span> Fertilizer schedule with quantities</div>
+                                            <div className="flex items-center gap-2"><span className="text-emerald-500">•</span> Watering plan for your climate</div>
+                                            <div className="flex items-center gap-2"><span className="text-emerald-500">•</span> Pest & disease prevention</div>
+                                            <div className="flex items-center gap-2"><span className="text-emerald-500">•</span> Expected costs & returns</div>
+                                            <div className="flex items-center gap-2"><span className="text-emerald-500">•</span> When to plant & harvest</div>
+                                        </div>
                                     </div>
-                                    <div className="p-4 rounded-xl bg-blue-500/10">
-                                        <div className="text-2xl mb-2">🔬</div>
-                                        <h3 className="font-bold text-gray-900 dark:text-white">3. AI Analysis</h3>
-                                        <p className="text-sm text-gray-500">We analyze climate, soil, and growing conditions</p>
-                                    </div>
-                                    <div className="p-4 rounded-xl bg-green-500/10">
-                                        <div className="text-2xl mb-2">📋</div>
-                                        <h3 className="font-bold text-gray-900 dark:text-white">4. Get Your Plan</h3>
-                                        <p className="text-sm text-gray-500">Complete week-by-week cultivation guide</p>
-                                    </div>
-                                </div>
-                                
-                                <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border border-purple-500/20">
-                                    <h3 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                                        <Lightbulb size={16} className="text-yellow-500" />
-                                        What You'll Get
-                                    </h3>
-                                    <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                        <li>✓ Climate comparison & adjustments needed</li>
-                                        <li>✓ Soil preparation with exact amendments</li>
-                                        <li>✓ Week-by-week activity schedule</li>
-                                        <li>✓ Fertilizer calendar with NPK ratios</li>
-                                        <li>✓ Irrigation plan adjusted for your climate</li>
-                                        <li>✓ Pest & disease management calendar</li>
-                                        <li>✓ Cost estimates and expected yield</li>
-                                    </ul>
-                                </div>
                                 </CardContent>
                             </Card>
                         )}
@@ -405,45 +427,58 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                 /* PLAN DISPLAY */
                 <div className="space-y-6">
                     {/* Plan Header */}
-                    <Card className="bg-green-50 dark:bg-green-500/5 border-green-500/20">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                                    {plan.crop.name} Replication Plan
-                                </h2>
-                                <p className="text-gray-500 flex items-center gap-2">
-                                    <Badge variant="purple">{plan.sourceLocation}</Badge>
-                                    <ArrowRight size={16} />
-                                    <Badge variant="info">{plan.targetLocation}</Badge>
+                    <Card className="border-emerald-200 dark:border-emerald-800">
+                        <CardContent className="p-6">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                <div>
+                                    <div className="text-sm text-gray-500 mb-1">Your Growing Guide for</div>
+                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                                        {plan.crop.name}
+                                    </h2>
+                                    <div className="flex items-center gap-3 text-sm">
+                                        <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                                            <MapPin size={14} className="text-emerald-500" />
+                                            Learning from: <strong className="text-gray-900 dark:text-white">{plan.sourceLocation}</strong>
+                                        </span>
+                                        <ArrowRight size={16} className="text-gray-400" />
+                                        <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                                            <Target size={14} className="text-rose-500" />
+                                            Growing in: <strong className="text-gray-900 dark:text-white">{plan.targetLocation}</strong>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4">
+                                    <div className={`text-center p-4 rounded-lg ${getFeasibilityBg(plan.feasibilityScore)}`}>
+                                        <div className={`text-3xl font-bold ${getFeasibilityColor(plan.feasibilityScore)}`}>
+                                            {plan.feasibilityScore}%
+                                        </div>
+                                        <div className="text-xs text-gray-500 mt-1">Success Chance</div>
+                                    </div>
+
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => setPlan(null)}
+                                        title="Start over"
+                                    >
+                                        <RefreshCw size={20} />
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <div className="mt-4 p-4 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Summary</div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    {plan.feasibilityNotes}
                                 </p>
                             </div>
-                            
-                            <div className="flex items-center gap-4">
-                                <div className={`text-center p-4 rounded-xl ${getFeasibilityBg(plan.feasibilityScore)}`}>
-                                    <div className={`text-3xl font-bold ${getFeasibilityColor(plan.feasibilityScore)}`}>
-                                        {plan.feasibilityScore}%
-                                    </div>
-                                    <div className="text-xs text-gray-500">Feasibility</div>
-                                </div>
-                                
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => setPlan(null)}
-                                >
-                                    <RefreshCw size={20} />
-                                </Button>
-                            </div>
-                        </div>
-                        
-                        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400 p-3 bg-white/50 dark:bg-black/20 rounded-xl">
-                            {plan.feasibilityNotes}
-                        </p>
+                        </CardContent>
                     </Card>
 
                     {/* Climate Comparison Section */}
                     <CollapsibleSection
-                        title="Climate Comparison"
+                        title="Weather & Climate Comparison"
                         icon={<Thermometer className="text-orange-500" size={20} />}
                         isExpanded={expandedSections.has('climate')}
                         onToggle={() => toggleSection('climate')}
@@ -453,36 +488,48 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
 
                     {/* Planting Window */}
                     <CollapsibleSection
-                        title="Planting Window"
+                        title="Best Time to Plant"
                         icon={<Calendar className="text-green-500" size={20} />}
                         isExpanded={expandedSections.has('planting')}
                         onToggle={() => toggleSection('planting')}
                     >
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
-                                <div className="text-sm text-gray-500 mb-1">Optimal Window</div>
-                                <div className="text-lg font-bold text-green-600">
-                                    {plan.plantingWindow.optimal.start} - {plan.plantingWindow.optimal.end}
+                            <div className="p-4 rounded-lg border-2 border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <CheckCircle size={16} className="text-emerald-600" />
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Best Window</span>
                                 </div>
-                            </div>
-                            <div className="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30">
-                                <div className="text-sm text-gray-500 mb-1">Acceptable Window</div>
-                                <div className="text-lg font-bold text-yellow-600">
-                                    {plan.plantingWindow.acceptable.start} - {plan.plantingWindow.acceptable.end}
+                                <div className="text-lg font-bold text-emerald-700 dark:text-emerald-400">
+                                    {plan.plantingWindow.optimal.start} – {plan.plantingWindow.optimal.end}
                                 </div>
+                                <div className="text-xs text-gray-500 mt-1">Ideal conditions for this crop</div>
                             </div>
-                            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
-                                <div className="text-sm text-gray-500 mb-1">Avoid Planting</div>
-                                <div className="text-sm text-red-600">
+                            <div className="p-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Clock size={16} className="text-amber-600" />
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Also Possible</span>
+                                </div>
+                                <div className="text-lg font-bold text-amber-700 dark:text-amber-400">
+                                    {plan.plantingWindow.acceptable.start} – {plan.plantingWindow.acceptable.end}
+                                </div>
+                                <div className="text-xs text-gray-500 mt-1">Can work with extra care</div>
+                            </div>
+                            <div className="p-4 rounded-lg border border-rose-200 dark:border-rose-800 bg-rose-50 dark:bg-rose-900/20">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <AlertTriangle size={16} className="text-rose-600" />
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Avoid These Months</span>
+                                </div>
+                                <div className="text-sm text-rose-700 dark:text-rose-400">
                                     {plan.plantingWindow.avoid.join(', ')}
                                 </div>
+                                <div className="text-xs text-gray-500 mt-1">Not recommended for planting</div>
                             </div>
                         </div>
                     </CollapsibleSection>
 
                     {/* Soil Preparation */}
                     <CollapsibleSection
-                        title="Soil Preparation"
+                        title="Prepare Your Soil"
                         icon={<Layers className="text-amber-600" size={20} />}
                         isExpanded={expandedSections.has('soil')}
                         onToggle={() => toggleSection('soil')}
@@ -492,13 +539,13 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
 
                     {/* Weekly Schedule */}
                     <CollapsibleSection
-                        title="Weekly Cultivation Schedule"
+                        title="Week-by-Week Tasks"
                         icon={<Clock className="text-blue-500" size={20} />}
                         isExpanded={expandedSections.has('schedule')}
                         onToggle={() => toggleSection('schedule')}
                     >
-                        <WeeklySchedulePanel 
-                            schedule={plan.weeklySchedule} 
+                        <WeeklySchedulePanel
+                            schedule={plan.weeklySchedule}
                             selectedWeek={selectedWeek}
                             onSelectWeek={setSelectedWeek}
                         />
@@ -506,8 +553,8 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
 
                     {/* Fertilizer Calendar */}
                     <CollapsibleSection
-                        title="Fertilizer Calendar"
-                        icon={<FlaskConical className="text-purple-500" size={20} />}
+                        title="Fertilizer Schedule"
+                        icon={<FlaskConical className="text-emerald-600" size={20} />}
                         isExpanded={expandedSections.has('fertilizer')}
                         onToggle={() => toggleSection('fertilizer')}
                     >
@@ -516,8 +563,8 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
 
                     {/* Pest & Disease Management */}
                     <CollapsibleSection
-                        title="Pest & Disease Management"
-                        icon={<Bug className="text-red-500" size={20} />}
+                        title="Protect Your Crop"
+                        icon={<Shield className="text-rose-500" size={20} />}
                         isExpanded={expandedSections.has('pest')}
                         onToggle={() => toggleSection('pest')}
                     >
@@ -526,14 +573,14 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
 
                     {/* Harvest & Yield */}
                     <CollapsibleSection
-                        title="Harvest Guidelines & Expected Yield"
-                        icon={<TrendingUp className="text-green-500" size={20} />}
+                        title="Harvest & Your Returns"
+                        icon={<TrendingUp className="text-emerald-500" size={20} />}
                         isExpanded={expandedSections.has('harvest')}
                         onToggle={() => toggleSection('harvest')}
                     >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <h4 className="font-bold text-gray-900 dark:text-white mb-3">Harvest Indicators</h4>
+                                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">How to Know When It's Ready</h4>
                                 <ul className="space-y-2">
                                     {plan.harvestGuidelines.indicators.map((indicator, i) => (
                                         <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -542,25 +589,25 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                                         </li>
                                     ))}
                                 </ul>
-                                <div className="mt-4 p-3 rounded-xl bg-gray-50 dark:bg-white/5">
-                                    <div className="text-xs text-gray-500">Best Harvest Time</div>
+                                <div className="mt-4 p-4 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                                    <div className="text-xs font-medium text-gray-500 mb-1">Best Harvest Time</div>
                                     <div className="font-medium text-gray-900 dark:text-white">{plan.harvestGuidelines.timing}</div>
                                 </div>
                             </div>
                             <div>
-                                <h4 className="font-bold text-gray-900 dark:text-white mb-3">Expected Yield</h4>
+                                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">What You Can Expect</h4>
                                 <div className="space-y-3">
-                                    <div className="p-3 rounded-xl bg-green-500/10">
-                                        <div className="text-xs text-gray-500">Quantity</div>
-                                        <div className="font-bold text-green-600">{plan.expectedYield.quantity}</div>
+                                    <div className="p-4 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20">
+                                        <div className="text-xs font-medium text-gray-500 mb-1">Expected Quantity</div>
+                                        <div className="font-bold text-emerald-700 dark:text-emerald-400">{plan.expectedYield.quantity}</div>
                                     </div>
-                                    <div className="p-3 rounded-xl bg-purple-500/10">
-                                        <div className="text-xs text-gray-500">Quality</div>
-                                        <div className="font-bold text-purple-600">{plan.expectedYield.quality}</div>
+                                    <div className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                        <div className="text-xs font-medium text-gray-500 mb-1">Expected Quality</div>
+                                        <div className="font-bold text-gray-900 dark:text-white">{plan.expectedYield.quality}</div>
                                     </div>
-                                    <div className="p-3 rounded-xl bg-blue-500/10">
-                                        <div className="text-xs text-gray-500">Time to First Harvest</div>
-                                        <div className="font-bold text-blue-600">{plan.expectedYield.timeToFirstHarvest}</div>
+                                    <div className="p-4 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+                                        <div className="text-xs font-medium text-gray-500 mb-1">Time to First Harvest</div>
+                                        <div className="font-bold text-blue-700 dark:text-blue-400">{plan.expectedYield.timeToFirstHarvest}</div>
                                     </div>
                                 </div>
                             </div>
@@ -569,8 +616,8 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
 
                     {/* Cost Estimate */}
                     <CollapsibleSection
-                        title="Cost Estimate"
-                        icon={<DollarSign className="text-green-600" size={20} />}
+                        title="Investment & Costs"
+                        icon={<DollarSign className="text-emerald-600" size={20} />}
                         isExpanded={expandedSections.has('cost')}
                         onToggle={() => toggleSection('cost')}
                     >
@@ -579,25 +626,26 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
 
                     {/* Risk Factors */}
                     <CollapsibleSection
-                        title="Risk Factors & Mitigation"
-                        icon={<Shield className="text-orange-500" size={20} />}
+                        title="Possible Challenges & Solutions"
+                        icon={<AlertTriangle className="text-amber-500" size={20} />}
                         isExpanded={expandedSections.has('risk')}
                         onToggle={() => toggleSection('risk')}
                     >
                         <div className="space-y-3">
                             {plan.riskFactors.map((risk, i) => (
-                                <div key={i} className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 flex items-start gap-4">
-                                    <div className={`px-2 py-1 rounded text-xs font-bold uppercase ${
-                                        risk.likelihood === 'high' ? 'bg-red-500/20 text-red-600' :
-                                        risk.likelihood === 'medium' ? 'bg-yellow-500/20 text-yellow-600' :
-                                        'bg-green-500/20 text-green-600'
-                                    }`}>
-                                        {risk.likelihood}
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="font-medium text-gray-900 dark:text-white">{risk.risk}</div>
-                                        <div className="text-sm text-gray-500 mt-1">
-                                            <span className="text-green-600 font-medium">Mitigation:</span> {risk.mitigation}
+                                <div key={i} className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                    <div className="flex items-start gap-3">
+                                        <div className={`px-2 py-1 rounded text-xs font-semibold ${risk.likelihood === 'high' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400' :
+                                                risk.likelihood === 'medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                                                    'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                                            }`}>
+                                            {risk.likelihood === 'high' ? 'Watch Out' : risk.likelihood === 'medium' ? 'Be Aware' : 'Low Risk'}
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="font-medium text-gray-900 dark:text-white mb-1">{risk.risk}</div>
+                                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                                                <span className="text-emerald-600 font-medium">What to do:</span> {risk.mitigation}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -606,22 +654,23 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                     </CollapsibleSection>
 
                     {/* Success Tips */}
-                    <Card className="bg-green-50 dark:bg-green-500/5 border-green-500/20">
+                    <Card className="border-emerald-200 dark:border-emerald-800">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Lightbulb className="text-yellow-500" size={20} />
-                                Success Tips
+                                <Lightbulb className="text-amber-500" size={20} />
+                                Pro Tips for Success
                             </CardTitle>
+                            <p className="text-sm text-gray-500">Expert advice to maximize your yield</p>
                         </CardHeader>
                         <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {plan.successTips.map((tip, i) => (
-                                <div key={i} className="flex items-start gap-2 p-3 rounded-xl bg-white/50 dark:bg-black/20">
-                                    <span className="text-green-500 font-bold">{i + 1}.</span>
-                                    <span className="text-sm text-gray-700 dark:text-gray-300">{tip}</span>
-                                </div>
-                            ))}
-                        </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                {plan.successTips.map((tip, i) => (
+                                    <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 text-sm font-semibold flex items-center justify-center">{i + 1}</span>
+                                        <span className="text-sm text-gray-700 dark:text-gray-300">{tip}</span>
+                                    </div>
+                                ))}
+                            </div>
                         </CardContent>
                     </Card>
 
@@ -631,18 +680,19 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Globe className="text-blue-500" size={20} />
-                                    Local Resources & Support
+                                    Helpful Resources Near You
                                 </CardTitle>
+                                <p className="text-sm text-gray-500">Local support and information sources</p>
                             </CardHeader>
                             <CardContent>
-                            <ul className="space-y-2">
-                                {plan.localResources.map((resource, i) => (
-                                    <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                        <ExternalLink size={14} className="text-blue-500 flex-shrink-0 mt-1" />
-                                        {resource}
-                                    </li>
-                                ))}
-                            </ul>
+                                <ul className="space-y-2">
+                                    {plan.localResources.map((resource, i) => (
+                                        <li key={i} className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-gray-600 dark:text-gray-400">
+                                            <ExternalLink size={16} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                                            {resource}
+                                        </li>
+                                    ))}
+                                </ul>
                             </CardContent>
                         </Card>
                     )}
@@ -666,71 +716,76 @@ const CollapsibleSection: React.FC<{
     <Card className="overflow-hidden">
         <button
             onClick={onToggle}
-            className="w-full p-5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+            className="w-full p-5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors border-b border-transparent data-[expanded=true]:border-gray-200 dark:data-[expanded=true]:border-slate-700"
+            data-expanded={isExpanded}
         >
             <div className="flex items-center gap-3">
                 {icon}
-                <span className="font-bold text-gray-900 dark:text-white">{title}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{title}</span>
             </div>
-            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400">{isExpanded ? 'Hide' : 'Show'}</span>
+                {isExpanded ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
+            </div>
         </button>
-        {isExpanded && <div className="px-5 pb-5">{children}</div>}
+        {isExpanded && <div className="px-5 pb-5 pt-4">{children}</div>}
     </Card>
 );
 
 const ClimateComparisonPanel: React.FC<{ comparison: ClimateComparison }> = ({ comparison }) => (
     <div className="space-y-6">
         {/* Overview Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <ClimateCard 
-                label="Temperature" 
-                source={`${comparison.source.temperature.mean.toFixed(1)}°C`}
-                target={`${comparison.target.temperature.mean.toFixed(1)}°C`}
-                icon={<Thermometer size={16} className="text-orange-500" />}
-            />
-            <ClimateCard 
-                label="Humidity" 
-                source={`${comparison.source.humidity.avg.toFixed(0)}%`}
-                target={`${comparison.target.humidity.avg.toFixed(0)}%`}
-                icon={<Droplets size={16} className="text-blue-500" />}
-            />
-            <ClimateCard 
-                label="Rainfall" 
-                source={`${comparison.source.rainfall.annual}mm`}
-                target={`${comparison.target.rainfall.annual}mm`}
-                icon={<CloudRain size={16} className="text-cyan-500" />}
-            />
-            <ClimateCard 
-                label="Sunlight" 
-                source={`${comparison.source.sunlight.avgHours.toFixed(1)}h`}
-                target={`${comparison.target.sunlight.avgHours.toFixed(1)}h`}
-                icon={<Sun size={16} className="text-yellow-500" />}
-            />
+        <div>
+            <h4 className="text-sm font-medium text-gray-500 mb-3">Key Climate Factors Compared</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <ClimateCard
+                    label="Temperature"
+                    source={`${comparison.source.temperature.mean.toFixed(1)}°C`}
+                    target={`${comparison.target.temperature.mean.toFixed(1)}°C`}
+                    icon={<Thermometer size={16} className="text-orange-500" />}
+                />
+                <ClimateCard
+                    label="Humidity"
+                    source={`${comparison.source.humidity.avg.toFixed(0)}%`}
+                    target={`${comparison.target.humidity.avg.toFixed(0)}%`}
+                    icon={<Droplets size={16} className="text-blue-500" />}
+                />
+                <ClimateCard
+                    label="Annual Rainfall"
+                    source={`${comparison.source.rainfall.annual}mm`}
+                    target={`${comparison.target.rainfall.annual}mm`}
+                    icon={<CloudRain size={16} className="text-cyan-500" />}
+                />
+                <ClimateCard
+                    label="Sunlight Hours"
+                    source={`${comparison.source.sunlight.avgHours.toFixed(1)}h`}
+                    target={`${comparison.target.sunlight.avgHours.toFixed(1)}h`}
+                    icon={<Sun size={16} className="text-amber-500" />}
+                />
+            </div>
         </div>
 
         {/* Gaps */}
         {comparison.gaps.length > 0 && (
             <div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-3">Climate Gaps to Address</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Differences to Address</h4>
                 <div className="space-y-2">
                     {comparison.gaps.map((gap, i) => (
-                        <div key={i} className={`p-3 rounded-xl flex items-center justify-between ${
-                            gap.severity === 'critical' ? 'bg-red-500/10' :
-                            gap.severity === 'high' ? 'bg-orange-500/10' :
-                            gap.severity === 'medium' ? 'bg-yellow-500/10' : 'bg-green-500/10'
-                        }`}>
+                        <div key={i} className={`p-3 rounded-lg flex items-center justify-between border ${gap.severity === 'critical' ? 'border-rose-200 bg-rose-50 dark:border-rose-800 dark:bg-rose-900/20' :
+                                gap.severity === 'high' ? 'border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-900/20' :
+                                    gap.severity === 'medium' ? 'border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20' : 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20'
+                            }`}>
                             <div>
                                 <span className="font-medium text-gray-900 dark:text-white">{gap.parameter}</span>
                                 <span className="text-xs text-gray-500 ml-2">
-                                    {gap.sourceValue.toFixed(1)} → {gap.targetValue.toFixed(1)} (Δ{gap.difference.toFixed(1)})
+                                    {gap.sourceValue.toFixed(1)} → {gap.targetValue.toFixed(1)} (difference: {gap.difference.toFixed(1)})
                                 </span>
                             </div>
-                            <span className={`text-xs font-bold uppercase px-2 py-1 rounded ${
-                                gap.severity === 'critical' ? 'bg-red-500 text-white' :
-                                gap.severity === 'high' ? 'bg-orange-500 text-white' :
-                                gap.severity === 'medium' ? 'bg-yellow-500 text-white' : 'bg-green-500 text-white'
-                            }`}>
-                                {gap.severity}
+                            <span className={`text-xs font-semibold px-2 py-1 rounded ${gap.severity === 'critical' ? 'bg-rose-500 text-white' :
+                                    gap.severity === 'high' ? 'bg-orange-500 text-white' :
+                                        gap.severity === 'medium' ? 'bg-amber-500 text-white' : 'bg-emerald-500 text-white'
+                                }`}>
+                                {gap.severity === 'critical' ? 'Major' : gap.severity === 'high' ? 'Significant' : gap.severity === 'medium' ? 'Moderate' : 'Minor'}
                             </span>
                         </div>
                     ))}
@@ -741,16 +796,15 @@ const ClimateComparisonPanel: React.FC<{ comparison: ClimateComparison }> = ({ c
         {/* Adjustments */}
         {comparison.adjustments.length > 0 && (
             <div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-3">Recommended Adjustments</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">What You Should Do</h4>
                 <div className="space-y-2">
                     {comparison.adjustments.map((adj, i) => (
-                        <div key={i} className="p-4 rounded-xl bg-gray-50 dark:bg-white/5">
+                        <div key={i} className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
                             <div className="flex items-center gap-2 mb-2">
-                                <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded ${
-                                    adj.priority === 'essential' ? 'bg-red-500/20 text-red-600' :
-                                    adj.priority === 'recommended' ? 'bg-yellow-500/20 text-yellow-600' : 'bg-gray-500/20 text-gray-600'
-                                }`}>
-                                    {adj.priority}
+                                <span className={`text-xs font-semibold px-2 py-0.5 rounded ${adj.priority === 'essential' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400' :
+                                        adj.priority === 'recommended' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-gray-400'
+                                    }`}>
+                                    {adj.priority === 'essential' ? 'Must Do' : adj.priority === 'recommended' ? 'Suggested' : 'Optional'}
                                 </span>
                                 <span className="font-medium text-gray-900 dark:text-white">{adj.parameter}</span>
                             </div>
@@ -764,19 +818,19 @@ const ClimateComparisonPanel: React.FC<{ comparison: ClimateComparison }> = ({ c
 );
 
 const ClimateCard: React.FC<{ label: string; source: string; target: string; icon: React.ReactNode }> = ({ label, source, target, icon }) => (
-    <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5">
-        <div className="flex items-center gap-2 mb-2">
+    <div className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+        <div className="flex items-center gap-2 mb-3">
             {icon}
-            <span className="text-xs text-gray-500">{label}</span>
+            <span className="text-xs font-medium text-gray-500">{label}</span>
         </div>
         <div className="flex items-center justify-between">
             <div>
-                <div className="text-xs text-purple-500">Source</div>
+                <div className="text-xs text-gray-400">There</div>
                 <div className="font-bold text-gray-900 dark:text-white">{source}</div>
             </div>
-            <ArrowRight size={14} className="text-gray-400" />
+            <ArrowRight size={14} className="text-gray-300" />
             <div>
-                <div className="text-xs text-indigo-500">Target</div>
+                <div className="text-xs text-gray-400">Here</div>
                 <div className="font-bold text-gray-900 dark:text-white">{target}</div>
             </div>
         </div>
@@ -784,28 +838,28 @@ const ClimateCard: React.FC<{ label: string; source: string; target: string; ico
 );
 
 const SoilPreparationPanel: React.FC<{ soilPrep: any }> = ({ soilPrep }) => (
-    <div className="space-y-4">
+    <div className="space-y-5">
         {/* Amendments */}
         {soilPrep.amendments?.length > 0 && (
             <div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-3">Soil Amendments Required</h4>
-                <div className="overflow-x-auto">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">What to Add to Your Soil</h4>
+                <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-slate-700">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b border-gray-200 dark:border-white/10">
-                                <th className="text-left py-2 px-3 text-gray-500">Material</th>
-                                <th className="text-left py-2 px-3 text-gray-500">Quantity</th>
-                                <th className="text-left py-2 px-3 text-gray-500">Purpose</th>
-                                <th className="text-left py-2 px-3 text-gray-500">When</th>
+                            <tr className="bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
+                                <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Material</th>
+                                <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">How Much</th>
+                                <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Why</th>
+                                <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">When to Apply</th>
                             </tr>
                         </thead>
                         <tbody>
                             {soilPrep.amendments.map((a: any, i: number) => (
-                                <tr key={i} className="border-b border-gray-100 dark:border-white/5">
-                                    <td className="py-2 px-3 font-medium text-gray-900 dark:text-white">{a.material}</td>
-                                    <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{a.quantity}</td>
-                                    <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{a.purpose}</td>
-                                    <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{a.applicationTiming}</td>
+                                <tr key={i} className="border-b border-gray-100 dark:border-slate-700 last:border-0">
+                                    <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{a.material}</td>
+                                    <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{a.quantity}</td>
+                                    <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{a.purpose}</td>
+                                    <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{a.applicationTiming}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -813,24 +867,33 @@ const SoilPreparationPanel: React.FC<{ soilPrep: any }> = ({ soilPrep }) => (
                 </div>
             </div>
         )}
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-amber-500/10">
-                <h5 className="font-medium text-gray-900 dark:text-white mb-2">Bed Preparation</h5>
+            <div className="p-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+                <h5 className="font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                    <Layers size={16} className="text-amber-600" />
+                    Preparing the Beds
+                </h5>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{soilPrep.bedPreparation}</p>
             </div>
-            <div className="p-4 rounded-xl bg-green-500/10">
-                <h5 className="font-medium text-gray-900 dark:text-white mb-2">Mulching</h5>
+            <div className="p-4 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20">
+                <h5 className="font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                    <Leaf size={16} className="text-emerald-600" />
+                    Mulching Tips
+                </h5>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{soilPrep.mulching}</p>
             </div>
         </div>
-        
+
         {soilPrep.prePlantingSteps?.length > 0 && (
             <div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-2">Pre-Planting Steps</h4>
-                <ol className="list-decimal list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Steps Before Planting</h4>
+                <ol className="space-y-2">
                     {soilPrep.prePlantingSteps.map((step: string, i: number) => (
-                        <li key={i}>{step}</li>
+                        <li key={i} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 text-xs font-semibold flex items-center justify-center">{i + 1}</span>
+                            {step}
+                        </li>
                     ))}
                 </ol>
             </div>
@@ -838,87 +901,102 @@ const SoilPreparationPanel: React.FC<{ soilPrep: any }> = ({ soilPrep }) => (
     </div>
 );
 
-const WeeklySchedulePanel: React.FC<{ 
-    schedule: WeeklyActivity[]; 
+const WeeklySchedulePanel: React.FC<{
+    schedule: WeeklyActivity[];
     selectedWeek: number;
     onSelectWeek: (week: number) => void;
 }> = ({ schedule, selectedWeek, onSelectWeek }) => {
     const current = schedule.find(w => w.week === selectedWeek) || schedule[0];
-    
+
     return (
         <div className="space-y-4">
             {/* Week Selector */}
-            <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
-                {schedule.map(w => (
-                    <button
-                        key={w.week}
-                        onClick={() => onSelectWeek(w.week)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                            selectedWeek === w.week
-                                ? 'bg-bhoomi-primary text-white'
-                                : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200'
-                        }`}
-                    >
-                        Week {w.week}
-                    </button>
-                ))}
+            <div>
+                <div className="text-sm text-gray-500 mb-2">Select a week to see detailed tasks:</div>
+                <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                    {schedule.map(w => (
+                        <button
+                            key={w.week}
+                            onClick={() => onSelectWeek(w.week)}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all border-2 ${selectedWeek === w.week
+                                    ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500 text-emerald-700 dark:text-emerald-400'
+                                    : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 hover:border-emerald-400'
+                                }`}
+                        >
+                            Week {w.week}
+                        </button>
+                    ))}
+                </div>
             </div>
-            
+
             {/* Selected Week Details */}
             {current && (
-                <div className="p-5 rounded-xl bg-green-50 dark:bg-green-500/5 border border-green-500/30">
-                    <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">Week {current.week}: {current.stage}</h4>
+                <div className="p-5 rounded-lg border-2 border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/10">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold">{current.week}</div>
+                        <div>
+                            <h4 className="text-lg font-bold text-gray-900 dark:text-white">Week {current.week}</h4>
+                            <p className="text-sm text-emerald-600 dark:text-emerald-400">{current.stage}</p>
+                        </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Activities */}
-                        <div>
-                            <h5 className="font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                                <CheckCircle size={16} className="text-green-500" /> Activities
+                        <div className="p-4 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                            <h5 className="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                <CheckCircle size={16} className="text-emerald-500" /> Your Tasks
                             </h5>
-                            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                                 {current.activities.map((a, i) => (
-                                    <li key={i}>• {a}</li>
+                                    <li key={i} className="flex items-start gap-2">
+                                        <span className="text-emerald-500 mt-0.5">•</span>
+                                        {a}
+                                    </li>
                                 ))}
                             </ul>
                         </div>
-                        
+
                         {/* Irrigation */}
-                        <div>
-                            <h5 className="font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                                <Droplets size={16} className="text-blue-500" /> Irrigation
+                        <div className="p-4 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                            <h5 className="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                <Droplets size={16} className="text-blue-500" /> Watering Guide
                             </h5>
-                            <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                <div><strong>Water:</strong> {current.irrigation.waterRequirement}</div>
-                                <div><strong>Frequency:</strong> {current.irrigation.frequency}</div>
-                                <div><strong>Method:</strong> {current.irrigation.method}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                                <div className="flex justify-between"><span className="text-gray-500">Amount:</span> <span className="font-medium text-gray-900 dark:text-white">{current.irrigation.waterRequirement}</span></div>
+                                <div className="flex justify-between"><span className="text-gray-500">How often:</span> <span className="font-medium text-gray-900 dark:text-white">{current.irrigation.frequency}</span></div>
+                                <div className="flex justify-between"><span className="text-gray-500">Method:</span> <span className="font-medium text-gray-900 dark:text-white">{current.irrigation.method}</span></div>
                             </div>
                         </div>
-                        
+
                         {/* Pest Watch */}
                         {current.pestWatch?.length > 0 && (
-                            <div>
-                                <h5 className="font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                                    <Bug size={16} className="text-red-500" /> Pest Watch
+                            <div className="p-4 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                    <Bug size={16} className="text-rose-500" /> Watch Out For
                                 </h5>
-                                <ul className="text-sm text-gray-600 dark:text-gray-400">
+                                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                                     {current.pestWatch.map((p, i) => (
-                                        <li key={i}>• {p}</li>
+                                        <li key={i} className="flex items-start gap-2">
+                                            <span className="text-rose-500 mt-0.5">•</span>
+                                            {p}
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
                         )}
-                        
+
                         {/* Tips */}
                         {current.tips?.length > 0 && (
-                            <div>
-                                <h5 className="font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                                    <Lightbulb size={16} className="text-yellow-500" /> Tips
+                            <div className="p-4 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                    <Lightbulb size={16} className="text-amber-500" /> Helpful Tips
                                 </h5>
-                                <ul className="text-sm text-gray-600 dark:text-gray-400">
+                                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                                     {current.tips.map((t, i) => (
-                                        <li key={i}>• {t}</li>
+                                        <li key={i} className="flex items-start gap-2">
+                                            <span className="text-amber-500 mt-0.5">•</span>
+                                            {t}
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
@@ -933,32 +1011,39 @@ const WeeklySchedulePanel: React.FC<{
 const FertilizerCalendarPanel: React.FC<{ fertilizers: FertilizerSchedule[] }> = ({ fertilizers }) => (
     <div className="overflow-x-auto">
         {fertilizers.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">Fertilizer schedule will be generated based on soil test results</p>
+            <div className="text-center py-8">
+                <FlaskConical size={32} className="text-gray-300 mx-auto mb-2" />
+                <p className="text-gray-500">Fertilizer schedule will be created based on your soil test results</p>
+            </div>
         ) : (
-            <table className="w-full text-sm">
-                <thead>
-                    <tr className="border-b border-gray-200 dark:border-white/10">
-                        <th className="text-left py-2 px-3 text-gray-500">Week</th>
-                        <th className="text-left py-2 px-3 text-gray-500">Stage</th>
-                        <th className="text-left py-2 px-3 text-gray-500">Fertilizer</th>
-                        <th className="text-left py-2 px-3 text-gray-500">NPK Ratio</th>
-                        <th className="text-left py-2 px-3 text-gray-500">Rate</th>
-                        <th className="text-left py-2 px-3 text-gray-500">Method</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {fertilizers.map((f, i) => (
-                        <tr key={i} className="border-b border-gray-100 dark:border-white/5">
-                            <td className="py-2 px-3 font-medium text-purple-600">{f.week}</td>
-                            <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{f.stage}</td>
-                            <td className="py-2 px-3 font-medium text-gray-900 dark:text-white">{f.fertilizer}</td>
-                            <td className="py-2 px-3 text-green-600 font-mono">{f.npkRatio}</td>
-                            <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{f.applicationRate}</td>
-                            <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{f.applicationMethod}</td>
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
+                <table className="w-full text-sm">
+                    <thead>
+                        <tr className="bg-gray-50 dark:bg-slate-800">
+                            <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Week</th>
+                            <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Growth Stage</th>
+                            <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Fertilizer</th>
+                            <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">NPK Ratio</th>
+                            <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">How Much</th>
+                            <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">How to Apply</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {fertilizers.map((f, i) => (
+                            <tr key={i} className="border-t border-gray-100 dark:border-slate-700">
+                                <td className="py-3 px-4">
+                                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 font-semibold text-xs">{f.week}</span>
+                                </td>
+                                <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{f.stage}</td>
+                                <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{f.fertilizer}</td>
+                                <td className="py-3 px-4"><span className="font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded">{f.npkRatio}</span></td>
+                                <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{f.applicationRate}</td>
+                                <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{f.applicationMethod}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         )}
     </div>
 );
@@ -966,42 +1051,41 @@ const FertilizerCalendarPanel: React.FC<{ fertilizers: FertilizerSchedule[] }> =
 const PestManagementPanel: React.FC<{ pests: PestDiseaseManagement[] }> = ({ pests }) => (
     <div className="space-y-4">
         {pests.map((pest, i) => (
-            <div key={i} className="p-4 rounded-xl bg-gray-50 dark:bg-white/5">
-                <div className="flex items-center gap-3 mb-3">
-                    <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
-                        pest.type === 'pest' ? 'bg-red-500/20 text-red-600' :
-                        pest.type === 'disease' ? 'bg-orange-500/20 text-orange-600' :
-                        'bg-yellow-500/20 text-yellow-600'
-                    }`}>
-                        {pest.type}
+            <div key={i} className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                <div className="flex items-center gap-3 mb-4">
+                    <span className={`px-2 py-1 rounded text-xs font-semibold ${pest.type === 'pest' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400' :
+                            pest.type === 'disease' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' :
+                                'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                        }`}>
+                        {pest.type === 'pest' ? 'Pest' : pest.type === 'disease' ? 'Disease' : 'Deficiency'}
                     </span>
-                    <span className="font-bold text-gray-900 dark:text-white">{pest.name}</span>
-                    <span className="text-xs text-gray-500 ml-auto">Risk: {pest.riskPeriod}</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{pest.name}</span>
+                    <span className="text-xs text-gray-500 ml-auto">Risk period: {pest.riskPeriod}</span>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                        <h6 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Symptoms</h6>
-                        <ul className="text-gray-500 space-y-0.5">
-                            {pest.symptoms.map((s, j) => <li key={j}>• {s}</li>)}
+                        <h6 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Signs to Look For</h6>
+                        <ul className="text-gray-500 space-y-1">
+                            {pest.symptoms.map((s, j) => <li key={j} className="flex items-start gap-2"><span className="text-rose-400 mt-0.5">•</span> {s}</li>)}
                         </ul>
                     </div>
                     <div>
-                        <h6 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Prevention</h6>
-                        <ul className="text-gray-500 space-y-0.5">
-                            {pest.preventiveMeasures.map((p, j) => <li key={j}>• {p}</li>)}
+                        <h6 className="font-medium text-gray-700 dark:text-gray-300 mb-2">How to Prevent</h6>
+                        <ul className="text-gray-500 space-y-1">
+                            {pest.preventiveMeasures.map((p, j) => <li key={j} className="flex items-start gap-2"><span className="text-emerald-400 mt-0.5">•</span> {p}</li>)}
                         </ul>
                     </div>
                 </div>
-                
-                <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/10 grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                        <span className="text-gray-500">Treatment:</span>
-                        <span className="ml-2 text-gray-900 dark:text-white">{pest.treatment}</span>
+
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className="p-3 rounded-lg bg-gray-50 dark:bg-slate-700">
+                        <span className="text-gray-500 block mb-1">Chemical Treatment:</span>
+                        <span className="text-gray-900 dark:text-white">{pest.treatment}</span>
                     </div>
-                    <div>
-                        <span className="text-gray-500">Organic:</span>
-                        <span className="ml-2 text-green-600">{pest.organicAlternative}</span>
+                    <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                        <span className="text-gray-500 block mb-1">Natural/Organic Option:</span>
+                        <span className="text-emerald-700 dark:text-emerald-400">{pest.organicAlternative}</span>
                     </div>
                 </div>
             </div>
@@ -1010,30 +1094,33 @@ const PestManagementPanel: React.FC<{ pests: PestDiseaseManagement[] }> = ({ pes
 );
 
 const CostEstimatePanel: React.FC<{ cost: any }> = ({ cost }) => (
-    <div className="space-y-4">
-        <div className="grid grid-cols-3 gap-4">
-            <div className="p-4 rounded-xl bg-green-50 dark:bg-green-500/10 text-center">
-                <div className="text-2xl font-bold text-green-700 dark:text-green-500">₹{(cost.setup / 1000).toFixed(0)}K</div>
-                <div className="text-xs text-gray-500">Setup Cost</div>
+    <div className="space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-5 rounded-lg border-2 border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 text-center">
+                <div className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">₹{(cost.setup / 1000).toFixed(0)}K</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Initial Setup</div>
+                <div className="text-xs text-gray-500">One-time investment</div>
             </div>
-            <div className="p-4 rounded-xl bg-sky-50 dark:bg-sky-500/10 text-center">
-                <div className="text-2xl font-bold text-sky-700 dark:text-sky-500">₹{(cost.monthly / 1000).toFixed(0)}K</div>
-                <div className="text-xs text-gray-500">Monthly</div>
+            <div className="p-5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-center">
+                <div className="text-3xl font-bold text-gray-900 dark:text-white">₹{(cost.monthly / 1000).toFixed(0)}K</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Monthly Cost</div>
+                <div className="text-xs text-gray-500">Running expenses</div>
             </div>
-            <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-center">
-                <div className="text-2xl font-bold text-amber-700 dark:text-amber-500">₹{(cost.perAcre / 1000).toFixed(0)}K</div>
-                <div className="text-xs text-gray-500">Per Acre</div>
+            <div className="p-5 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 text-center">
+                <div className="text-3xl font-bold text-amber-700 dark:text-amber-400">₹{(cost.perAcre / 1000).toFixed(0)}K</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Per Acre</div>
+                <div className="text-xs text-gray-500">Total cultivation cost</div>
             </div>
         </div>
-        
+
         {cost.breakdown?.length > 0 && (
             <div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-3">Cost Breakdown</h4>
-                <div className="space-y-2">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Where Your Money Goes</h4>
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
                     {cost.breakdown.map((item: any, i: number) => (
-                        <div key={i} className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-white/5">
+                        <div key={i} className="flex justify-between items-center py-3 px-4 border-b border-gray-100 dark:border-slate-700 last:border-0 bg-white dark:bg-slate-800">
                             <span className="text-gray-600 dark:text-gray-400">{item.item}</span>
-                            <span className="font-medium text-gray-900 dark:text-white">₹{item.cost.toLocaleString()}</span>
+                            <span className="font-semibold text-gray-900 dark:text-white">₹{item.cost.toLocaleString()}</span>
                         </div>
                     ))}
                 </div>

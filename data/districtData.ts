@@ -71,16 +71,16 @@ export const indianDistricts: DistrictData[] = [
 
 // Crop types that can be searched
 export const cropTypes = [
-    { id: 'pearl-millet', name: 'Pearl Millet (Bajra)', icon: '🌾' },
-    { id: 'sorghum', name: 'Sorghum (Jowar)', icon: '🌾' },
-    { id: 'finger-millet', name: 'Finger Millet (Ragi)', icon: '🌾' },
-    { id: 'rice', name: 'Rice (Traditional)', icon: '🍚' },
-    { id: 'wheat', name: 'Wheat (Desi)', icon: '🌾' },
-    { id: 'chickpea', name: 'Chickpea (Chana)', icon: '🫘' },
-    { id: 'groundnut', name: 'Groundnut', icon: '🥜' },
-    { id: 'sesame', name: 'Sesame (Til)', icon: '🌱' },
-    { id: 'cotton', name: 'Cotton (Desi)', icon: '☁️' },
-    { id: 'maize', name: 'Maize (Indigenous)', icon: '🌽' },
+    { id: 'pearl-millet', name: 'Pearl Millet (Bajra)' },
+    { id: 'sorghum', name: 'Sorghum (Jowar)' },
+    { id: 'finger-millet', name: 'Finger Millet (Ragi)' },
+    { id: 'rice', name: 'Rice (Traditional)' },
+    { id: 'wheat', name: 'Wheat (Desi)' },
+    { id: 'chickpea', name: 'Chickpea (Chana)' },
+    { id: 'groundnut', name: 'Groundnut' },
+    { id: 'sesame', name: 'Sesame (Til)' },
+    { id: 'cotton', name: 'Cotton (Desi)' },
+    { id: 'maize', name: 'Maize (Indigenous)' },
 ];
 
 // K-Means Cluster Labels

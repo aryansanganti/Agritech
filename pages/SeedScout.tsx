@@ -235,138 +235,138 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
             {/* NEW: Topo-Seed Engine (Eco-Locate) Panel */}
             <Card className="mb-6 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-blue-200 dark:border-blue-800">
                 <CardContent className="p-4">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <Globe className="text-blue-500" size={24} />
-                        <div>
-                            <h2 className="font-bold text-gray-900 dark:text-white">Eco-Locate: Find Your Topology Twin</h2>
-                            <p className="text-xs text-gray-500">Discover seeds from regions perfectly matching your ecology.</p>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <Globe className="text-blue-500" size={24} />
+                            <div>
+                                <h2 className="font-bold text-gray-900 dark:text-white">Eco-Locate: Find Your Topology Twin</h2>
+                                <p className="text-xs text-gray-500">Discover seeds from regions perfectly matching your ecology.</p>
+                            </div>
                         </div>
+
+                        <Button
+                            onClick={handleLocate}
+                            disabled={isLocating}
+                            className="bg-blue-500 hover:bg-blue-600 shadow-lg shadow-blue-500/30"
+                        >
+                            {isLocating ? <Loader2 size={18} className="animate-spin" /> : <MapPin size={18} />}
+                            {isLocating ? 'Scanning Ecology...' : 'Find My Genetic Match'}
+                        </Button>
                     </div>
 
-                    <Button
-                        onClick={handleLocate}
-                        disabled={isLocating}
-                        className="bg-blue-500 hover:bg-blue-600 shadow-lg shadow-blue-500/30"
-                    >
-                        {isLocating ? <Loader2 size={18} className="animate-spin" /> : <MapPin size={18} />}
-                        {isLocating ? 'Scanning Ecology...' : 'Find My Genetic Match'}
-                    </Button>
-                </div>
+                    {/* Topology Results */}
+                    {userTopology && (
+                        <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800/50 animate-slide-up">
+                            <div className="flex flex-wrap gap-4 mb-4">
+                                <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-lg shadow-sm border border-blue-100 dark:border-blue-900">
+                                    <span className="text-xs text-blue-500 font-bold uppercase tracking-wider">Your Ecology</span>
+                                    <div className="font-bold text-lg text-gray-800 dark:text-white">{userTopology.topology}</div>
+                                </div>
+                                <div className="flex items-center text-gray-400"><ArrowLeft size={16} className="rotate-180" /></div>
+                                <div className="bg-purple-50 dark:bg-purple-900/20 px-4 py-2 rounded-lg border border-purple-100 dark:border-purple-800">
+                                    <span className="text-xs text-purple-500 font-bold uppercase tracking-wider">Topology Twin</span>
+                                    <div className="font-bold text-lg text-purple-700 dark:text-purple-300">{userTopology.twins[0]}</div>
+                                </div>
 
-                {/* Topology Results */}
-                {userTopology && (
-                    <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800/50 animate-slide-up">
-                        <div className="flex flex-wrap gap-4 mb-4">
-                            <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-lg shadow-sm border border-blue-100 dark:border-blue-900">
-                                <span className="text-xs text-blue-500 font-bold uppercase tracking-wider">Your Ecology</span>
-                                <div className="font-bold text-lg text-gray-800 dark:text-white">{userTopology.topology}</div>
-                            </div>
-                            <div className="flex items-center text-gray-400"><ArrowLeft size={16} className="rotate-180" /></div>
-                            <div className="bg-purple-50 dark:bg-purple-900/20 px-4 py-2 rounded-lg border border-purple-100 dark:border-purple-800">
-                                <span className="text-xs text-purple-500 font-bold uppercase tracking-wider">Topology Twin</span>
-                                <div className="font-bold text-lg text-purple-700 dark:text-purple-300">{userTopology.twins[0]}</div>
-                            </div>
-
-                            {/* Weather Badge & Details */}
-                            {currentWeather && (
-                                <div className="w-full mt-2 animate-fade-in">
-                                    <div
-                                        onClick={() => setShowWeatherDetails(!showWeatherDetails)}
-                                        className="bg-orange-50 dark:bg-orange-900/20 px-4 py-3 rounded-xl border border-orange-100 dark:border-orange-800 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
-                                    >
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-lg">
-                                                    <Cloud className="text-orange-500 dark:text-orange-300" size={24} />
-                                                </div>
-                                                <div>
-                                                    <span className="text-xs text-orange-500 font-bold uppercase tracking-wider">Current Conditions</span>
-                                                    <div className="font-bold text-lg text-gray-800 dark:text-white flex items-center gap-3">
-                                                        <span>{currentWeather.temp}°C</span>
-                                                        <span className="text-sm font-normal text-gray-400">|</span>
-                                                        <span className="flex items-center gap-1 text-sm">
-                                                            <Droplets size={14} /> {currentWeather.humidity}%
-                                                        </span>
+                                {/* Weather Badge & Details */}
+                                {currentWeather && (
+                                    <div className="w-full mt-2 animate-fade-in">
+                                        <div
+                                            onClick={() => setShowWeatherDetails(!showWeatherDetails)}
+                                            className="bg-orange-50 dark:bg-orange-900/20 px-4 py-3 rounded-xl border border-orange-100 dark:border-orange-800 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-lg">
+                                                        <Cloud className="text-orange-500 dark:text-orange-300" size={24} />
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-xs text-orange-500 font-bold uppercase tracking-wider">Current Conditions</span>
+                                                        <div className="font-bold text-lg text-gray-800 dark:text-white flex items-center gap-3">
+                                                            <span>{currentWeather.temp}°C</span>
+                                                            <span className="text-sm font-normal text-gray-400">|</span>
+                                                            <span className="flex items-center gap-1 text-sm">
+                                                                <Droplets size={14} /> {currentWeather.humidity}%
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                {showWeatherDetails ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
                                             </div>
-                                            {showWeatherDetails ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
+
+                                            {/* Expanded Weather Details */}
+                                            {showWeatherDetails && (
+                                                <div className="mt-4 pt-4 border-t border-orange-200 dark:border-orange-800 grid grid-cols-2 md:grid-cols-4 gap-4 animate-slide-up">
+                                                    <div className="space-y-1">
+                                                        <p className="text-xs text-gray-500">Air Temp (Min/Max)</p>
+                                                        <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.tempMin}° / {currentWeather.tempMax}°</p>
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-xs text-gray-500">Precipitation</p>
+                                                        <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.precipitation} mm</p>
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-xs text-gray-500">Wind</p>
+                                                        <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.windSpeed} km/h</p>
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-xs text-gray-500">Solar Radiation</p>
+                                                        <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.radiation} W/m²</p>
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-xs text-gray-500">Cloud Cover</p>
+                                                        <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.cloudCover}%</p>
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-xs text-gray-500">Pressure</p>
+                                                        <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.pressure} hPa</p>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-
-                                        {/* Expanded Weather Details */}
-                                        {showWeatherDetails && (
-                                            <div className="mt-4 pt-4 border-t border-orange-200 dark:border-orange-800 grid grid-cols-2 md:grid-cols-4 gap-4 animate-slide-up">
-                                                <div className="space-y-1">
-                                                    <p className="text-xs text-gray-500">Air Temp (Min/Max)</p>
-                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.tempMin}° / {currentWeather.tempMax}°</p>
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-xs text-gray-500">Precipitation</p>
-                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.precipitation} mm</p>
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-xs text-gray-500">Wind</p>
-                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.windSpeed} km/h</p>
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-xs text-gray-500">Solar Radiation</p>
-                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.radiation} W/m²</p>
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-xs text-gray-500">Cloud Cover</p>
-                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.cloudCover}%</p>
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-xs text-gray-500">Pressure</p>
-                                                    <p className="font-semibold text-gray-700 dark:text-gray-300">{currentWeather.pressure} hPa</p>
-                                                </div>
-                                            </div>
-                                        )}
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Show on Map Button */}
-                            <button
-                                onClick={() => {
-                                    // Mapping logic for Twin visualization
-                                    const twinLocations: Record<string, { lat: number, lng: number }> = {
-                                        "The Western Ghats": { lat: 14.0, lng: 74.5 },
-                                        "The Eastern Ghats": { lat: 18.0, lng: 83.0 },
-                                        "The North-Eastern Himalayas": { lat: 27.5, lng: 88.5 },
-                                        "The Deccan Plateau": { lat: 17.0, lng: 77.0 },
-                                        "The Coastal Plains": { lat: 10.0, lng: 76.5 },
-                                        "The Desert Region": { lat: 27.0, lng: 71.0 },
-                                    };
+                                {/* Show on Map Button */}
+                                <button
+                                    onClick={() => {
+                                        // Mapping logic for Twin visualization
+                                        const twinLocations: Record<string, { lat: number, lng: number }> = {
+                                            "The Western Ghats": { lat: 14.0, lng: 74.5 },
+                                            "The Eastern Ghats": { lat: 18.0, lng: 83.0 },
+                                            "The North-Eastern Himalayas": { lat: 27.5, lng: 88.5 },
+                                            "The Deccan Plateau": { lat: 17.0, lng: 77.0 },
+                                            "The Coastal Plains": { lat: 10.0, lng: 76.5 },
+                                            "The Desert Region": { lat: 27.0, lng: 71.0 },
+                                        };
 
-                                    const twinName = userTopology.twins[0];
-                                    const twinCoords = twinLocations[twinName];
+                                        const twinName = userTopology.twins[0];
+                                        const twinCoords = twinLocations[twinName];
 
-                                    setSatelliteView(true);
-                                    if (twinCoords) {
-                                        // Update search results to show User + Twin
-                                        // This relies on the map rendering logic using 'results' or a new 'markers' prop
-                                        // For now, we simulate results to hijack the map view
-                                        const mockResults = [
-                                            {
-                                                district: { name: "Your Location", lat: 20.0, lng: 78.0, id: "u1", state: "Current", salinity: 0, maxTemp: 0, rainfall: 0, tribalPercent: 0 }, // Placeholder coords, will update if we had user geo in state
-                                                traitScore: 1, salinityScore: 0, heatScore: 0, droughtScore: 0, tribalScore: 0, recommendation: "You are here"
-                                            },
-                                            {
-                                                district: { name: `Twin: ${twinName}`, lat: twinCoords.lat, lng: twinCoords.lng, id: "t1", state: "Topology Twin", salinity: 0, maxTemp: 0, rainfall: 0, tribalPercent: 0 },
-                                                traitScore: 0.9, salinityScore: 0, heatScore: 0, droughtScore: 0, tribalScore: 0, recommendation: "Ecological Twin"
-                                            }
-                                        ];
-                                        setResults(mockResults as any);
-                                        setHasSearched(true);
-                                    }
-                                }}
-                                className="w-full mt-2 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center gap-2"
-                            >
-                                <Map size={16} /> Show Locations on Map
-                            </button>
-                        </div>
+                                        setSatelliteView(true);
+                                        if (twinCoords) {
+                                            // Update search results to show User + Twin
+                                            // This relies on the map rendering logic using 'results' or a new 'markers' prop
+                                            // For now, we simulate results to hijack the map view
+                                            const mockResults = [
+                                                {
+                                                    district: { name: "Your Location", lat: 20.0, lng: 78.0, id: "u1", state: "Current", salinity: 0, maxTemp: 0, rainfall: 0, tribalPercent: 0 }, // Placeholder coords, will update if we had user geo in state
+                                                    traitScore: 1, salinityScore: 0, heatScore: 0, droughtScore: 0, tribalScore: 0, recommendation: "You are here"
+                                                },
+                                                {
+                                                    district: { name: `Twin: ${twinName}`, lat: twinCoords.lat, lng: twinCoords.lng, id: "t1", state: "Topology Twin", salinity: 0, maxTemp: 0, rainfall: 0, tribalPercent: 0 },
+                                                    traitScore: 0.9, salinityScore: 0, heatScore: 0, droughtScore: 0, tribalScore: 0, recommendation: "Ecological Twin"
+                                                }
+                                            ];
+                                            setResults(mockResults as any);
+                                            setHasSearched(true);
+                                        }
+                                    }}
+                                    className="w-full mt-2 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <Map size={16} /> Show Locations on Map
+                                </button>
+                            </div>
 
                         {/* Seed Recommendations Card Checklist */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -387,95 +387,93 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                                     {seed.matchType === 'Native' ? 'NATIVE' : 'TWIN'}
                                                 </Badge>
                                             </div>
-                                            <p className="text-xs text-gray-500 mt-1 line-clamp-2">{seed.cultural_note}</p>
                                         </div>
+
+                                        {/* View Origin Button */}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent card click
+                                                const nativeZone = seed.primary_topology[0]; // e.g., "The North-Eastern Himalayas"
+                                                const nativeCoords = topologyCoordinates[nativeZone];
+
+                                                // Typical Environmental Data for Topologies (Averages)
+                                                const topologyTypicalData: Record<string, any> = {
+                                                    "The Western Ghats": { salinity: 0.5, maxTemp: 32, rainfall: 2500, tribalPercent: 40 },
+                                                    "The Eastern Ghats": { salinity: 1.2, maxTemp: 35, rainfall: 1200, tribalPercent: 55 },
+                                                    "The North-Eastern Himalayas": { salinity: 0.2, maxTemp: 25, rainfall: 3000, tribalPercent: 70 },
+                                                    "The Deccan Plateau": { salinity: 1.5, maxTemp: 38, rainfall: 700, tribalPercent: 15 },
+                                                    "The Coastal Plains": { salinity: 3.5, maxTemp: 34, rainfall: 1500, tribalPercent: 10 },
+                                                    "The Desert Region": { salinity: 4.0, maxTemp: 45, rainfall: 200, tribalPercent: 25 },
+                                                    "The Gangetic Plains": { salinity: 1.0, maxTemp: 40, rainfall: 1000, tribalPercent: 5 },
+                                                    "The Central Highlands": { salinity: 0.8, maxTemp: 36, rainfall: 900, tribalPercent: 45 },
+                                                    "The Islands": { salinity: 2.5, maxTemp: 30, rainfall: 2800, tribalPercent: 90 }
+                                                };
+
+                                                const typicalStats = topologyTypicalData[nativeZone] || { salinity: 1.0, maxTemp: 30, rainfall: 1000, tribalPercent: 20 };
+
+                                                if (userLocation && nativeCoords) {
+                                                    setSatelliteView(true);
+
+                                                    // Create mock results with REAL data
+                                                    const sourceTargetResults = [
+                                                        {
+                                                            district: {
+                                                                name: "Target: Your Farm",
+                                                                lat: userLocation.lat,
+                                                                lng: userLocation.lng,
+                                                                id: "u1",
+                                                                state: "Current Location",
+                                                                salinity: 0.5, // Assumed low for user
+                                                                maxTemp: currentWeather?.tempMax || 30,
+                                                                rainfall: (currentWeather?.precipitation || 0) * 100 + 500, // Rough annual estimate based on current
+                                                                tribalPercent: 0
+                                                            },
+                                                            traitScore: 0.95,
+                                                            salinityScore: 0.2, heatScore: 0.5, droughtScore: 0.1, tribalScore: 0,
+                                                            recommendation: "Ready for Cultivation"
+                                                        },
+                                                        {
+                                                            district: {
+                                                                name: `Source: ${nativeZone}`,
+                                                                lat: nativeCoords.lat,
+                                                                lng: nativeCoords.lng,
+                                                                id: `s${idx}`,
+                                                                state: "Native Origin",
+                                                                salinity: typicalStats.salinity,
+                                                                maxTemp: typicalStats.maxTemp,
+                                                                rainfall: typicalStats.rainfall,
+                                                                tribalPercent: typicalStats.tribalPercent
+                                                            },
+                                                            traitScore: 0.98,
+                                                            salinityScore: typicalStats.salinity / 4,
+                                                            heatScore: (typicalStats.maxTemp - 20) / 30,
+                                                            droughtScore: 1 - (typicalStats.rainfall / 3000),
+                                                            tribalScore: typicalStats.tribalPercent / 100,
+                                                            recommendation: "Genetic Ancestry"
+                                                        }
+                                                    ];
+
+                                                    setResults(sourceTargetResults as any);
+                                                    setHasSearched(true);
+
+                                                    // Auto-select the Source to show its details immediately
+                                                    setTimeout(() => handleSelectDistrict(sourceTargetResults[1] as any), 100);
+
+                                                    // Scroll to map
+                                                    window.scrollTo({ top: 450, behavior: 'smooth' });
+                                                } else {
+                                                    alert("Could not map this seed's origin. Coordinates missing.");
+                                                }
+                                            }}
+                                            className="mt-auto w-full py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                                        >
+                                            <Globe size={12} /> View Origin Map
+                                        </button>
                                     </div>
-
-                                    {/* View Origin Button */}
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // Prevent card click
-                                            const nativeZone = seed.primary_topology[0]; // e.g., "The North-Eastern Himalayas"
-                                            const nativeCoords = topologyCoordinates[nativeZone];
-
-                                            // Typical Environmental Data for Topologies (Averages)
-                                            const topologyTypicalData: Record<string, any> = {
-                                                "The Western Ghats": { salinity: 0.5, maxTemp: 32, rainfall: 2500, tribalPercent: 40 },
-                                                "The Eastern Ghats": { salinity: 1.2, maxTemp: 35, rainfall: 1200, tribalPercent: 55 },
-                                                "The North-Eastern Himalayas": { salinity: 0.2, maxTemp: 25, rainfall: 3000, tribalPercent: 70 },
-                                                "The Deccan Plateau": { salinity: 1.5, maxTemp: 38, rainfall: 700, tribalPercent: 15 },
-                                                "The Coastal Plains": { salinity: 3.5, maxTemp: 34, rainfall: 1500, tribalPercent: 10 },
-                                                "The Desert Region": { salinity: 4.0, maxTemp: 45, rainfall: 200, tribalPercent: 25 },
-                                                "The Gangetic Plains": { salinity: 1.0, maxTemp: 40, rainfall: 1000, tribalPercent: 5 },
-                                                "The Central Highlands": { salinity: 0.8, maxTemp: 36, rainfall: 900, tribalPercent: 45 },
-                                                "The Islands": { salinity: 2.5, maxTemp: 30, rainfall: 2800, tribalPercent: 90 }
-                                            };
-
-                                            const typicalStats = topologyTypicalData[nativeZone] || { salinity: 1.0, maxTemp: 30, rainfall: 1000, tribalPercent: 20 };
-
-                                            if (userLocation && nativeCoords) {
-                                                setSatelliteView(true);
-
-                                                // Create mock results with REAL data
-                                                const sourceTargetResults = [
-                                                    {
-                                                        district: {
-                                                            name: "Target: Your Farm",
-                                                            lat: userLocation.lat,
-                                                            lng: userLocation.lng,
-                                                            id: "u1",
-                                                            state: "Current Location",
-                                                            salinity: 0.5, // Assumed low for user
-                                                            maxTemp: currentWeather?.tempMax || 30,
-                                                            rainfall: (currentWeather?.precipitation || 0) * 100 + 500, // Rough annual estimate based on current
-                                                            tribalPercent: 0
-                                                        },
-                                                        traitScore: 0.95,
-                                                        salinityScore: 0.2, heatScore: 0.5, droughtScore: 0.1, tribalScore: 0,
-                                                        recommendation: "Ready for Cultivation"
-                                                    },
-                                                    {
-                                                        district: {
-                                                            name: `Source: ${nativeZone}`,
-                                                            lat: nativeCoords.lat,
-                                                            lng: nativeCoords.lng,
-                                                            id: `s${idx}`,
-                                                            state: "Native Origin",
-                                                            salinity: typicalStats.salinity,
-                                                            maxTemp: typicalStats.maxTemp,
-                                                            rainfall: typicalStats.rainfall,
-                                                            tribalPercent: typicalStats.tribalPercent
-                                                        },
-                                                        traitScore: 0.98,
-                                                        salinityScore: typicalStats.salinity / 4,
-                                                        heatScore: (typicalStats.maxTemp - 20) / 30,
-                                                        droughtScore: 1 - (typicalStats.rainfall / 3000),
-                                                        tribalScore: typicalStats.tribalPercent / 100,
-                                                        recommendation: "Genetic Ancestry"
-                                                    }
-                                                ];
-
-                                                setResults(sourceTargetResults as any);
-                                                setHasSearched(true);
-
-                                                // Auto-select the Source to show its details immediately
-                                                setTimeout(() => handleSelectDistrict(sourceTargetResults[1] as any), 100);
-
-                                                // Scroll to map
-                                                window.scrollTo({ top: 450, behavior: 'smooth' });
-                                            } else {
-                                                alert("Could not map this seed's origin. Coordinates missing.");
-                                            }
-                                        }}
-                                        className="mt-auto w-full py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg flex items-center justify-center gap-2 transition-colors"
-                                    >
-                                        <Globe size={12} /> View Origin Map
-                                    </button>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
                 </CardContent>
             </Card>
 
@@ -491,17 +489,17 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                        {/* ... Existing Search Panel ... */}
-                        <SelectNative
-                            value={query.cropType}
-                            onChange={(e) => setQuery({ ...query, cropType: e.target.value })}
-                        >
-                            {cropTypes.map((crop) => (
-                                <option key={crop.id} value={crop.id} className="bg-white dark:bg-gray-800">
-                                    {crop.icon} {crop.name}
-                                </option>
-                            ))}
-                        </SelectNative>
+                            {/* ... Existing Search Panel ... */}
+                            <SelectNative
+                                value={query.cropType}
+                                onChange={(e) => setQuery({ ...query, cropType: e.target.value })}
+                            >
+                                {cropTypes.map((crop) => (
+                                    <option key={crop.id} value={crop.id} className="bg-white dark:bg-gray-800">
+                                        {crop.name}
+                                    </option>
+                                ))}
+                            </SelectNative>
                         </CardContent>
                     </Card>
 
@@ -567,27 +565,80 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                             <span>Advanced Weights</span>
                             {showAdvanced ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                         </button>
+                            <div className="space-y-3">
+                                <label className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer transition-colors group">
+                                    <input
+                                        type="checkbox"
+                                        checked={query.salinityTolerance}
+                                        onChange={(e) => setQuery({ ...query, salinityTolerance: e.target.checked })}
+                                        className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                                    />
+                                    <Droplets size={18} className="text-red-500" />
+                                    <div className="flex-1">
+                                        <span className="font-medium text-gray-900 dark:text-white">Salinity Tolerance</span>
+                                        <p className="text-xs text-gray-500">High soil EC environments</p>
+                                    </div>
+                                </label>
 
-                        {showAdvanced && (
-                            <div className="mt-4 space-y-3 p-4 rounded-xl bg-gray-50 dark:bg-white/5">
-                                <div>
-                                    <label className="text-xs text-gray-500">Salinity Weight: {query.salinityWeight.toFixed(1)}</label>
+                                <label className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer transition-colors group">
                                     <input
-                                        type="range" min="0" max="1" step="0.1" value={query.salinityWeight}
-                                        onChange={(e) => setQuery({ ...query, salinityWeight: parseFloat(e.target.value) })}
-                                        className="w-full accent-red-500"
+                                        type="checkbox"
+                                        checked={query.heatTolerance}
+                                        onChange={(e) => setQuery({ ...query, heatTolerance: e.target.checked })}
+                                        className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
                                     />
-                                </div>
-                                <div>
-                                    <label className="text-xs text-gray-500">Heat Weight: {query.heatWeight.toFixed(1)}</label>
+                                    <Thermometer size={18} className="text-orange-500" />
+                                    <div className="flex-1">
+                                        <span className="font-medium text-gray-900 dark:text-white">Heat Resistance</span>
+                                        <p className="text-xs text-gray-500">Survives 40°C+ temperatures</p>
+                                    </div>
+                                </label>
+
+                                <label className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer transition-colors group">
                                     <input
-                                        type="range" min="0" max="1" step="0.1" value={query.heatWeight}
-                                        onChange={(e) => setQuery({ ...query, heatWeight: parseFloat(e.target.value) })}
-                                        className="w-full accent-orange-500"
+                                        type="checkbox"
+                                        checked={query.droughtTolerance}
+                                        onChange={(e) => setQuery({ ...query, droughtTolerance: e.target.checked })}
+                                        className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
                                     />
-                                </div>
+                                    <TrendingUp size={18} className="text-yellow-500" />
+                                    <div className="flex-1">
+                                        <span className="font-medium text-gray-900 dark:text-white">Drought Hardiness</span>
+                                        <p className="text-xs text-gray-500">Low rainfall adaptation</p>
+                                    </div>
+                                </label>
                             </div>
-                        )}
+
+                            {/* Advanced Weights Button */}
+                            <button
+                                onClick={() => setShowAdvanced(!showAdvanced)}
+                                className="flex items-center gap-2 mt-4 text-sm text-gray-500 hover:text-emerald-500 transition-colors"
+                            >
+                                <Filter size={14} />
+                                <span>Advanced Weights</span>
+                                {showAdvanced ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                            </button>
+
+                            {showAdvanced && (
+                                <div className="mt-4 space-y-3 p-4 rounded-xl bg-gray-50 dark:bg-white/5">
+                                    <div>
+                                        <label className="text-xs text-gray-500">Salinity Weight: {query.salinityWeight.toFixed(1)}</label>
+                                        <input
+                                            type="range" min="0" max="1" step="0.1" value={query.salinityWeight}
+                                            onChange={(e) => setQuery({ ...query, salinityWeight: parseFloat(e.target.value) })}
+                                            className="w-full accent-red-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs text-gray-500">Heat Weight: {query.heatWeight.toFixed(1)}</label>
+                                        <input
+                                            type="range" min="0" max="1" step="0.1" value={query.heatWeight}
+                                            onChange={(e) => setQuery({ ...query, heatWeight: parseFloat(e.target.value) })}
+                                            className="w-full accent-orange-500"
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -643,15 +694,21 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                 <button
                                     key={layer}
                                     onClick={() => { setActiveLayer(layer); setSatelliteView(false); }}
-                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${!satelliteView && activeLayer === layer
-                                        ? 'bg-green-500 text-white shadow-md'
+                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${!satelliteView && activeLayer === layer
+                                        ? 'bg-emerald-500 text-white shadow-md'
                                         : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'
                                         }`}
                                 >
-                                    {layer === 'score' ? '🎯 Hotspot Score' :
-                                        layer === 'salinity' ? '🧂 Salinity' :
-                                            layer === 'heat' ? '🌡️ Heat' :
-                                                layer === 'tribal' ? '👥 Tribal %' : '🗺️ Clusters'}
+                                    {layer === 'score' && <Target size={16} />}
+                                    {layer === 'salinity' && <Droplets size={16} />}
+                                    {layer === 'heat' && <Thermometer size={16} />}
+                                    {layer === 'tribal' && <Users size={16} />}
+                                    {layer === 'cluster' && <Layers size={16} />}
+
+                                    {layer === 'score' ? 'Hotspot Score' :
+                                        layer === 'salinity' ? 'Salinity' :
+                                            layer === 'heat' ? 'Heat' :
+                                                layer === 'tribal' ? 'Tribal %' : 'Clusters'}
                                 </button>
                             ))}
                         </div>
@@ -673,12 +730,13 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                             }`}
                     >
                         {satelliteView ? (
-                            // Leaflet Satellite View with ESRI World Imagery (Free, no API key needed)
+                            // Leaflet Satellite View
                             <SatelliteMap
                                 center={selectedDistrict
                                     ? { lat: selectedDistrict.district.lat, lng: selectedDistrict.district.lng }
                                     : { lat: 20.5937, lng: 78.9629 }}
                                 zoom={selectedDistrict ? 9 : 5}
+                                variant="satellite"
                                 markers={hasSearched ? results.map(r => ({
                                     lat: r.district.lat,
                                     lng: r.district.lng,
@@ -693,66 +751,30 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                 }}
                             />
                         ) : (
-                            // SVG Data View (Data Heatmap)
-                            <div className="relative w-full h-full">
-                                <svg viewBox="0 0 500 520" className="w-full h-full">
-                                    <rect x="0" y="0" width="500" height="520" fill="rgba(243, 244, 246, 0.5)" className="dark:fill-white/5" />
-
-                                    {/* Simplistic India Outline */}
-                                    <path
-                                        d="M160,50 L200,30 L280,35 L350,60 L380,100 L400,140 L420,200 L440,280 L430,350 L400,400 L350,450 L280,480 L200,490 L150,460 L100,400 L80,340 L60,280 L70,200 L90,140 L120,90 Z"
-                                        fill="rgba(200,220,200,0.3)" stroke="rgba(45,80,22,0.3)" strokeWidth="2"
-                                    />
-
-                                    {/* District Points */}
-                                    {(hasSearched ? getFilteredResults(results) : indianDistricts.map(d => ({
-                                        district: d, traitScore: 0.3, salinityScore: d.salinity / 10,
-                                        heatScore: (d.maxTemp - 30) / 20, droughtScore: 1 - d.rainfall / 2000,
-                                        tribalScore: d.tribalPercent / 100, recommendation: ''
-                                    }))).map((result) => {
-                                        const d = result.district;
-                                        const x = ((d.lng - 68) / 30) * 400 + 50;
-                                        const y = ((37 - d.lat) / 30) * 450 + 30;
-                                        const isSelected = selectedDistrict?.district.id === d.id;
-                                        const color = getDistrictColor(result);
-                                        const size = hasSearched ? 8 + result.traitScore * 12 : 6;
-
-                                        return (
-                                            <g key={d.id} className="cursor-pointer group" onClick={() => handleSelectDistrict(result)}>
-                                                <circle cx={x} cy={y} r={size + 4} fill={color} opacity={isSelected ? 0.4 : 0} />
-                                                <circle cx={x} cy={y} r={size} fill={color} stroke={isSelected ? '#fff' : 'rgba(0,0,0,0.2)'} strokeWidth={isSelected ? 3 : 1} />
-                                                <text x={x} y={y - size - 6} textAnchor="middle" className="text-[8px] fill-gray-700 dark:fill-white opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontWeight: 600 }}>
-                                                    {d.name}
-                                                </text>
-                                            </g>
-                                        );
-                                    })}
-                                </svg>
-
-                                {/* Legend */}
-                                <div className="absolute bottom-2 left-2 glass-panel rounded-lg p-2 text-xs backdrop-blur-md">
-                                    <div className="font-semibold text-gray-700 dark:text-white mb-1">
-                                        {activeLayer === 'score' ? 'Hotspot Score' :
-                                            activeLayer === 'salinity' ? 'Salinity (dS/m)' :
-                                                activeLayer === 'heat' ? 'Max Temperature' :
-                                                    activeLayer === 'tribal' ? 'Tribal Population' : 'Agro-Clusters'}
-                                    </div>
-                                    {activeLayer !== 'cluster' ? (
-                                        <div className="flex items-center gap-1">
-                                            <span className="text-gray-500">Low</span>
-                                            <div className="w-16 h-2 rounded" style={{
-                                                background: activeLayer === 'score' ? 'linear-gradient(to right, #9ca3af, #eab308, #22c55e)' :
-                                                    activeLayer === 'salinity' ? 'linear-gradient(to right, rgba(239,68,68,0.2), rgba(239,68,68,1))' : 'linear-gradient(to right, gray, darkgray)'
-                                            }}></div>
-                                            <span className="text-gray-500">High</span>
-                                        </div>
-                                    ) : (
-                                        <div className="flex gap-2">
-                                            <span className="text-gray-500">4 Climate Zones</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+                            // Standard Map View (using Leaflet 'standard' variant instead of SVG)
+                            <SatelliteMap
+                                center={selectedDistrict
+                                    ? { lat: selectedDistrict.district.lat, lng: selectedDistrict.district.lng }
+                                    : { lat: 20.5937, lng: 78.9629 }}
+                                zoom={selectedDistrict ? 9 : 5}
+                                variant="standard"
+                                markers={(hasSearched ? getFilteredResults(results) : indianDistricts.map(d => ({
+                                    district: d, traitScore: 0.3, salinityScore: d.salinity / 10,
+                                    heatScore: (d.maxTemp - 30) / 20, droughtScore: 1 - d.rainfall / 2000,
+                                    tribalScore: d.tribalPercent / 100, recommendation: ''
+                                }))).map(r => ({
+                                    lat: r.district.lat,
+                                    lng: r.district.lng,
+                                    title: r.district.name,
+                                    score: r.traitScore
+                                }))}
+                                onMarkerClick={(marker) => {
+                                    if (hasSearched) {
+                                        const found = results.find(r => r.district.lat === marker.lat && r.district.lng === marker.lng);
+                                        if (found) handleSelectDistrict(found);
+                                    }
+                                }}
+                            />
                         )}
                     </div>
 
@@ -762,65 +784,65 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                             {/* Metrics Panel */}
                             <Card className="border-2 border-green-500/30 bg-gradient-to-br from-green-500/5 to-transparent">
                                 <CardContent className="p-5">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                            <MapPin className="text-green-500" size={20} />
-                                            {selectedDistrict.district.name}
-                                        </h3>
-                                        <p className="text-sm text-gray-500">{selectedDistrict.district.state}</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-3xl font-bold text-green-500">
-                                            {(selectedDistrict.traitScore * 100).toFixed(0)}%
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div>
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                                <MapPin className="text-emerald-500" size={20} />
+                                                {selectedDistrict.district.name}
+                                            </h3>
+                                            <p className="text-sm text-gray-500">{selectedDistrict.district.state}</p>
                                         </div>
-                                        <p className="text-xs text-gray-500">Match Score</p>
+                                        <div className="text-right">
+                                            <div className="text-3xl font-bold text-emerald-500">
+                                                {(selectedDistrict.traitScore * 100).toFixed(0)}%
+                                            </div>
+                                            <p className="text-xs text-gray-500">Match Score</p>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="grid grid-cols-2 gap-3 mb-2">
-                                    <div className="p-2 rounded-xl bg-red-500/10 text-center">
-                                        <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.salinity}</div>
-                                        <p className="text-xs text-gray-500">EC (dS/m)</p>
+                                    <div className="grid grid-cols-2 gap-3 mb-2">
+                                        <div className="p-2 rounded-xl bg-red-500/10 text-center">
+                                            <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.salinity}</div>
+                                            <p className="text-xs text-gray-500">EC (dS/m)</p>
+                                        </div>
+                                        <div className="p-2 rounded-xl bg-orange-500/10 text-center">
+                                            <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.maxTemp}°C</div>
+                                            <p className="text-xs text-gray-500">Max Temp</p>
+                                        </div>
+                                        <div className="p-2 rounded-xl bg-purple-500/10 text-center">
+                                            <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.tribalPercent}%</div>
+                                            <p className="text-xs text-gray-500">Tribal</p>
+                                        </div>
+                                        <div className="p-2 rounded-xl bg-blue-500/10 text-center">
+                                            <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.rainfall}</div>
+                                            <p className="text-xs text-gray-500">Rain (mm)</p>
+                                        </div>
                                     </div>
-                                    <div className="p-2 rounded-xl bg-orange-500/10 text-center">
-                                        <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.maxTemp}°C</div>
-                                        <p className="text-xs text-gray-500">Max Temp</p>
-                                    </div>
-                                    <div className="p-2 rounded-xl bg-purple-500/10 text-center">
-                                        <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.tribalPercent}%</div>
-                                        <p className="text-xs text-gray-500">Tribal</p>
-                                    </div>
-                                    <div className="p-2 rounded-xl bg-blue-500/10 text-center">
-                                        <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedDistrict.district.rainfall}</div>
-                                        <p className="text-xs text-gray-500">Rain (mm)</p>
-                                    </div>
-                                </div>
                                 </CardContent>
                             </Card>
 
                             {/* AI Insight Panel */}
                             <Card className="border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-transparent overflow-hidden">
                                 <CardContent className="p-5">
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                                    <Sparkles size={18} className="text-purple-500" />
-                                    AI Genetic Analysis
-                                </h3>
+                                    <h3 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                                        <Sparkles size={18} className="text-purple-500" />
+                                        AI Genetic Analysis
+                                    </h3>
 
-                                {loadingInsight ? (
-                                    <div className="flex flex-col items-center justify-center h-40 text-purple-500">
-                                        <Loader2 size={32} className="animate-spin mb-2" />
-                                        <span className="text-sm animate-pulse">Analyzing gene evolution...</span>
-                                    </div>
-                                ) : aiInsight ? (
-                                    <div className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-h-60 overflow-y-auto custom-scrollbar">
-                                        <div dangerouslySetInnerHTML={{ __html: aiInsight.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') }} />
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center h-40 text-gray-400">
-                                        <p>Select a hotspot to generate insights</p>
-                                    </div>
-                                )}
+                                    {loadingInsight ? (
+                                        <div className="flex flex-col items-center justify-center h-40 text-purple-500">
+                                            <Loader2 size={32} className="animate-spin mb-2" />
+                                            <span className="text-sm animate-pulse">Analyzing gene evolution...</span>
+                                        </div>
+                                    ) : aiInsight ? (
+                                        <div className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-h-60 overflow-y-auto custom-scrollbar">
+                                            <div dangerouslySetInnerHTML={{ __html: aiInsight.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') }} />
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center h-40 text-gray-400">
+                                            <p>Select a hotspot to generate insights</p>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
 
@@ -878,31 +900,31 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
-                                    {filteredResults.slice(0, 10).map((result, index) => (
-                                        <button
-                                            key={result.district.id}
-                                            onClick={() => handleSelectDistrict(result)}
-                                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left ${selectedDistrict?.district.id === result.district.id
-                                                ? 'bg-green-500/20 border border-green-500/30'
-                                                : 'bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10'
-                                                }`}
-                                        >
-                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${index < 3 ? 'bg-gradient-to-br from-green-500 to-green-600 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300'
-                                                }`}>
-                                                {index + 1}
-                                            </div>
-                                            <div className="flex-1">
-                                                <span className="font-medium text-sm text-gray-900 dark:text-white">{result.district.name}</span>
-                                                <span className="text-xs text-gray-500 ml-2">{result.district.state}</span>
-                                            </div>
-                                            <div className="text-right">
-                                                <span className={`text-sm font-bold ${result.traitScore >= 0.7 ? 'text-green-500' : 'text-gray-400'
-                                                    }`}>{(result.traitScore * 100).toFixed(0)}%</span>
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
+                                    <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                                        {filteredResults.slice(0, 10).map((result, index) => (
+                                            <button
+                                                key={result.district.id}
+                                                onClick={() => handleSelectDistrict(result)}
+                                                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left ${selectedDistrict?.district.id === result.district.id
+                                                    ? 'bg-emerald-500/20 border border-emerald-500/30'
+                                                    : 'bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10'
+                                                    }`}
+                                            >
+                                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${index < 3 ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300'
+                                                    }`}>
+                                                    {index + 1}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <span className="font-medium text-sm text-gray-900 dark:text-white">{result.district.name}</span>
+                                                    <span className="text-xs text-gray-500 ml-2">{result.district.state}</span>
+                                                </div>
+                                                <div className="text-right">
+                                                    <span className={`text-sm font-bold ${result.traitScore >= 0.7 ? 'text-emerald-500' : 'text-gray-400'
+                                                        }`}>{(result.traitScore * 100).toFixed(0)}%</span>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
                                 </CardContent>
                             </Card>
                         )

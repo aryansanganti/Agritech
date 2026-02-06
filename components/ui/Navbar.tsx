@@ -17,6 +17,8 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
     // Navigation Items
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
+        { id: 'crop-analysis', label: 'Crop Doctor', icon: ScanEye },
+        { id: 'pricing-engine', label: 'Pricing', icon: Coins },
         { id: 'marketplace', label: 'Market', icon: ShoppingBag },
         // { id: 'soil-analysis', label: 'Soil', icon: Activity },
         { id: 'crop-analysis', label: 'Analysis & Pricing', icon: ScanEye },
@@ -32,8 +34,8 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
 
                     {/* Logo Section */}
                     <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('dashboard')}>
-                        <div className="bg-bhoomi-green/10 p-2 rounded-xl">
-                            <img src="/logo.png" alt="bhoomi Logo" className="h-8 w-auto object-contain" />
+                        <div >
+                            <img src="/logo.png" alt="bhoomi Logo" className="h-16 w-auto object-contain" />
                         </div>
                     </div>
 
@@ -72,10 +74,10 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
                         </button>
 
                         {/* Notifications (Mock) */}
-                        <button className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors relative">
+                        {/* <button className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors relative">
                             <Bell size={20} />
                             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-bhoomi-dark"></span>
-                        </button>
+                        </button> */}
 
                         <div className="h-8 w-[1px] bg-gray-200 dark:bg-gray-700 mx-1 hidden sm:block"></div>
 
