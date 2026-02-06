@@ -11,6 +11,8 @@ import { Badge } from '../components/ui/Badge';
 import { Separator } from '../components/ui/Shared';
 import { cn } from '../lib/utils';
 
+import { getCurrentWeather, WeatherData } from '../services/weatherService';
+
 interface DashboardProps {
     setView: (view: PageView) => void;
     user: User | null;
@@ -21,6 +23,37 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
     const t = translations[lang];
     const firstName = user?.name ? user.name.split(' ')[0] : 'Farmer';
     const [showVoiceAgent, setShowVoiceAgent] = useState(false);
+    const [weather, setWeather] = useState<WeatherData | null>(null);
+
+    // Fetch Weather on Mount
+    React.useEffect(() => {
+        const fetchWeather = async (lat: number, lng: number) => {
+            const data = await getCurrentWeather(lat, lng);
+            setWeather(data);
+        };
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    fetchWeather(position.coords.latitude, position.coords.longitude);
+                },
+                (error) => {
+                    console.warn("Geolocation denied, using default location (Central India)");
+                    fetchWeather(22.9734, 78.6569);
+                }
+            );
+        } else {
+            fetchWeather(22.9734, 78.6569);
+        }
+    }, []);
+
+    // Helper to determine condition string
+    const getWeatherCondition = (w: WeatherData) => {
+        if (w.precipitation > 0) return 'Rainy';
+        if (w.cloudCover > 50) return 'Cloudy';
+        if (w.windSpeed > 20) return 'Windy';
+        return 'Sunny';
+    };
 
     const QuickActionCard = ({ icon: Icon, title, description, onClick, colorClass }: any) => (
         <Card className="group cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300 hover:border-bhoomi-green/30 relative overflow-hidden" onClick={onClick}>
@@ -55,27 +88,35 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView, user, lang }) => 
                 </div>
 
                 {/* Weather Widget */}
-                <Card className="flex-shrink-0 shadow-sm">
+                <Card className="flex-shrink-0 shadow-sm min-w-[200px]">
                     <CardContent className="p-3 px-5 flex items-center gap-6">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-orange-100 dark:bg-orange-500/10 rounded-xl text-orange-500">
-                                <ThermometerSun size={20} />
+                        {weather ? (
+                            <>
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-orange-100 dark:bg-orange-500/10 rounded-xl text-orange-500">
+                                        {weather.precipitation > 0 ? <CloudRain size={20} /> : <ThermometerSun size={20} />}
+                                    </div>
+                                    <div>
+                                        <span className="block font-bold text-gray-900 dark:text-white">{Math.round(weather.temp)}°C</span>
+                                        <span className="text-xs text-gray-500">{getWeatherCondition(weather)}</span>
+                                    </div>
+                                </div>
+                                <Separator orientation="vertical" className="h-8" />
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-blue-100 dark:bg-blue-500/10 rounded-xl text-blue-500">
+                                        <Droplets size={20} />
+                                    </div>
+                                    <div>
+                                        <span className="block font-bold text-gray-900 dark:text-white">{weather.humidity}%</span>
+                                        <span className="text-xs text-gray-500">Humid</span>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="flex items-center gap-2 text-gray-500 animate-pulse">
+                                <CloudSun size={20} /> Loading weather...
                             </div>
-                            <div>
-                                <span className="block font-bold text-gray-900 dark:text-white">28°C</span>
-                                <span className="text-xs text-gray-500">Sunny</span>
-                            </div>
-                        </div>
-                        <Separator orientation="vertical" className="h-8" />
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-100 dark:bg-blue-500/10 rounded-xl text-blue-500">
-                                <Droplets size={20} />
-                            </div>
-                            <div>
-                                <span className="block font-bold text-gray-900 dark:text-white">65%</span>
-                                <span className="text-xs text-gray-500">Humid</span>
-                            </div>
-                        </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
