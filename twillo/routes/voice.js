@@ -8,10 +8,11 @@ const twilio = require('twilio');
 const VoiceResponse = twilio.twiml.VoiceResponse;
 const { recognizeIntent, extractEntities, detectLanguage } = require('../services/intentRecognition');
 const { generateResponse, getFollowUpQuestion, getMainMenu } = require('../services/responseGenerator');
-const { 
-  initCallState, 
-  updateCallState, 
-  addToTranscript, 
+const { getAIResponse, isEnabled: isGroqEnabled } = require('../services/groqService');
+const {
+  initCallState,
+  updateCallState,
+  addToTranscript,
   getCallState,
   setPendingAction,
   clearPendingAction,
@@ -19,6 +20,7 @@ const {
   setQuestionAsked
 } = require('../services/conversationState');
 const { logCall, logTranscript, logError, logIntentRecognition, logResponse } = require('../utils/logger');
+const { sanitizeForTwiML, getFallbackPhrase } = require('../utils/twimlHelpers');
 
 const router = express.Router();
 
@@ -32,7 +34,7 @@ router.use(express.urlencoded({ extended: true }));
 router.post('/', (req, res) => {
   const callSid = req.body.CallSid;
   const from = req.body.From;
-  
+
   // Initialize call state
   initCallState(callSid, {
     callerNumber: from
@@ -41,12 +43,12 @@ router.post('/', (req, res) => {
   logCall(callSid, 'call_started', { from });
 
   const response = new VoiceResponse();
-  
+
   // Greeting and language selection
   response.say({
-    voice: 'alice',
+    voice: 'Polly.Aditi',
     language: 'hi-IN'
-  }, 'Namaste! BHUMI mein aapka swagat hai. Aap Hindi mein baat karna chahenge ya English mein?');
+  }, 'नमस्ते, भूमि ऐप में आपका स्वागत है। मैं आपकी कैसे सहायता कर सकती हूँ?');
 
   // Gather speech input for language selection
   const gather = response.gather({
@@ -60,7 +62,7 @@ router.post('/', (req, res) => {
 
   // If no input, repeat
   response.say({
-    voice: 'alice',
+    voice: 'Polly.Aditi',
     language: 'hi-IN'
   }, 'Kripya Hindi ya English boliye.');
 
@@ -76,23 +78,23 @@ router.post('/', (req, res) => {
 router.post('/process-language', (req, res) => {
   const callSid = req.body.CallSid;
   const speechResult = req.body.SpeechResult || '';
-  
+
   logTranscript(callSid, 'user', speechResult);
 
   // Detect language from user response
   const language = detectLanguage(speechResult);
-  
+
   // Update call state with language
   updateCallState(callSid, { language });
-  
+
   logCall(callSid, 'language_selected', { language, speechResult });
 
   const response = new VoiceResponse();
-  
+
   // Present main menu
   const mainMenuText = getMainMenu(language);
   response.say({
-    voice: 'alice',
+    voice: 'Polly.Aditi',
     language: language
   }, mainMenuText);
 
@@ -110,10 +112,10 @@ router.post('/process-language', (req, res) => {
 
   // If no input, ask again
   response.say({
-    voice: 'alice',
+    voice: 'Polly.Aditi',
     language: language
-  }, language === 'hi-IN' 
-    ? 'Kripya dobara boliye.' 
+  }, language === 'hi-IN'
+    ? 'Kripya dobara boliye.'
     : 'Please say again.');
 
   response.redirect('/voice/process-speech');
@@ -125,23 +127,23 @@ router.post('/process-language', (req, res) => {
 /**
  * POST /voice/process-speech - Process user speech and generate response
  */
-router.post('/process-speech', (req, res) => {
+router.post('/process-speech', async (req, res) => {
   const callSid = req.body.CallSid;
   const speechResult = req.body.SpeechResult || '';
-  
+
   if (!speechResult) {
     // No speech detected, ask to repeat
     const state = getCallState(callSid);
     const language = state?.language || 'hi-IN';
-    
+
     const response = new VoiceResponse();
     response.say({
-      voice: 'alice',
+      voice: 'Polly.Aditi',
       language: language
-    }, language === 'hi-IN' 
-      ? 'Kshama karein, main aapki awaaz nahi sun sakta. Kripya dobara boliye.' 
+    }, language === 'hi-IN'
+      ? 'Kshama karein, main aapki awaaz nahi sun sakta. Kripya dobara boliye.'
       : 'Sorry, I could not hear you. Please say again.');
-    
+
     const gather = response.gather({
       input: 'speech',
       timeout: 8,
@@ -150,7 +152,7 @@ router.post('/process-speech', (req, res) => {
       action: '/voice/process-speech',
       method: 'POST'
     });
-    
+
     res.type('text/xml');
     res.send(response.toString());
     return;
@@ -161,7 +163,7 @@ router.post('/process-speech', (req, res) => {
   const state = getCallState(callSid);
   const language = state?.language || 'hi-IN';
 
-  // Recognize intent
+  // Recognize intent (for fallback and logging)
   const intentResult = recognizeIntent(speechResult);
   const entities = extractEntities(speechResult);
 
@@ -177,37 +179,58 @@ router.post('/process-speech', (req, res) => {
     currentIntent: intentResult.intent
   });
 
-  // Generate response
-  const context = {
-    previousIntent: state?.currentIntent,
-    questionAsked: state?.questionAsked || false
-  };
+  let responseText = null;
 
-  let responseText = generateResponse(intentResult.intent, entities, language, context);
+  // Use Groq AI if enabled and not a simple yes/no
+  if (isGroqEnabled() && intentResult.intent !== 'yes_response' && intentResult.intent !== 'no_response') {
+    try {
+      const aiText = await getAIResponse(speechResult, language, state?.transcript || [], intentResult.intent);
+      if (aiText && aiText.length >= 10) {
+        responseText = aiText;
+        logResponse(callSid, 'groq_ai', responseText, language);
+      }
+    } catch (err) {
+      logError(callSid, 'Groq AI failed, using keyword fallback', err);
+    }
+  }
+
+  // Fallback: keyword-based hardcoded response
+  if (!responseText) {
+    const context = {
+      previousIntent: state?.currentIntent,
+      questionAsked: state?.questionAsked || false
+    };
+    responseText = generateResponse(intentResult.intent, entities, language, context);
+    logResponse(callSid, intentResult.intent, responseText, language);
+  }
+
+  // Ensure we never pass undefined or empty to TwiML
+  responseText = responseText || getFallbackPhrase(language);
 
   // Handle special cases
   if (intentResult.intent === 'crop_health' && !state?.questionAsked) {
     setQuestionAsked(callSid, true);
   }
 
-  logResponse(callSid, intentResult.intent, responseText, language);
   addToTranscript(callSid, 'bot', responseText);
 
   const response = new VoiceResponse();
-  
-  // Speak the response
+
+  // Single path: only this sanitized string is spoken as the main reply
+  const textToSpeak = sanitizeForTwiML(responseText, language);
   response.say({
-    voice: 'alice',
+    voice: 'Polly.Aditi',
     language: language,
     interruptible: true
-  }, responseText);
+  }, textToSpeak);
 
-  // Ask follow-up question
+  // Ask follow-up question (sanitized for TwiML)
   const followUp = getFollowUpQuestion(language);
+  const safeFollowUp = sanitizeForTwiML(followUp, language);
   response.say({
-    voice: 'alice',
+    voice: 'Polly.Aditi',
     language: language
-  }, followUp);
+  }, safeFollowUp);
 
   addToTranscript(callSid, 'bot', followUp);
 
@@ -226,10 +249,10 @@ router.post('/process-speech', (req, res) => {
 
   // If no response, continue
   response.say({
-    voice: 'alice',
+    voice: 'Polly.Aditi',
     language: language
-  }, language === 'hi-IN' 
-    ? 'Kya main aur kuch bata sakta hoon?' 
+  }, language === 'hi-IN'
+    ? 'Kya main aur kuch bata sakta hoon?'
     : 'Can I help with anything else?');
 
   response.redirect('/voice/process-speech');
@@ -244,7 +267,7 @@ router.post('/process-speech', (req, res) => {
 router.post('/handle-followup', (req, res) => {
   const callSid = req.body.CallSid;
   const speechResult = req.body.SpeechResult || '';
-  
+
   logTranscript(callSid, 'user', speechResult);
 
   const state = getCallState(callSid);
@@ -252,7 +275,7 @@ router.post('/handle-followup', (req, res) => {
 
   // Recognize yes/no
   const intentResult = recognizeIntent(speechResult);
-  
+
   const response = new VoiceResponse();
 
   if (intentResult.intent === 'yes_response') {
@@ -261,57 +284,57 @@ router.post('/handle-followup', (req, res) => {
       logCall(callSid, 'sms_requested', {});
       // TODO: Implement actual SMS sending via Twilio
       // For now, just log it
-      
+
       response.say({
-        voice: 'alice',
+        voice: 'Polly.Aditi',
         language: language
-      }, language === 'hi-IN' 
-        ? 'Theek hai, main aapko SMS bhej raha hoon. Kya main aur kuch bata sakta hoon?' 
+      }, language === 'hi-IN'
+        ? 'Theek hai, main aapko SMS bhej raha hoon. Kya main aur kuch bata sakta hoon?'
         : 'Okay, I am sending you an SMS. Can I help with anything else?');
-      
+
       clearPendingAction(callSid);
-      addToTranscript(callSid, 'bot', language === 'hi-IN' 
-        ? 'Theek hai, main aapko SMS bhej raha hoon.' 
+      addToTranscript(callSid, 'bot', language === 'hi-IN'
+        ? 'Theek hai, main aapko SMS bhej raha hoon.'
         : 'Okay, I am sending you an SMS.');
     } else if (state?.pendingAction === 'transfer') {
       // Transfer to expert (for emergency cases)
       logCall(callSid, 'transfer_requested', {});
       response.say({
-        voice: 'alice',
+        voice: 'Polly.Aditi',
         language: language
-      }, language === 'hi-IN' 
-        ? 'Ek minute, main aapko expert se jod raha hoon.' 
+      }, language === 'hi-IN'
+        ? 'Ek minute, main aapko expert se jod raha hoon.'
         : 'One minute, I am connecting you to an expert.');
-      
+
       // TODO: Implement actual call transfer via Twilio
       // response.dial({ callerId: state.callerNumber }, '+91XXXXXXXXXX');
-      
+
       clearPendingAction(callSid);
     } else {
       // Generic yes response
       response.say({
-        voice: 'alice',
+        voice: 'Polly.Aditi',
         language: language
-      }, language === 'hi-IN' 
-        ? 'Theek hai. Kya main aur kuch bata sakta hoon?' 
+      }, language === 'hi-IN'
+        ? 'Theek hai. Kya main aur kuch bata sakta hoon?'
         : 'Okay. Can I help with anything else?');
     }
   } else if (intentResult.intent === 'no_response') {
     // User said no
     clearPendingAction(callSid);
     response.say({
-      voice: 'alice',
+      voice: 'Polly.Aditi',
       language: language
-    }, language === 'hi-IN' 
-      ? 'Theek hai. Kya main aur kuch bata sakta hoon?' 
+    }, language === 'hi-IN'
+      ? 'Theek hai. Kya main aur kuch bata sakta hoon?'
       : 'Okay. Can I help with anything else?');
   } else {
     // Unclear response
     response.say({
-      voice: 'alice',
+      voice: 'Polly.Aditi',
       language: language
-    }, language === 'hi-IN' 
-      ? 'Kya main aur kuch bata sakta hoon?' 
+    }, language === 'hi-IN'
+      ? 'Kya main aur kuch bata sakta hoon?'
       : 'Can I help with anything else?');
   }
 
@@ -327,10 +350,10 @@ router.post('/handle-followup', (req, res) => {
 
   // If no response, end call gracefully
   response.say({
-    voice: 'alice',
+    voice: 'Polly.Aditi',
     language: language
-  }, language === 'hi-IN' 
-    ? 'Dhanyawad! BHUMI aapki seva mein hamesha tayar hai. Namaste!' 
+  }, language === 'hi-IN'
+    ? 'Dhanyawad! BHUMI aapki seva mein hamesha tayar hai. Namaste!'
     : 'Thank you! BHUMI is always ready to serve you. Goodbye!');
 
   response.hangup();
