@@ -29,6 +29,16 @@ export interface Listing {
     analysisId?: string; // Link to crop analysis
     blockchainHash?: string; // Fake hash for verification
     harvestDate: string;
+    // 3-Tier Routing Protocol (New fields - optional for backward compatibility)
+    tierRouting?: {
+        tier: 'tier1' | 'tier2' | 'tier3';
+        tierName: string;
+        destination: string;
+        targetBuyer?: string;
+        transportMethod?: string;
+    };
+    rescueRadar?: boolean; // Flash sale eligible
+    hoursSinceHarvest?: number;
 }
 
 export type PageView =
