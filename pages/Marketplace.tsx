@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, Language, Listing, MarketplaceListing } from '../types';
-import { ArrowLeft, ShoppingBag, Plus, QrCode, ShieldCheck, TrendingUp, MapPin, ExternalLink, Trash2, Leaf, Truck, Route } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Plus, QrCode, ShieldCheck, TrendingUp, MapPin, ExternalLink, Trash2, Leaf, Truck, Route, CreditCard, IndianRupee, CheckCircle2, X } from 'lucide-react';
 import { MARKETPLACE_LISTINGS } from '../data/listings';
 import { getMarketplaceListings, removeMarketplaceListing } from '../services/marketplaceService';
 import { CarbonLogistics } from '../components/CarbonLogistics';
@@ -11,6 +11,13 @@ import { Badge } from '../components/ui/Badge';
 import { SelectNative, Label, Input } from '../components/ui/Input';
 import { PageHeader } from '../components/ui/Shared';
 import { cn } from '../lib/utils';
+
+// UPI Payment Configuration
+const UPI_CONFIG = {
+    payeeVPA: 'mohak3345-1@okaxis',
+    payeeName: 'Bhumi Agritech',
+    transactionNote: 'Bhumi Marketplace Purchase'
+};
 
 interface Props {
     user: User | null;
@@ -29,6 +36,12 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
     const [vendorDistrict, setVendorDistrict] = useState('Mumbai');
     const [vendorState, setVendorState] = useState('Maharashtra');
     const [showVendorLocationModal, setShowVendorLocationModal] = useState(false);
+    
+    // UPI Payment states
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedForPayment, setSelectedForPayment] = useState<Listing | MarketplaceListing | null>(null);
+    const [paymentQuantity, setPaymentQuantity] = useState(1);
+    const [paymentStatus, setPaymentStatus] = useState<'pending' | 'processing' | 'success'>('pending');
 
     // Available districts for vendor location selection
     const availableDistricts = Object.keys(DISTRICT_COORDINATES).map(d =>
@@ -231,6 +244,217 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
         setShowVendorLocationModal(true);
     };
 
+    // Handle Buy Now - Opens UPI Payment Modal
+    const handleBuyNow = (item: Listing | MarketplaceListing) => {
+        setSelectedForPayment(item);
+        setPaymentQuantity(1);
+        setPaymentStatus('pending');
+        setShowPaymentModal(true);
+    };
+
+    // Generate UPI Payment URL
+    const generateUPIUrl = (amount: number) => {
+        const transactionRef = `BHUMI${Date.now()}`;
+        return `upi://pay?pa=${UPI_CONFIG.payeeVPA}&pn=${encodeURIComponent(UPI_CONFIG.payeeName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(UPI_CONFIG.transactionNote)}&tr=${transactionRef}`;
+    };
+
+    // Render UPI Payment Modal
+    const renderPaymentModal = () => {
+        if (!showPaymentModal || !selectedForPayment) return null;
+        
+        const pricePerQuintal = selectedForPayment.price;
+        const maxQuantity = selectedForPayment.quantity;
+        const totalAmount = pricePerQuintal * paymentQuantity;
+        const upiUrl = generateUPIUrl(totalAmount);
+
+        return (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowPaymentModal(false)}>
+                <Card className="max-w-md w-full shadow-2xl border-green-500/30" onClick={e => e.stopPropagation()}>
+                    <CardContent className="p-6 space-y-5">
+                        {/* Header */}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                                    <IndianRupee className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment</h3>
+                                    <p className="text-xs text-gray-500">Scan QR to pay via UPI</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setShowPaymentModal(false)} className="text-gray-400 hover:text-gray-600">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 flex items-center gap-4">
+                            <img 
+                                src={selectedForPayment.image || 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=100&h=100&fit=crop'} 
+                                alt={selectedForPayment.crop} 
+                                className="w-16 h-16 rounded-lg object-cover"
+                            />
+                            <div className="flex-1">
+                                <h4 className="font-bold text-gray-900 dark:text-white">{selectedForPayment.crop}</h4>
+                                <div className="flex items-center gap-1 text-xs text-gray-500">
+                                    <MapPin size={10} />
+                                    {typeof selectedForPayment.location === 'string' 
+                                        ? selectedForPayment.location 
+                                        : `${selectedForPayment.location.district}, ${selectedForPayment.location.state}`}
+                                </div>
+                                <div className="text-sm text-bhumi-green font-semibold mt-1">₹{pricePerQuintal}/quintal</div>
+                            </div>
+                        </div>
+
+                        {/* Quantity Selector */}
+                        <div className="space-y-2">
+                            <Label className="text-sm text-gray-600 dark:text-gray-300">Select Quantity (Quintals)</Label>
+                            <div className="flex items-center gap-3">
+                                <button 
+                                    onClick={() => setPaymentQuantity(Math.max(1, paymentQuantity - 1))}
+                                    className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                    disabled={paymentQuantity <= 1}
+                                >
+                                    −
+                                </button>
+                                <div className="flex-1 text-center">
+                                    <Input
+                                        type="number"
+                                        value={paymentQuantity}
+                                        onChange={(e) => setPaymentQuantity(Math.min(maxQuantity, Math.max(1, parseInt(e.target.value) || 1)))}
+                                        className="text-center text-lg font-bold"
+                                        min={1}
+                                        max={maxQuantity}
+                                    />
+                                </div>
+                                <button 
+                                    onClick={() => setPaymentQuantity(Math.min(maxQuantity, paymentQuantity + 1))}
+                                    className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                    disabled={paymentQuantity >= maxQuantity}
+                                >
+                                    +
+                                </button>
+                            </div>
+                            <p className="text-xs text-gray-400 text-center">Available: {maxQuantity} quintals</p>
+                        </div>
+
+                        {/* Price Summary */}
+                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 space-y-2">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-600 dark:text-gray-400">Price per quintal</span>
+                                <span className="text-gray-900 dark:text-white">₹{pricePerQuintal.toLocaleString()}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-600 dark:text-gray-400">Quantity</span>
+                                <span className="text-gray-900 dark:text-white">{paymentQuantity} quintals</span>
+                            </div>
+                            <div className="border-t border-green-200 dark:border-green-800 pt-2 mt-2">
+                                <div className="flex justify-between items-center">
+                                    <span className="font-semibold text-gray-700 dark:text-gray-200">Total Amount</span>
+                                    <span className="text-2xl font-bold text-bhumi-green">₹{totalAmount.toLocaleString()}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* QR Code */}
+                        {paymentStatus === 'pending' && (
+                            <div className="text-center space-y-3">
+                                <div className="bg-white p-3 rounded-xl inline-block border-2 border-gray-200 shadow-lg">
+                                    <img 
+                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`}
+                                        alt="UPI Payment QR"
+                                        className="w-48 h-48"
+                                    />
+                                </div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    Scan with any UPI app to pay
+                                </p>
+                                <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+                                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">GPay</span>
+                                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">PhonePe</span>
+                                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">Paytm</span>
+                                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">BHIM</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* UPI ID Display */}
+                        <div className="text-center space-y-2">
+                            <p className="text-xs text-gray-500">UPI ID</p>
+                            <div className="flex items-center justify-center gap-2">
+                                <code className="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm font-mono text-gray-800 dark:text-gray-200">
+                                    {UPI_CONFIG.payeeVPA}
+                                </code>
+                                <button 
+                                    onClick={() => navigator.clipboard.writeText(UPI_CONFIG.payeeVPA)}
+                                    className="p-2 text-gray-500 hover:text-bhumi-green transition-colors"
+                                    title="Copy UPI ID"
+                                >
+                                    <CreditCard size={16} />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Payment Confirmation Buttons */}
+                        <div className="flex gap-3">
+                            <Button 
+                                variant="secondary" 
+                                className="flex-1"
+                                onClick={() => setShowPaymentModal(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button 
+                                variant="success" 
+                                className="flex-1"
+                                onClick={() => {
+                                    setPaymentStatus('processing');
+                                    // Simulate payment verification
+                                    setTimeout(() => {
+                                        setPaymentStatus('success');
+                                    }, 2000);
+                                }}
+                            >
+                                <CheckCircle2 size={16} />
+                                I've Paid
+                            </Button>
+                        </div>
+
+                        {/* Processing/Success States */}
+                        {paymentStatus === 'processing' && (
+                            <div className="text-center py-4">
+                                <div className="w-12 h-12 border-4 border-bhumi-green border-t-transparent rounded-full animate-spin mx-auto"></div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">Verifying payment...</p>
+                            </div>
+                        )}
+
+                        {paymentStatus === 'success' && (
+                            <div className="text-center py-4 space-y-3">
+                                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto">
+                                    <CheckCircle2 className="w-10 h-10 text-green-600" />
+                                </div>
+                                <div>
+                                    <h4 className="text-lg font-bold text-green-600">Payment Successful!</h4>
+                                    <p className="text-sm text-gray-500">Your order has been placed</p>
+                                </div>
+                                <Button 
+                                    variant="success" 
+                                    className="w-full"
+                                    onClick={() => {
+                                        setShowPaymentModal(false);
+                                        setPaymentStatus('pending');
+                                    }}
+                                >
+                                    Done
+                                </Button>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    };
+
     const BlockchainListingCard: React.FC<{ item: MarketplaceListing; isOwner: boolean }> = ({ item, isOwner }) => {
         const defaultImage = 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop';
         return (
@@ -286,7 +510,10 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                                     <Leaf size={16} />
                                     <Truck size={14} />
                                 </Button>
-                                <Button variant="success" size="sm" className="flex-1">Buy Now</Button>
+                                <Button variant="success" size="sm" className="flex-1" onClick={() => handleBuyNow(item)}>
+                                    <IndianRupee size={14} />
+                                    Buy Now
+                                </Button>
                             </>
                         )}
                     </div>
@@ -373,7 +600,10 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                                     <Leaf size={16} />
                                     <Truck size={14} />
                                 </Button>
-                                <Button variant="success" size="sm" className="flex-1">Buy Now</Button>
+                                <Button variant="success" size="sm" className="flex-1" onClick={() => handleBuyNow(item)}>
+                                    <IndianRupee size={14} />
+                                    Buy Now
+                                </Button>
                             </>
                         )}
                     </div>
@@ -386,6 +616,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
         <div className="p-4 md:p-6 max-w-7xl mx-auto min-h-screen">
             {renderVerificationModal()}
             {renderVendorLocationModal()}
+            {renderPaymentModal()}
             {showCarbonLogistics && selectedForLogistics && (
                 <CarbonLogistics
                     listing={selectedForLogistics}
