@@ -212,7 +212,7 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                         <div>
                             <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
                                 Standard Crop Pricing Engine
-                                <Badge variant="pulse" className="bg-emerald-500 text-white text-[10px] uppercase tracking-widest">
+                                <Badge variant="pulse" className="bg-green-500 text-white text-[10px] uppercase tracking-widest">
                                     AI Arbitrated
                                 </Badge>
                             </h1>
@@ -262,9 +262,9 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                         <PricingForm onSearch={handleSearch} isLoading={isLoading} />
 
                         {/* Value Props */}
-                        <Card className="bg-emerald-50 dark:bg-emerald-500/5 border-emerald-500/20">
+                        <Card className="bg-green-50 dark:bg-green-500/5 border-green-500/20">
                             <CardHeader>
-                                <CardTitle className="text-sm font-bold text-emerald-600 flex items-center gap-2 uppercase tracking-widest">
+                                <CardTitle className="text-sm font-bold text-green-600 flex items-center gap-2 uppercase tracking-widest">
                                     <ShieldCheck size={16} />
                                     The AgriTech Standard
                                 </CardTitle>
@@ -272,20 +272,20 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                             <CardContent>
                             <ul className="space-y-4">
                                 <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
-                                    <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
-                                        <Zap size={14} className="text-emerald-600" />
+                                    <div className="bg-green-500/20 p-1 rounded-md h-fit mt-0.5">
+                                        <Zap size={14} className="text-green-600" />
                                     </div>
                                     <p><span className="font-bold text-gray-900 dark:text-white">Zero Exploitation:</span> AI-driven MGP ensures agents pay fair prices.</p>
                                 </li>
                                 <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
-                                    <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
-                                        <BarChart3 size={14} className="text-emerald-600" />
+                                    <div className="bg-green-500/20 p-1 rounded-md h-fit mt-0.5">
+                                        <BarChart3 size={14} className="text-green-600" />
                                     </div>
                                     <p><span className="font-bold text-gray-900 dark:text-white">Smart Aggregation:</span> We pull from 3+ official and private sources.</p>
                                 </li>
                                 <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
-                                    <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
-                                        <Sparkles size={14} className="text-emerald-600" />
+                                    <div className="bg-green-500/20 p-1 rounded-md h-fit mt-0.5">
+                                        <Sparkles size={14} className="text-green-600" />
                                     </div>
                                     <p><span className="font-bold text-gray-900 dark:text-white">AI Arbitration:</span> Models weigh sources by reliability and historical accuracy.</p>
                                 </li>
@@ -298,7 +298,7 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                     <div className="lg:col-span-2 space-y-8">
                         {isLoading && (
                             <Card className="h-[600px] flex flex-col items-center justify-center animate-pulse">
-                                <Spinner size={48} className="text-emerald-500 mb-4" />
+                                <Spinner size={48} className="text-green-500 mb-4" />
                                 <p className="text-xl font-bold text-gray-900 dark:text-white mb-2">{status}</p>
                                 <p className="text-gray-500">Evaluating multi-mandi datasets for parity...</p>
                             </Card>

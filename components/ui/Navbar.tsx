@@ -19,16 +19,15 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
         { id: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
         { id: 'marketplace', label: 'Market', icon: ShoppingBag },
         // { id: 'soil-analysis', label: 'Soil', icon: Activity },
-        { id: 'crop-analysis', label: 'Crop Doctor', icon: ScanEye },
+        { id: 'crop-analysis', label: 'Analysis & Pricing', icon: ScanEye },
         { id: 'seedscout', label: 'SeedScout', icon: Sprout },
         { id: 'replication-planner', label: 'Planner', icon: Copy },
-        { id: 'pricing-engine', label: 'Pricing', icon: Coins },
         { id: 'routing-protocol', label: '3-Tier Route', icon: Route },
     ];
 
     return (
         <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 dark:bg-bhoomi-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-full mx-auto px-6 md:px-12">
                 <div className="flex justify-between h-16 items-center">
 
                     {/* Logo Section */}
@@ -39,7 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
                     </div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-1">
+                    <div className="hidden md:flex items-center gap-8">
                         {navItems.map((item) => {
                             const Icon = item.icon;
                             const isActive = currentView === item.id;

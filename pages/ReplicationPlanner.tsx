@@ -148,13 +148,13 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
     };
 
     const getFeasibilityColor = (score: number) => {
-        if (score >= 70) return 'text-emerald-500';
+        if (score >= 70) return 'text-green-500';
         if (score >= 40) return 'text-yellow-500';
         return 'text-red-500';
     };
 
     const getFeasibilityBg = (score: number) => {
-        if (score >= 70) return 'bg-emerald-500/10 border-emerald-500/30';
+        if (score >= 70) return 'bg-green-500/10 border-green-500/30';
         if (score >= 40) return 'bg-yellow-500/10 border-yellow-500/30';
         return 'bg-red-500/10 border-red-500/30';
     };
@@ -216,7 +216,7 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <Leaf size={18} className="text-emerald-500" />
+                                    <Leaf size={18} className="text-green-500" />
                                     Or Enter Custom
                                 </CardTitle>
                             </CardHeader>
@@ -327,7 +327,7 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                                 
                                 <div className="flex items-center gap-3 mb-4">
                                     {quickCheck.canReplicate ? (
-                                        <CheckCircle size={24} className="text-emerald-500" />
+                                        <CheckCircle size={24} className="text-green-500" />
                                     ) : (
                                         <AlertTriangle size={24} className="text-red-500" />
                                     )}
@@ -374,7 +374,7 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                                         <h3 className="font-bold text-gray-900 dark:text-white">3. AI Analysis</h3>
                                         <p className="text-sm text-gray-500">We analyze climate, soil, and growing conditions</p>
                                     </div>
-                                    <div className="p-4 rounded-xl bg-emerald-500/10">
+                                    <div className="p-4 rounded-xl bg-green-500/10">
                                         <div className="text-2xl mb-2">📋</div>
                                         <h3 className="font-bold text-gray-900 dark:text-white">4. Get Your Plan</h3>
                                         <p className="text-sm text-gray-500">Complete week-by-week cultivation guide</p>
@@ -405,7 +405,7 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                 /* PLAN DISPLAY */
                 <div className="space-y-6">
                     {/* Plan Header */}
-                    <Card className="bg-emerald-50 dark:bg-emerald-500/5 border-emerald-500/20">
+                    <Card className="bg-green-50 dark:bg-green-500/5 border-green-500/20">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
                                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -459,9 +459,9 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                         onToggle={() => toggleSection('planting')}
                     >
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+                            <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
                                 <div className="text-sm text-gray-500 mb-1">Optimal Window</div>
-                                <div className="text-lg font-bold text-emerald-600">
+                                <div className="text-lg font-bold text-green-600">
                                     {plan.plantingWindow.optimal.start} - {plan.plantingWindow.optimal.end}
                                 </div>
                             </div>
@@ -527,7 +527,7 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                     {/* Harvest & Yield */}
                     <CollapsibleSection
                         title="Harvest Guidelines & Expected Yield"
-                        icon={<TrendingUp className="text-emerald-500" size={20} />}
+                        icon={<TrendingUp className="text-green-500" size={20} />}
                         isExpanded={expandedSections.has('harvest')}
                         onToggle={() => toggleSection('harvest')}
                     >
@@ -537,7 +537,7 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                                 <ul className="space-y-2">
                                     {plan.harvestGuidelines.indicators.map((indicator, i) => (
                                         <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                            <CheckCircle size={16} className="text-emerald-500 flex-shrink-0 mt-0.5" />
+                                            <CheckCircle size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
                                             {indicator}
                                         </li>
                                     ))}
@@ -550,9 +550,9 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                             <div>
                                 <h4 className="font-bold text-gray-900 dark:text-white mb-3">Expected Yield</h4>
                                 <div className="space-y-3">
-                                    <div className="p-3 rounded-xl bg-emerald-500/10">
+                                    <div className="p-3 rounded-xl bg-green-500/10">
                                         <div className="text-xs text-gray-500">Quantity</div>
-                                        <div className="font-bold text-emerald-600">{plan.expectedYield.quantity}</div>
+                                        <div className="font-bold text-green-600">{plan.expectedYield.quantity}</div>
                                     </div>
                                     <div className="p-3 rounded-xl bg-purple-500/10">
                                         <div className="text-xs text-gray-500">Quality</div>
@@ -597,7 +597,7 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                                     <div className="flex-1">
                                         <div className="font-medium text-gray-900 dark:text-white">{risk.risk}</div>
                                         <div className="text-sm text-gray-500 mt-1">
-                                            <span className="text-emerald-600 font-medium">Mitigation:</span> {risk.mitigation}
+                                            <span className="text-green-600 font-medium">Mitigation:</span> {risk.mitigation}
                                         </div>
                                     </div>
                                 </div>
@@ -606,7 +606,7 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                     </CollapsibleSection>
 
                     {/* Success Tips */}
-                    <Card className="bg-emerald-50 dark:bg-emerald-500/5 border-emerald-500/20">
+                    <Card className="bg-green-50 dark:bg-green-500/5 border-green-500/20">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Lightbulb className="text-yellow-500" size={20} />
@@ -617,7 +617,7 @@ export const ReplicationPlanner: React.FC<ReplicationPlannerProps> = ({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {plan.successTips.map((tip, i) => (
                                 <div key={i} className="flex items-start gap-2 p-3 rounded-xl bg-white/50 dark:bg-black/20">
-                                    <span className="text-emerald-500 font-bold">{i + 1}.</span>
+                                    <span className="text-green-500 font-bold">{i + 1}.</span>
                                     <span className="text-sm text-gray-700 dark:text-gray-300">{tip}</span>
                                 </div>
                             ))}
@@ -866,7 +866,7 @@ const WeeklySchedulePanel: React.FC<{
             
             {/* Selected Week Details */}
             {current && (
-                <div className="p-5 rounded-xl bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-500/30">
+                <div className="p-5 rounded-xl bg-green-50 dark:bg-green-500/5 border border-green-500/30">
                     <div className="flex items-center justify-between mb-4">
                         <h4 className="text-lg font-bold text-gray-900 dark:text-white">Week {current.week}: {current.stage}</h4>
                     </div>
@@ -875,7 +875,7 @@ const WeeklySchedulePanel: React.FC<{
                         {/* Activities */}
                         <div>
                             <h5 className="font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                                <CheckCircle size={16} className="text-emerald-500" /> Activities
+                                <CheckCircle size={16} className="text-green-500" /> Activities
                             </h5>
                             <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                                 {current.activities.map((a, i) => (
@@ -952,7 +952,7 @@ const FertilizerCalendarPanel: React.FC<{ fertilizers: FertilizerSchedule[] }> =
                             <td className="py-2 px-3 font-medium text-purple-600">{f.week}</td>
                             <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{f.stage}</td>
                             <td className="py-2 px-3 font-medium text-gray-900 dark:text-white">{f.fertilizer}</td>
-                            <td className="py-2 px-3 text-emerald-600 font-mono">{f.npkRatio}</td>
+                            <td className="py-2 px-3 text-green-600 font-mono">{f.npkRatio}</td>
                             <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{f.applicationRate}</td>
                             <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{f.applicationMethod}</td>
                         </tr>
@@ -1001,7 +1001,7 @@ const PestManagementPanel: React.FC<{ pests: PestDiseaseManagement[] }> = ({ pes
                     </div>
                     <div>
                         <span className="text-gray-500">Organic:</span>
-                        <span className="ml-2 text-emerald-600">{pest.organicAlternative}</span>
+                        <span className="ml-2 text-green-600">{pest.organicAlternative}</span>
                     </div>
                 </div>
             </div>
@@ -1012,8 +1012,8 @@ const PestManagementPanel: React.FC<{ pests: PestDiseaseManagement[] }> = ({ pes
 const CostEstimatePanel: React.FC<{ cost: any }> = ({ cost }) => (
     <div className="space-y-4">
         <div className="grid grid-cols-3 gap-4">
-            <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-center">
-                <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-500">₹{(cost.setup / 1000).toFixed(0)}K</div>
+            <div className="p-4 rounded-xl bg-green-50 dark:bg-green-500/10 text-center">
+                <div className="text-2xl font-bold text-green-700 dark:text-green-500">₹{(cost.setup / 1000).toFixed(0)}K</div>
                 <div className="text-xs text-gray-500">Setup Cost</div>
             </div>
             <div className="p-4 rounded-xl bg-sky-50 dark:bg-sky-500/10 text-center">

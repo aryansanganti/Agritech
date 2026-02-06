@@ -67,20 +67,20 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
 
     return (
         <form onSubmit={handleSubmit} className="glass-panel p-6 rounded-3xl space-y-6">
-            <div className="flex items-center gap-2 text-emerald-500 mb-2 font-bold uppercase text-xs tracking-widest">
+            <div className="flex items-center gap-2 text-green-500 mb-2 font-bold uppercase text-xs tracking-widest">
                 <Sparkles size={16} />
                 Market Intelligence Input
             </div>
 
             {qualityGrading && (
-                <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30">
+                <div className="p-4 rounded-xl bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/30">
                     <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-3">
-                            <div className="bg-emerald-500/20 p-2 rounded-lg">
-                                <CheckCircle2 size={20} className="text-emerald-600" />
+                            <div className="bg-green-500/20 p-2 rounded-lg">
+                                <CheckCircle2 size={20} className="text-green-600" />
                             </div>
                             <div>
-                                <p className="font-bold text-emerald-700 dark:text-emerald-400 text-sm">
+                                <p className="font-bold text-green-700 dark:text-green-400 text-sm">
                                     AI Quality Grading Applied
                                 </p>
                                 <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
@@ -120,32 +120,32 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
             <div className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                        <Leaf size={16} className="text-emerald-500" />
+                        <Leaf size={16} className="text-green-500" />
                         Select Crop
                     </label>
                     <select
                         value={crop}
                         onChange={(e) => setCrop(e.target.value)}
-                        className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                        className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 transition-all outline-none"
                         disabled={!!qualityGrading}
                     >
                         {crops.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                     {qualityGrading && (
-                        <p className="text-xs text-emerald-600 mt-1">Auto-filled from quality grading</p>
+                        <p className="text-xs text-green-600 mt-1">Auto-filled from quality grading</p>
                     )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                            <MapPin size={16} className="text-emerald-500" />
+                            <MapPin size={16} className="text-green-500" />
                             State
                         </label>
                         <select
                             value={state}
                             onChange={(e) => setState(e.target.value)}
-                            className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                            className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 transition-all outline-none"
                             disabled={!!qualityGrading}
                         >
                             {states.map(s => <option key={s} value={s}>{s}</option>)}
@@ -157,7 +157,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                             type="text"
                             value={district}
                             onChange={(e) => setDistrict(e.target.value)}
-                            className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                            className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 transition-all outline-none"
                             placeholder="Enter district"
                             disabled={!!qualityGrading}
                         />
@@ -166,9 +166,9 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Crop Quality Score: <span className="text-emerald-500 font-bold">{quality}/10</span>
+                        Crop Quality Score: <span className="text-green-500 font-bold">{quality}/10</span>
                         {qualityGrading && (
-                            <span className="ml-2 text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full">
+                            <span className="ml-2 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">
                                 AI Graded
                             </span>
                         )}
@@ -178,7 +178,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                         min="1" max="10" step="1"
                         value={quality}
                         onChange={(e) => setQuality(parseInt(e.target.value))}
-                        className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                        className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-green-500"
                         disabled={!!qualityGrading}
                     />
                     <div className="flex justify-between text-[10px] text-gray-400 mt-1 uppercase font-bold">
@@ -189,7 +189,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                        <Package size={16} className="text-emerald-500" />
+                        <Package size={16} className="text-green-500" />
                         Quantity (Quintals)
                     </label>
                     <input
@@ -198,7 +198,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                         max="1000"
                         value={quantity}
                         onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                        className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                        className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 transition-all outline-none"
                         placeholder="Enter quantity in quintals"
                     />
                     <p className="text-[10px] text-gray-400 mt-1">
@@ -210,7 +210,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-bhoomi-primary hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full bg-bhoomi-primary hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-green-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
                 {isLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

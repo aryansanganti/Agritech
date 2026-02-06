@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#2D5016">
+    <meta name="theme-color" content="#15803d">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -14,7 +14,8 @@
     <!-- Tailwind CSS (CDN kept for stability) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <style>
@@ -41,17 +42,17 @@
                 extend: {
                     fontFamily: {
                         sans: ['Montserrat', 'sans-serif'],
-                        heading: ['Montserrat', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
                     },
                     colors: {
                         bhoomi: {
-                            dark: '#0f172a',       /* Slate 900 - Professional Dark */
-                            panel: '#ffffff',      /* White - Clean Light Panel */
-                            primary: '#059669',    /* Emerald 600 - Primary Brand */
-                            green: '#047857',      /* Emerald 700 - Deep Professional Green */
-                            gold: '#d97706',       /* Amber 600 - Muted Gold */
-                            blue: '#0284c7',       /* Sky 600 - Professional Accent */
-                            subtle: '#64748b',     /* Slate 500 - Professional Muted */
+                            dark: '#0f172a',       /* Slate 900 */
+                            panel: '#ffffff',      /* White */
+                            primary: '#16a34a',    /* Green 600 */
+                            green: '#15803d',      /* Green 700 */
+                            gold: '#d97706',       /* Amber 600 */
+                            blue: '#0284c7',       /* Sky 600 */
+                            subtle: '#64748b',     /* Slate 500 */
                             border: '#e2e8f0',     /* Slate 200 */
                             darkBorder: '#1e293b', /* Slate 800 */
                         }
@@ -80,9 +81,7 @@
             overflow-x: hidden;
             margin: 0;
             background-color: #f8fafc;
-            /* Slate 50 - Clean Light Background */
             color: #0f172a;
-            /* Slate 900 */
             transition: background-color 0.3s ease, color 0.3s ease;
             -webkit-tap-highlight-color: transparent;
         }
@@ -93,7 +92,7 @@
         h4,
         h5,
         h6 {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Outfit', sans-serif;
             font-weight: 700;
             letter-spacing: -0.02em;
         }

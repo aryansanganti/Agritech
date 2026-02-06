@@ -193,7 +193,7 @@ export const RoutingProtocol: React.FC<Props> = ({ lang, onBack }) => {
               {isScanning && (
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-green-400 to-emerald-600 rounded-full transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-300"
                     style={{ width: `${Math.min(scanProgress, 100)}%` }}
                   />
                 </div>
@@ -405,7 +405,7 @@ export const RoutingProtocol: React.FC<Props> = ({ lang, onBack }) => {
       {activeTab === 'logistics' && (
         <div className="space-y-6 animate-fade-in">
           {/* Fill-Rate Banner */}
-          <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800 p-5">
+          <Card className="bg-gradient-to-r from-green-50 to-green-50 dark:from-green-900/20 dark:to-green-900/20 border-green-200 dark:border-green-800 p-5">
             <div className="flex items-start gap-4">
               <div className="w-14 h-14 bg-green-100 dark:bg-green-800/50 rounded-xl flex items-center justify-center flex-shrink-0">
                 <TreePine className="w-7 h-7 text-green-600" />
@@ -470,7 +470,7 @@ export const RoutingProtocol: React.FC<Props> = ({ lang, onBack }) => {
 /** Colored tier progress bar */
 const TierBar: React.FC<{ tier: { tier: number; label: string; percentage: number; quantityKg: number; destination: string; pricePerQtl: number; totalValue: number } }> = ({ tier }) => {
   const colors: Record<number, string> = {
-    1: 'from-green-400 to-emerald-500',
+    1: 'from-green-400 to-green-500',
     2: 'from-yellow-400 to-amber-500',
     3: 'from-red-400 to-rose-500',
   };
@@ -549,7 +549,7 @@ const SplitListingCard: React.FC<{ listing: SplitListing }> = ({ listing }) => {
     3: 'border-red-500/40 hover:border-red-500',
   };
   const tierBg: Record<number, string> = {
-    1: 'from-green-600 to-emerald-600',
+    1: 'from-green-600 to-green-600',
     2: 'from-yellow-500 to-amber-600',
     3: 'from-red-500 to-rose-600',
   };

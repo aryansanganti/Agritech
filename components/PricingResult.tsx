@@ -44,7 +44,7 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                 </div>
 
                 <div className="relative z-10">
-                    <div className="flex items-center gap-2 text-emerald-500 mb-2 font-medium">
+                    <div className="flex items-center gap-2 text-green-500 mb-2 font-medium">
                         <CheckCircle2 size={18} />
                         <span>AI-Arbitrated Price Band</span>
                     </div>
@@ -55,8 +55,8 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                     </h2>
 
                     <div className="flex flex-wrap gap-4 items-center">
-                        <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-600 px-4 py-2 rounded-full text-sm font-semibold">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <div className="flex items-center gap-2 bg-green-500/10 text-green-600 px-4 py-2 rounded-full text-sm font-semibold">
+                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                             Confidence: {confidenceScore}%
                         </div>
                         <div className="flex items-center gap-2 bg-amber-500/10 text-amber-600 px-4 py-2 rounded-full text-sm font-semibold border border-amber-500/20">
@@ -97,7 +97,7 @@ export const PricingResult: React.FC<PricingResultProps> = ({
 
                 {/* Sources Card */}
                 <div className="glass-panel p-6 rounded-2xl">
-                    <div className="flex items-center gap-2 text-gray-500 mb-4 font-bold uppercase text-xs tracking-widest text-emerald-500">
+                    <div className="flex items-center gap-2 text-gray-500 mb-4 font-bold uppercase text-xs tracking-widest text-green-500">
                         <ShieldAlert size={16} />
                         Source Reliability Index
                     </div>
@@ -106,11 +106,11 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                             <div key={i} className="flex flex-col gap-1">
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="font-medium text-gray-700 dark:text-gray-200">{source.name}</span>
-                                    <span className="text-emerald-500 font-bold">{source.reliability}%</span>
+                                    <span className="text-green-500 font-bold">{source.reliability}%</span>
                                 </div>
                                 <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-emerald-500 rounded-full transition-all duration-1000"
+                                        className="h-full bg-green-500 rounded-full transition-all duration-1000"
                                         style={{ width: `${source.reliability}%` }}
                                     ></div>
                                 </div>
@@ -132,11 +132,11 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                     
                     {/* Add to Marketplace Button */}
                     {onAddToMarketplace && (
-                        <div className="glass-panel rounded-3xl p-8 bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-500/20">
+                        <div className="glass-panel rounded-3xl p-8 bg-green-50 dark:bg-green-500/5 border border-green-500/20">
                             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                                 <div className="flex items-start gap-4">
-                                    <div className="bg-emerald-500/20 p-4 rounded-xl">
-                                        <ShoppingBag size={32} className="text-emerald-600" />
+                                    <div className="bg-green-500/20 p-4 rounded-xl">
+                                        <ShoppingBag size={32} className="text-green-600" />
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
@@ -150,7 +150,7 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                                 </div>
                                 <button
                                     onClick={onAddToMarketplace}
-                                    className="bg-bhoomi-primary hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2 whitespace-nowrap"
+                                    className="bg-bhoomi-primary hover:bg-green-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-green-500/20 transition-all flex items-center gap-2 whitespace-nowrap"
                                 >
                                     <ShoppingBag size={20} />
                                     Add to Marketplace

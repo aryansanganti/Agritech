@@ -34,8 +34,8 @@ export const PriceHistoryChart: React.FC<PriceHistoryChartProps> = ({ crop }) =>
                     <div className="flex items-center gap-1 text-blue-500">
                         <span className="w-3 h-0.5 bg-blue-500"></span> Market
                     </div>
-                    <div className="flex items-center gap-1 text-emerald-500">
-                        <span className="w-3 h-0.5 bg-emerald-500"></span> Benchmark
+                    <div className="flex items-center gap-1 text-green-500">
+                        <span className="w-3 h-0.5 bg-green-500"></span> Benchmark
                     </div>
                 </div>
             </div>

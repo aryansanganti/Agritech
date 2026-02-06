@@ -197,7 +197,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                     onClick={() => setActiveTab('payment')}
                     className={`flex-1 py-4 px-6 flex items-center justify-center gap-2 font-bold transition-all ${
                         activeTab === 'payment' 
-                            ? 'text-emerald-600 border-b-2 border-emerald-600 bg-emerald-50 dark:bg-emerald-500/10' 
+                            ? 'text-green-600 border-b-2 border-green-600 bg-green-50 dark:bg-green-500/10' 
                             : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
                     }`}
                 >
@@ -239,14 +239,14 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                                 <p className="text-xs text-gray-500">{location}</p>
                             </div>
                             <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
-                                <div className="flex items-center gap-2 text-emerald-500 mb-2">
+                                <div className="flex items-center gap-2 text-green-500 mb-2">
                                     <Sparkles size={16} />
                                     <span className="text-xs font-bold uppercase tracking-widest">Quality</span>
                                 </div>
                                 <p className="text-lg font-bold text-gray-900 dark:text-white">
                                     {qualityScore}/10
                                 </p>
-                                <p className="text-xs text-emerald-500 font-medium">
+                                <p className="text-xs text-green-500 font-medium">
                                     {getQualityGrade(qualityScore)}
                                 </p>
                             </div>
@@ -273,7 +273,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                         </div>
 
                         {/* Blockchain Verification Badge */}
-                        <div className="flex items-center justify-center gap-2 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 py-3 px-4 rounded-xl border border-emerald-200 dark:border-emerald-500/20">
+                        <div className="flex items-center justify-center gap-2 bg-green-50 dark:bg-green-500/10 text-green-600 py-3 px-4 rounded-xl border border-green-200 dark:border-green-500/20">
                             <CheckCircle2 size={20} />
                             <span className="font-bold">Verified on Ethereum Sepolia</span>
                         </div>
@@ -303,12 +303,12 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                                         value={upiId}
                                         onChange={(e) => setUpiId(e.target.value)}
                                         placeholder="Enter UPI ID (e.g., farmer@upi)"
-                                        className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-center"
+                                        className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 transition-all outline-none text-center"
                                     />
                                     <button
                                         onClick={() => upiId && setShowUpiInput(true)}
                                         disabled={!upiId}
-                                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                     >
                                         Generate Payment QR
                                     </button>
@@ -317,7 +317,7 @@ export const EthereumBlockchainQR: React.FC<EthereumBlockchainQRProps> = ({
                         ) : (
                             <>
                                 {/* Payment Summary */}
-                                <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-4 text-white">
+                                <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <p className="text-xs text-white/70">Quantity</p>

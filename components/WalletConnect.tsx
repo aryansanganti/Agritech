@@ -227,14 +227,14 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
 
     // Connected and correct network
     return (
-        <div className="glass-panel p-6 rounded-2xl border border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/5">
+        <div className="glass-panel p-6 rounded-2xl border border-green-500/20 bg-green-50 dark:bg-green-500/5">
             <div className="flex items-center gap-3 mb-4">
-                <div className="bg-emerald-500/20 p-2 rounded-xl">
-                    <CheckCircle2 size={20} className="text-emerald-500" />
+                <div className="bg-green-500/20 p-2 rounded-xl">
+                    <CheckCircle2 size={20} className="text-green-500" />
                 </div>
                 <div>
                     <h3 className="font-bold text-gray-900 dark:text-white">Wallet Connected</h3>
-                    <p className="text-xs text-emerald-600">Sepolia Testnet</p>
+                    <p className="text-xs text-green-600">Sepolia Testnet</p>
                 </div>
             </div>
 

@@ -60,7 +60,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 this.targetAngle = 0;
                 this.stiffness = 0.05 + Math.random() * 0.05;
                 this.width = Math.random() * 2 + 1.5;
-                const greens = ['#15803d', '#166534', '#14532d', '#10B981', '#059669'];
+                const greens = ['#15803d', '#166534', '#14532d', '#22c55e', '#16a34a'];
                 this.color = greens[Math.floor(Math.random() * greens.length)];
             }
 
@@ -118,8 +118,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             time += 16;
 
             const gradient = ctx.createLinearGradient(0, height, 0, height - 20);
-            gradient.addColorStop(0, '#064e3b');
-            gradient.addColorStop(1, 'rgba(6, 78, 59, 0)');
+            gradient.addColorStop(0, '#14532d');
+            gradient.addColorStop(1, 'rgba(20, 83, 45, 0)');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, height - 20, width, 20);
 
@@ -393,8 +393,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         >
             {/* Center Radial Gradient */}
             <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden">
-                <div className="w-[800px] h-[800px] bg-emerald-100/40 rounded-full blur-[120px] dark:hidden translate-y-[-10%]"></div>
-                <div className="hidden dark:block w-[900px] h-[900px] bg-emerald-900/20 rounded-full blur-[150px] translate-y-[-10%]"></div>
+                <div className="w-[800px] h-[800px] bg-green-100/40 rounded-full blur-[120px] dark:hidden translate-y-[-10%]"></div>
+                <div className="hidden dark:block w-[900px] h-[900px] bg-green-900/20 rounded-full blur-[150px] translate-y-[-10%]"></div>
             </div>
 
             {/* FALLING VEGGIES CANVAS (Top Z-Index but pointer-none) */}
@@ -418,17 +418,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
             {/* Hero Section */}
             <main className="flex-1 relative flex flex-col items-center justify-center text-center px-4 pt-10 pb-40 z-30 max-w-5xl mx-auto">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-sm font-semibold mb-6 animate-fade-in opacity-0" style={{ animationDelay: '0.1s' }}>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold mb-6 animate-fade-in opacity-0" style={{ animationDelay: '0.1s' }}>
                     <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                     </span>
                     The Future of Indian Agriculture
                 </div>
 
                 <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 animate-slide-up opacity-0 relative" style={{ animationDelay: '0.2s' }}>
                     Farming Intelligence, <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-bhoomi-green to-teal-500">Reimagined.</span>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-bhoomi-green to-green-500">Reimagined.</span>
                 </h1>
 
                 <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mb-10 animate-slide-up opacity-0 leading-relaxed" style={{ animationDelay: '0.3s' }}>

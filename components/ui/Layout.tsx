@@ -78,7 +78,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentView, setView, 
                 logout={logout}
             />
 
-            <main className="pt-20 pb-24 md:pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen animate-fade-in">
+            <main className="pt-20 pb-24 md:pb-8 w-full min-h-screen animate-fade-in">
                 {children}
             </main>
 

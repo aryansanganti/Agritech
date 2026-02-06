@@ -4,8 +4,8 @@ export const DNAScanner: React.FC = () => {
     return (
         <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-black/5 dark:bg-black/20 rounded-2xl relative">
             {/* Radar Sweep Effect */}
-            <div className="absolute inset-0 rounded-full border border-emerald-500/30 opacity-20 animate-[ping_3s_linear_infinite]"></div>
-            <div className="absolute inset-0 rounded-full border border-emerald-500/20 opacity-40 animate-[ping_2s_linear_infinite_delay-1s]"></div>
+            <div className="absolute inset-0 rounded-full border border-green-500/30 opacity-20 animate-[ping_3s_linear_infinite]"></div>
+            <div className="absolute inset-0 rounded-full border border-green-500/20 opacity-40 animate-[ping_2s_linear_infinite_delay-1s]"></div>
 
             {/* SVG DNA Helix */}
             <svg width="100" height="200" viewBox="0 0 100 200" className="opacity-80">
@@ -39,7 +39,7 @@ export const DNAScanner: React.FC = () => {
                 }
             `}</style>
 
-            <div className="absolute bottom-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest animate-pulse">
+            <div className="absolute bottom-4 text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-widest animate-pulse">
                 Scanning Genomes...
             </div>
         </div>

@@ -181,7 +181,7 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
             {/* Header */}
             <div className="p-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-bhoomi-green to-emerald-600 rounded-full flex items-center justify-center shadow-md shadow-emerald-500/20">
+                    <div className="w-10 h-10 bg-gradient-to-br from-bhoomi-green to-green-600 rounded-full flex items-center justify-center shadow-md shadow-green-500/20">
                         <Bot size={20} className="text-white" />
                     </div>
                     <div>

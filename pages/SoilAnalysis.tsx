@@ -374,7 +374,7 @@ export const SoilAnalysis: React.FC<SoilAnalysisProps> = ({ lang, onBack }) => {
                                         label={t.nutrientMirror}
                                         value={`${result.metrics.soc}%`}
                                         sub="Organic Carbon"
-                                        color="text-emerald-500"
+                                        color="text-green-500"
                                         score={result.metrics.soc}
                                     />
                                     <MetricCard

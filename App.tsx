@@ -102,7 +102,7 @@ const App: React.FC = () => {
             case 'chatbot': return <Chatbot lang={lang} />;
             case 'soil-analysis': return <SoilAnalysis lang={lang} onBack={goBack} />;
             case 'crop-analysis': return <CropAnalysis lang={lang} onBack={goBack} />;
-            case 'marketplace': return <Marketplace user={user} lang={lang} onBack={goBack} />;
+            case 'marketplace': return <Marketplace user={user} lang={lang} onBack={goBack} onNavigateToQualityGrading={() => setView('crop-analysis')} />;
             case 'seedscout': return <SeedScout lang={lang} onBack={goBack} />;
             case 'pricing-engine': return <PricingEngine lang={lang} onBack={goBack} />;
             case 'replication-planner': return <ReplicationPlanner lang={lang} onBack={goBack} />;

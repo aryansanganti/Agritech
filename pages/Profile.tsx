@@ -225,14 +225,14 @@ export const Profile: React.FC<Props> = ({ user, setUser, onBack }) => {
                     </div>
 
                     {/* Badge 1 */}
-                    <div className="bg-white dark:bg-black/40 rounded-xl p-4 border border-emerald-100 dark:border-emerald-500/30 flex items-center gap-4 group hover:shadow-lg hover:shadow-emerald-500/10 transition-all">
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <div className="bg-white dark:bg-black/40 rounded-xl p-4 border border-green-100 dark:border-green-500/30 flex items-center gap-4 group hover:shadow-lg hover:shadow-green-500/10 transition-all">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
                             <Sprout size={32} />
                         </div>
                         <div>
                             <div className="font-bold text-gray-900 dark:text-white">Soil Guardian</div>
                             <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Uploaded 5+ Soil Tests</div>
-                            <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-2 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md inline-block">
+                            <div className="text-[10px] font-bold text-green-600 dark:text-green-400 mt-2 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-md inline-block">
                                 COMPLETED
                             </div>
                         </div>

@@ -9,7 +9,7 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-transparent bg-bhoomi-green/10 text-bhoomi-green dark:bg-emerald-500/20 dark:text-emerald-400",
+          "border-transparent bg-bhoomi-green/10 text-bhoomi-green dark:bg-green-500/20 dark:text-green-400",
         secondary:
           "border-transparent bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300",
         destructive:
@@ -17,14 +17,14 @@ const badgeVariants = cva(
         warning:
           "border-transparent bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
         success:
-          "border-transparent bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
+          "border-transparent bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400",
         info:
           "border-transparent bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400",
         purple:
           "border-transparent bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400",
         outline: "border-gray-200 dark:border-white/20 text-gray-700 dark:text-gray-300",
         pulse:
-          "border-transparent bg-emerald-500 text-white animate-pulse text-[10px] uppercase tracking-widest font-bold",
+          "border-transparent bg-green-500 text-white animate-pulse text-[10px] uppercase tracking-widest font-bold",
       },
     },
     defaultVariants: {
@@ -52,7 +52,7 @@ const alertVariants = cva(
         default: "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white",
         destructive: "bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30 text-red-800 dark:text-red-200 [&>svg]:text-red-500",
         warning: "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-800 dark:text-amber-200 [&>svg]:text-amber-500",
-        success: "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-200 [&>svg]:text-emerald-500",
+        success: "bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/30 text-green-800 dark:text-green-200 [&>svg]:text-green-500",
         info: "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/30 text-blue-800 dark:text-blue-200 [&>svg]:text-blue-500",
       },
     },

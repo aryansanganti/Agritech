@@ -625,7 +625,7 @@ export const calculateCarbonMetrics = (route: OptimalRoute) => {
 /**
  * Get grade-based segregation info
  */
-export const getGradeSegregation = (grade: 'A' | 'B' | 'C') => {
+export const getGradeSegregation = (grade: 'A' | 'B' | 'C' | 'D') => {
     const segregation = {
         'A': {
             priority: 1,
@@ -653,6 +653,15 @@ export const getGradeSegregation = (grade: 'A' | 'B' | 'C') => {
             route: 'Economy Route',
             color: '#EF4444',
             description: 'Standard grade - Economy bulk transport'
+        },
+        'D': {
+            priority: 4,
+            handling: 'Bulk Processing',
+            storage: 'Open Ambient',
+            packaging: 'Loose/Bulk',
+            route: 'Consolidated Route',
+            color: '#6B7280',
+            description: 'Processing grade - Bulk transport for industrial use'
         }
     };
 

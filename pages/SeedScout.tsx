@@ -372,7 +372,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                             {topoSeeds.map((seed, idx) => (
                                 <div key={idx} className={`p-3 rounded-xl border flex flex-col gap-3 transition-hover hover:scale-[1.02] ${seed.matchType === 'Native'
-                                    ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800'
+                                    ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800'
                                     : 'bg-purple-50 dark:bg-purple-900/10 border-purple-200 dark:border-purple-800'
                                     }`}>
                                     <div className="flex gap-3">
@@ -486,7 +486,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Leaf size={18} className="text-emerald-500" />
+                                <Leaf size={18} className="text-green-500" />
                                 Target Crop
                             </CardTitle>
                         </CardHeader>
@@ -520,7 +520,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                     type="checkbox"
                                     checked={query.salinityTolerance}
                                     onChange={(e) => setQuery({ ...query, salinityTolerance: e.target.checked })}
-                                    className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                                    className="w-5 h-5 rounded border-gray-300 text-green-500 focus:ring-green-500"
                                 />
                                 <Droplets size={18} className="text-red-500" />
                                 <div className="flex-1">
@@ -534,7 +534,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                     type="checkbox"
                                     checked={query.heatTolerance}
                                     onChange={(e) => setQuery({ ...query, heatTolerance: e.target.checked })}
-                                    className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                                    className="w-5 h-5 rounded border-gray-300 text-green-500 focus:ring-green-500"
                                 />
                                 <Thermometer size={18} className="text-orange-500" />
                                 <div className="flex-1">
@@ -548,7 +548,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                     type="checkbox"
                                     checked={query.droughtTolerance}
                                     onChange={(e) => setQuery({ ...query, droughtTolerance: e.target.checked })}
-                                    className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                                    className="w-5 h-5 rounded border-gray-300 text-green-500 focus:ring-green-500"
                                 />
                                 <TrendingUp size={18} className="text-yellow-500" />
                                 <div className="flex-1">
@@ -561,7 +561,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                         {/* Advanced Weights Button */}
                         <button
                             onClick={() => setShowAdvanced(!showAdvanced)}
-                            className="flex items-center gap-2 mt-4 text-sm text-gray-500 hover:text-emerald-500 transition-colors"
+                            className="flex items-center gap-2 mt-4 text-sm text-gray-500 hover:text-green-500 transition-colors"
                         >
                             <Filter size={14} />
                             <span>Advanced Weights</span>
@@ -596,7 +596,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                         disabled={isSearching || (!query.salinityTolerance && !query.heatTolerance && !query.droughtTolerance)}
                         variant="success"
                         size="lg"
-                        className="w-full shadow-lg shadow-emerald-500/30"
+                        className="w-full shadow-lg shadow-green-500/30"
                     >
                         {isSearching ? (
                             <>
@@ -613,7 +613,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
 
                     {/* Data Source Indicator */}
                     {hasSearched && !isSearching && (
-                        <div className={`flex items-center gap-2 p-2 rounded-lg text-xs mt-2 ${dataSource === 'gemini' ? 'bg-emerald-500/10 text-emerald-600' :
+                        <div className={`flex items-center gap-2 p-2 rounded-lg text-xs mt-2 ${dataSource === 'gemini' ? 'bg-green-500/10 text-green-600' :
                             dataSource === 'cached' ? 'bg-blue-500/10 text-blue-600' :
                                 'bg-gray-500/10 text-gray-600'
                             }`}>
@@ -626,7 +626,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                         'Using fallback data (API may have issues)'}
                             </span>
                             {dataSource !== 'gemini' && (
-                                <button onClick={handleSearch} className="ml-auto text-emerald-500 hover:underline flex items-center gap-1">
+                                <button onClick={handleSearch} className="ml-auto text-green-500 hover:underline flex items-center gap-1">
                                     <RefreshCw size={12} /> Retry with AI
                                 </button>
                             )}
@@ -644,7 +644,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                     key={layer}
                                     onClick={() => { setActiveLayer(layer); setSatelliteView(false); }}
                                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${!satelliteView && activeLayer === layer
-                                        ? 'bg-emerald-500 text-white shadow-md'
+                                        ? 'bg-green-500 text-white shadow-md'
                                         : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20'
                                         }`}
                                 >
@@ -658,7 +658,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                         <button
                             onClick={() => setSatelliteView(!satelliteView)}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${satelliteView
-                                ? 'bg-gray-800 text-white ring-2 ring-emerald-500'
+                                ? 'bg-gray-800 text-white ring-2 ring-green-500'
                                 : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'
                                 }`}
                         >
@@ -760,18 +760,18 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                     {selectedDistrict && hasSearched && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Metrics Panel */}
-                            <Card className="border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
+                            <Card className="border-2 border-green-500/30 bg-gradient-to-br from-green-500/5 to-transparent">
                                 <CardContent className="p-5">
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
                                         <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                            <MapPin className="text-emerald-500" size={20} />
+                                            <MapPin className="text-green-500" size={20} />
                                             {selectedDistrict.district.name}
                                         </h3>
                                         <p className="text-sm text-gray-500">{selectedDistrict.district.state}</p>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-3xl font-bold text-emerald-500">
+                                        <div className="text-3xl font-bold text-green-500">
                                             {(selectedDistrict.traitScore * 100).toFixed(0)}%
                                         </div>
                                         <p className="text-xs text-gray-500">Match Score</p>
@@ -826,7 +826,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
 
                             {/* Replication Planner CTA */}
                             {onNavigateToReplication && (
-                                <Card className="md:col-span-2 border-2 border-dashed border-bhoomi-green/50 bg-gradient-to-r from-green-500/5 to-emerald-500/5 hover:border-bhoomi-green transition-all cursor-pointer group p-5"
+                                <Card className="md:col-span-2 border-2 border-dashed border-bhoomi-green/50 bg-gradient-to-r from-green-500/5 to-green-500/5 hover:border-bhoomi-green transition-all cursor-pointer group p-5"
                                     onClick={() => onNavigateToReplication(
                                         cropTypes.find(c => c.id === query.cropType)?.name || query.cropType,
                                         `${selectedDistrict.district.name}, ${selectedDistrict.district.state}`
@@ -834,7 +834,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                 >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                                                 <Compass size={28} className="text-white" />
                                             </div>
                                             <div>
@@ -869,7 +869,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <TrendingUp size={18} className="text-emerald-500" />
+                                        <TrendingUp size={18} className="text-green-500" />
                                         Top Genetic Hotspots {filteredResults.length < results.length && (
                                             <span className="text-xs font-normal text-gray-500">
                                                 ({filteredResults.length} of {results.length} districts)
@@ -884,11 +884,11 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                             key={result.district.id}
                                             onClick={() => handleSelectDistrict(result)}
                                             className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left ${selectedDistrict?.district.id === result.district.id
-                                                ? 'bg-emerald-500/20 border border-emerald-500/30'
+                                                ? 'bg-green-500/20 border border-green-500/30'
                                                 : 'bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10'
                                                 }`}
                                         >
-                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${index < 3 ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300'
+                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${index < 3 ? 'bg-gradient-to-br from-green-500 to-green-600 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300'
                                                 }`}>
                                                 {index + 1}
                                             </div>
@@ -897,7 +897,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                                 <span className="text-xs text-gray-500 ml-2">{result.district.state}</span>
                                             </div>
                                             <div className="text-right">
-                                                <span className={`text-sm font-bold ${result.traitScore >= 0.7 ? 'text-emerald-500' : 'text-gray-400'
+                                                <span className={`text-sm font-bold ${result.traitScore >= 0.7 ? 'text-green-500' : 'text-gray-400'
                                                     }`}>{(result.traitScore * 100).toFixed(0)}%</span>
                                             </div>
                                         </button>

@@ -28,7 +28,7 @@ interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const progressVariantColors = {
   default: "bg-bhoomi-green",
-  success: "bg-gradient-to-r from-emerald-500 to-teal-500",
+  success: "bg-gradient-to-r from-green-500 to-green-500",
   warning: "bg-gradient-to-r from-amber-500 to-orange-500",
   danger: "bg-gradient-to-r from-red-500 to-rose-500",
   purple: "bg-gradient-to-r from-purple-500 to-indigo-500",
@@ -166,7 +166,7 @@ interface StatCardProps {
 
 const statVariantClasses = {
   default: "bg-gray-50 dark:bg-white/5",
-  success: "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30",
+  success: "bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/30",
   warning: "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30",
   danger: "bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30",
   info: "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/30",
@@ -257,7 +257,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, subtitle, icon, onBack, 
         </button>
       )}
       {icon && (
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-bhoomi-green to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-bhoomi-green to-green-600 flex items-center justify-center shadow-lg shadow-green-500/20">
           {icon}
         </div>
       )}
