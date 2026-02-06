@@ -16,6 +16,10 @@ import {
     storeCropPriceOnChain,
     isMetaMaskInstalled
 } from '../services/ethereumService';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge, Alert, AlertDescription } from '../components/ui/Badge';
+import { EmptyState, Spinner } from '../components/ui/Shared';
 
 interface PricingEngineProps {
     lang: Language;
@@ -198,18 +202,19 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
             <header className="sticky top-0 z-50 glass-header border-b border-gray-200/50 dark:border-white/5 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={onBack}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
                         >
                             <ArrowLeft size={24} />
-                        </button>
+                        </Button>
                         <div>
                             <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
                                 Standard Crop Pricing Engine
-                                <span className="bg-emerald-500 text-[10px] text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-widest animate-pulse">
+                                <Badge variant="pulse" className="bg-emerald-500 text-white text-[10px] uppercase tracking-widest">
                                     AI Arbitrated
-                                </span>
+                                </Badge>
                             </h1>
                             <p className="text-sm text-gray-500 font-medium">Multi-source mandi aggregation & price arbitration</p>
                         </div>
@@ -220,7 +225,7 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
             <main className="max-w-7xl mx-auto px-4 py-8">
                 {/* Quality Grading Required Banner */}
                 {!hasGrading && (
-                    <div className="mb-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-500/30">
+                    <Alert variant="warning" className="mb-6" icon={false}>
                         <div className="flex items-center justify-between gap-4">
                             <div className="flex items-start gap-3">
                                 <AlertCircle size={24} className="text-amber-600 mt-0.5" />
@@ -234,15 +239,15 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                                 </div>
                             </div>
                             {onNavigateToQualityGrading && (
-                                <button
+                                <Button
                                     onClick={onNavigateToQualityGrading}
-                                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition-colors whitespace-nowrap"
+                                    className="bg-amber-600 hover:bg-amber-700 text-white whitespace-nowrap"
                                 >
                                     Go to Quality Grading
-                                </button>
+                                </Button>
                             )}
                         </div>
-                    </div>
+                    </Alert>
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -257,11 +262,14 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                         <PricingForm onSearch={handleSearch} isLoading={isLoading} />
 
                         {/* Value Props */}
-                        <div className="glass-panel p-6 rounded-2xl bg-gradient-to-br from-emerald-500/5 to-teal-500/5 border border-emerald-500/10">
-                            <h3 className="text-sm font-bold text-emerald-600 mb-4 flex items-center gap-2 uppercase tracking-widest">
-                                <ShieldCheck size={16} />
-                                The AgriTech Standard
-                            </h3>
+                        <Card className="bg-emerald-50 dark:bg-emerald-500/5 border-emerald-500/20">
+                            <CardHeader>
+                                <CardTitle className="text-sm font-bold text-emerald-600 flex items-center gap-2 uppercase tracking-widest">
+                                    <ShieldCheck size={16} />
+                                    The AgriTech Standard
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
                             <ul className="space-y-4">
                                 <li className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
                                     <div className="bg-emerald-500/20 p-1 rounded-md h-fit mt-0.5">
@@ -282,43 +290,41 @@ export const PricingEngine: React.FC<PricingEngineProps> = ({ lang, onBack, onNa
                                     <p><span className="font-bold text-gray-900 dark:text-white">AI Arbitration:</span> Models weigh sources by reliability and historical accuracy.</p>
                                 </li>
                             </ul>
-                        </div>
+                            </CardContent>
+                        </Card>
                     </div>
 
                     {/* Right Panel: Results & Charts */}
                     <div className="lg:col-span-2 space-y-8">
                         {isLoading && (
-                            <div className="h-[600px] flex flex-col items-center justify-center glass-panel rounded-3xl animate-pulse">
-                                <Loader2 size={48} className="text-emerald-500 animate-spin mb-4" />
+                            <Card className="h-[600px] flex flex-col items-center justify-center animate-pulse">
+                                <Spinner size={48} className="text-emerald-500 mb-4" />
                                 <p className="text-xl font-bold text-gray-900 dark:text-white mb-2">{status}</p>
                                 <p className="text-gray-500">Evaluating multi-mandi datasets for parity...</p>
-                            </div>
+                            </Card>
                         )}
 
                         {!isLoading && !prediction && !error && (
-                            <div className="h-[600px] flex flex-col items-center justify-center glass-panel rounded-3xl border-dashed border-2 border-gray-200 dark:border-white/5">
-                                <div className="bg-gray-100 dark:bg-white/5 p-6 rounded-full mb-6">
-                                    <BarChart3 size={48} className="text-gray-400" />
-                                </div>
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Ready to Predict</h2>
-                                <p className="text-gray-500 max-w-sm text-center">
-                                    Select your crop and location to generate real-time AI-arbitrated price bands.
-                                </p>
-                            </div>
+                            <EmptyState
+                                icon={<BarChart3 size={48} />}
+                                title="Ready to Predict"
+                                description="Select your crop and location to generate real-time AI-arbitrated price bands."
+                                className="h-[600px]"
+                            />
                         )}
 
                         {error && (
-                            <div className="p-8 glass-panel rounded-3xl border-red-500/20 flex flex-col items-center text-center">
+                            <Card className="p-8 border-red-500/20 flex flex-col items-center text-center">
                                 <Info size={48} className="text-red-500 mb-4" />
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Intelligence Interrupted</h2>
                                 <p className="text-gray-500 mb-6">{error}</p>
-                                <button
+                                <Button
+                                    variant="secondary"
                                     onClick={() => handleSearch('Soybean', 'Nagpur', 'Maharashtra', 8)}
-                                    className="px-6 py-2 bg-gray-900 dark:bg-white text-gray-100 dark:text-gray-900 rounded-xl font-bold"
                                 >
                                     Retry Connection
-                                </button>
-                            </div>
+                                </Button>
+                            </Card>
                         )}
 
                         {prediction && (

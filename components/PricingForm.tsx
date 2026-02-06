@@ -73,7 +73,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
             </div>
 
             {qualityGrading && (
-                <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-500/30">
+                <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30">
                     <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-3">
                             <div className="bg-emerald-500/20 p-2 rounded-lg">
@@ -210,7 +210,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full bg-bhoomi-primary hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
                 {isLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

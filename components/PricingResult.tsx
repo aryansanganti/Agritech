@@ -132,7 +132,7 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                     
                     {/* Add to Marketplace Button */}
                     {onAddToMarketplace && (
-                        <div className="glass-panel rounded-3xl p-8 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-500/30">
+                        <div className="glass-panel rounded-3xl p-8 bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-500/20">
                             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                                 <div className="flex items-start gap-4">
                                     <div className="bg-emerald-500/20 p-4 rounded-xl">
@@ -150,7 +150,7 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                                 </div>
                                 <button
                                     onClick={onAddToMarketplace}
-                                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-emerald-500/30 transition-all flex items-center gap-2 whitespace-nowrap"
+                                    className="bg-bhoomi-primary hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2 whitespace-nowrap"
                                 >
                                     <ShoppingBag size={20} />
                                     Add to Marketplace
@@ -177,7 +177,7 @@ export const PricingResult: React.FC<PricingResultProps> = ({
                             <button
                                 onClick={onStoreOnChain}
                                 disabled={isStoringOnChain}
-                                className="mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-indigo-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mx-auto"
+                                className="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-sky-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mx-auto"
                             >
                                 {isStoringOnChain ? (
                                     <>

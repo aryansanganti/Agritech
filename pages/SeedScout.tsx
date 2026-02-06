@@ -16,6 +16,12 @@ import {
     ChevronDown, ChevronUp, Leaf, FlaskConical, Compass, Loader2,
     Database, Cloud, AlertCircle, RefreshCw, Globe, Sprout
 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { SelectNative } from '../components/ui/Input';
+import { PageHeader, Spinner } from '../components/ui/Shared';
+import { cn } from '../lib/utils';
 
 interface SeedScoutProps {
     lang: Language;
@@ -219,28 +225,16 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
     return (
         <div className="min-h-screen animate-fade-in pb-10">
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-                <button
-                    onClick={onBack}
-                    className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-bhoomi-green dark:hover:text-bhoomi-gold transition-colors"
-                >
-                    <ArrowLeft size={20} />
-                    <span>Back</span>
-                </button>
-                <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
-                        <Compass className="text-white" size={24} />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">SeedScout</h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Genetic Hotspot Locator</p>
-                    </div>
-                </div>
-                <div className="w-16"></div>
-            </div>
+            <PageHeader
+                title="SeedScout"
+                onBack={onBack}
+                icon={<Compass className="text-white" size={24} />}
+                subtitle="Genetic Hotspot Locator"
+            />
 
             {/* NEW: Topo-Seed Engine (Eco-Locate) Panel */}
-            <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-200 dark:border-blue-800">
+            <Card className="mb-6 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-blue-200 dark:border-blue-800">
+                <CardContent className="p-4">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                         <Globe className="text-blue-500" size={24} />
@@ -250,14 +244,14 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                         </div>
                     </div>
 
-                    <button
+                    <Button
                         onClick={handleLocate}
                         disabled={isLocating}
-                        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2 disabled:opacity-50"
+                        className="bg-blue-500 hover:bg-blue-600 shadow-lg shadow-blue-500/30"
                     >
                         {isLocating ? <Loader2 size={18} className="animate-spin" /> : <MapPin size={18} />}
                         {isLocating ? 'Scanning Ecology...' : 'Find My Genetic Match'}
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Topology Results */}
@@ -389,10 +383,9 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <h4 className="font-bold text-gray-900 dark:text-white text-sm">{seed.seed_name}</h4>
-                                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${seed.matchType === 'Native' ? 'bg-emerald-200 text-emerald-800' : 'bg-purple-200 text-purple-800'
-                                                    }`}>
+                                                <Badge variant={seed.matchType === 'Native' ? 'success' : 'purple'} className="text-[10px]">
                                                     {seed.matchType === 'Native' ? 'NATIVE' : 'TWIN'}
-                                                </span>
+                                                </Badge>
                                             </div>
                                             <p className="text-xs text-gray-500 mt-1 line-clamp-2">{seed.cultural_note}</p>
                                         </div>
@@ -483,38 +476,44 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                         </div>
                     </div>
                 )}
-            </div>
+                </CardContent>
+            </Card>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Search Panel */}
                 <div className="lg:col-span-1 space-y-4">
                     {/* Crop Selection */}
-                    <div className="glass-panel rounded-2xl p-5">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                            <Leaf size={18} className="text-emerald-500" />
-                            Target Crop
-                        </h3>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Leaf size={18} className="text-emerald-500" />
+                                Target Crop
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
                         {/* ... Existing Search Panel ... */}
-                        <select
+                        <SelectNative
                             value={query.cropType}
                             onChange={(e) => setQuery({ ...query, cropType: e.target.value })}
-                            className="w-full p-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 
-                       text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                         >
                             {cropTypes.map((crop) => (
                                 <option key={crop.id} value={crop.id} className="bg-white dark:bg-gray-800">
                                     {crop.icon} {crop.name}
                                 </option>
                             ))}
-                        </select>
-                    </div>
+                        </SelectNative>
+                        </CardContent>
+                    </Card>
 
                     {/* Trait Selection */}
-                    <div className="glass-panel rounded-2xl p-5">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                            <Target size={18} className="text-orange-500" />
-                            Desired Traits
-                        </h3>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Target size={18} className="text-orange-500" />
+                                Desired Traits
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
                         <div className="space-y-3">
                             <label className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer transition-colors group">
                                 <input
@@ -589,14 +588,15 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                 </div>
                             </div>
                         )}
-                    </div>
+                        </CardContent>
+                    </Card>
 
-                    <button
+                    <Button
                         onClick={handleSearch}
                         disabled={isSearching || (!query.salinityTolerance && !query.heatTolerance && !query.droughtTolerance)}
-                        className="w-full p-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold 
-                      flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-700 
-                      transition-all shadow-lg shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                        variant="success"
+                        size="lg"
+                        className="w-full shadow-lg shadow-emerald-500/30"
                     >
                         {isSearching ? (
                             <>
@@ -609,7 +609,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                 <span className="text-left w-full pl-2">Find Hotspots</span>
                             </>
                         )}
-                    </button>
+                    </Button>
 
                     {/* Data Source Indicator */}
                     {hasSearched && !isSearching && (
@@ -760,7 +760,8 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                     {selectedDistrict && hasSearched && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Metrics Panel */}
-                            <div className="glass-panel rounded-2xl p-5 border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
+                            <Card className="border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
+                                <CardContent className="p-5">
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
                                         <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -795,10 +796,12 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                         <p className="text-xs text-gray-500">Rain (mm)</p>
                                     </div>
                                 </div>
-                            </div>
+                                </CardContent>
+                            </Card>
 
                             {/* AI Insight Panel */}
-                            <div className="glass-panel rounded-2xl p-5 border border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-transparent relative overflow-hidden">
+                            <Card className="border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-transparent overflow-hidden">
+                                <CardContent className="p-5">
                                 <h3 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
                                     <Sparkles size={18} className="text-purple-500" />
                                     AI Genetic Analysis
@@ -818,11 +821,12 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                         <p>Select a hotspot to generate insights</p>
                                     </div>
                                 )}
-                            </div>
+                                </CardContent>
+                            </Card>
 
                             {/* Replication Planner CTA */}
                             {onNavigateToReplication && (
-                                <div className="md:col-span-2 glass-panel rounded-2xl p-5 border-2 border-dashed border-bhumi-green/50 bg-gradient-to-r from-green-500/5 to-emerald-500/5 hover:border-bhumi-green transition-all cursor-pointer group"
+                                <Card className="md:col-span-2 border-2 border-dashed border-bhoomi-green/50 bg-gradient-to-r from-green-500/5 to-emerald-500/5 hover:border-bhoomi-green transition-all cursor-pointer group p-5"
                                     onClick={() => onNavigateToReplication(
                                         cropTypes.find(c => c.id === query.cropType)?.name || query.cropType,
                                         `${selectedDistrict.district.name}, ${selectedDistrict.district.state}`
@@ -845,7 +849,7 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                             <ArrowLeft className="rotate-180" size={20} />
                                         </div>
                                     </div>
-                                </div>
+                                </Card>
                             )}
                         </div>
 
@@ -862,15 +866,18 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                     {hasSearched && results.length > 0 && (() => {
                         const filteredResults = getFilteredResults(results);
                         return (
-                            <div className="glass-panel rounded-2xl p-5">
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                                    <TrendingUp size={18} className="text-emerald-500" />
-                                    Top Genetic Hotspots {filteredResults.length < results.length && (
-                                        <span className="text-xs font-normal text-gray-500">
-                                            ({filteredResults.length} of {results.length} districts)
-                                        </span>
-                                    )}
-                                </h3>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <TrendingUp size={18} className="text-emerald-500" />
+                                        Top Genetic Hotspots {filteredResults.length < results.length && (
+                                            <span className="text-xs font-normal text-gray-500">
+                                                ({filteredResults.length} of {results.length} districts)
+                                            </span>
+                                        )}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
                                 <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
                                     {filteredResults.slice(0, 10).map((result, index) => (
                                         <button
@@ -896,7 +903,8 @@ export const SeedScout: React.FC<SeedScoutProps> = ({ lang, onBack, onNavigateTo
                                         </button>
                                     ))}
                                 </div>
-                            </div>
+                                </CardContent>
+                            </Card>
                         )
                     })()}
                 </div>

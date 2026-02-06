@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, ShieldCheck, TrendingUp, ScanLine, ShoppingBag } from 'lucide-react';
+import { Button } from '../components/ui/Button';
 
 interface LandingPageProps {
     onGetStarted: () => void;
@@ -406,12 +407,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     <img src="/logo.png" alt="bhoomi Logo" className="h-20 w-auto object-contain" />
                 </div>
                 <div className="flex gap-4">
-                    <button onClick={onGetStarted} className="px-5 py-2 text-gray-600 dark:text-gray-300 font-medium hover:text-bhoomi-green transition-colors">
+                    <Button variant="ghost" onClick={onGetStarted}>
                         Login
-                    </button>
-                    <button onClick={onGetStarted} className="px-5 py-2 bg-bhoomi-green text-white rounded-full font-bold shadow-lg hover:shadow-xl hover:bg-emerald-600 transition-all transform hover:-translate-y-0.5">
+                    </Button>
+                    <Button onClick={onGetStarted} className="rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                         Get Started
-                    </button>
+                    </Button>
                 </div>
             </header>
 
@@ -435,12 +436,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 animate-slide-up opacity-0" style={{ animationDelay: '0.4s' }}>
-                    <button onClick={onGetStarted} className="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-2">
+                    <Button onClick={onGetStarted} size="xl" className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-xl hover:shadow-2xl hover:scale-105">
                         Start Farming Smarter <ArrowRight size={20} />
-                    </button>
-                    <button onClick={onGetStarted} className="px-8 py-4 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl font-bold text-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-all">
+                    </Button>
+                    <Button variant="outline" size="xl" onClick={onGetStarted}>
                         View Demo
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Feature Pills */}

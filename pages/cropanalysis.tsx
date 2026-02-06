@@ -4,6 +4,12 @@ import { analyzeCropQuality } from '../services/geminiService';
 import { getMarketPrice, STATES, getCommodities } from '../services/agmarknetService';
 import { storeQualityGrading, gradeToScore } from '../services/qualityGradingService';
 import { Language, CropAnalysisResult } from '../types';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge, Alert, AlertTitle, AlertDescription } from '../components/ui/Badge';
+import { SelectNative, Label, Input } from '../components/ui/Input';
+import { PageHeader, EmptyState, Spinner, StatCard } from '../components/ui/Shared';
+import { cn } from '../lib/utils';
 
 interface Props {
     lang: Language;
@@ -237,80 +243,80 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
     return (
         <div className="max-w-6xl mx-auto space-y-8 animate-fade-in pb-20">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <button
-                    onClick={onBack}
-                    className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                >
-                    <ArrowLeft size={20} /> Back
-                </button>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">AI Crop Quality Analysis</h2>
-            </div>
+            <PageHeader
+                title="AI Crop Quality Analysis"
+                onBack={onBack}
+                icon={<Scale size={24} className="text-white" />}
+                subtitle="AI-powered crop grading & quality inspection"
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Column: Input & Image */}
                 <div className="lg:col-span-1 space-y-6">
                     {/* Market Context Form */}
-                    <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
-                        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">1. Market Details</h3>
-                        <div className="space-y-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">1. Market Details</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
                             <div>
-                                <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">State</label>
-                                <select
-                                    className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white"
+                                <Label className="mb-1.5 block">State</Label>
+                                <SelectNative
                                     value={state}
                                     onChange={(e) => setState(e.target.value)}
                                 >
                                     <option value="">Select State</option>
                                     {STATES.map(s => <option key={s} value={s}>{s}</option>)}
-                                </select>
+                                </SelectNative>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">District</label>
-                                    <input
+                                    <Label className="mb-1.5 block">District</Label>
+                                    <Input
                                         type="text"
-                                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white"
                                         value={district}
                                         onChange={(e) => setDistrict(e.target.value)}
                                         placeholder="e.g. Khordha"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Market</label>
-                                    <select
-                                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white"
+                                    <Label className="mb-1.5 block">Market</Label>
+                                    <SelectNative
                                         value={market}
                                         onChange={(e) => setMarket(e.target.value)}
                                     >
                                         <option value="Local">Local Mandi</option>
                                         <option value="Export">Export Hub</option>
-                                    </select>
+                                    </SelectNative>
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Commodity</label>
-                                <select
-                                    className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white"
+                                <Label className="mb-1.5 block">Commodity</Label>
+                                <SelectNative
                                     value={commodity}
                                     onChange={(e) => setCommodity(e.target.value)}
                                 >
                                     <option value="">Select Crop</option>
                                     {getCommodities().map(c => <option key={c} value={c}>{c}</option>)}
-                                </select>
+                                </SelectNative>
                             </div>
                             {marketPrice && (
-                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800 flex justify-between items-center">
-                                    <span className="text-sm text-blue-700 dark:text-blue-300">Avg. Mandi Price</span>
-                                    <span className="font-bold text-blue-800 dark:text-blue-200">₹{marketPrice}/q</span>
-                                </div>
+                                <Alert variant="info" icon={false}>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm font-medium">Avg. Mandi Price</span>
+                                        <span className="font-bold text-lg">₹{marketPrice}/q</span>
+                                    </div>
+                                </Alert>
                             )}
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
                     {/* Image Upload */}
-                    <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
-                        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">2. Upload Sample</h3>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">2. Upload Sample</CardTitle>
+                        </CardHeader>
+                        <CardContent>
 
                         <div className="relative min-h-[250px] bg-gray-100 dark:bg-black/40 rounded-xl overflow-hidden flex items-center justify-center border-dashed border-2 border-gray-300 dark:border-gray-700">
                             {image ? (
@@ -367,53 +373,57 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
 
                         {/* ERROR MESSAGE UI (If visible outside image overlay) */}
                         {error && !image && (
-                            <div className="mt-2 p-3 bg-red-50 text-red-600 text-xs rounded-lg">
-                                {error}
-                            </div>
+                            <Alert variant="destructive" className="mt-2">
+                                <AlertDescription>{error}</AlertDescription>
+                            </Alert>
                         )}
 
                         <div className="mt-4 flex gap-3">
-                            <button
+                            <Button
+                                variant="secondary"
+                                className="flex-1"
                                 onClick={() => {
                                     fileInputRef.current?.click();
                                     setError(null);
                                 }}
-                                className="flex-1 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             >
                                 {image ? 'Change Photo' : 'Select Photo'}
-                            </button>
+                            </Button>
                             {image && (
-                                <button
+                                <Button
                                     onClick={handleAnalyze}
                                     disabled={analyzing}
-                                    className="flex-1 py-2 bg-bhoomi-green hover:bg-green-700 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                                    className="flex-1"
                                 >
                                     {analyzing ? (
-                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        <Spinner />
                                     ) : (
                                         <>
                                             <Scale size={18} /> Analyze
                                         </>
                                     )}
-                                </button>
+                                </Button>
                             )}
                         </div>
-                    </div>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 {/* Right Column: Analysis Results */}
                 <div className="lg:col-span-2">
                     {!result && !analyzing && !error && (
-                        <div className="h-full flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl p-12">
-                            <Activity size={64} className="mb-4 opacity-20" />
-                            <p className="text-lg font-medium opacity-50">Upload an image and analyze to see Grading Report</p>
-                        </div>
+                        <EmptyState
+                            icon={<Activity size={64} />}
+                            title="Upload an image and analyze"
+                            description="Get a comprehensive quality grading report with AI-powered analysis"
+                            className="h-full"
+                        />
                     )}
 
                     {analyzing && (
-                        <div className="h-full flex flex-col items-center justify-center space-y-4">
-                            <div className="w-20 h-20 border-4 border-bhoomi-green border-t-transparent rounded-full animate-spin"></div>
-                            <p className="text-gray-500">Scanning crop texture, color, and size...</p>
+                        <div className="h-full flex flex-col items-center justify-center space-y-4 py-20">
+                            <Spinner size={48} />
+                            <p className="text-gray-500 font-medium">Scanning crop texture, color, and size...</p>
                         </div>
                     )}
 
@@ -421,42 +431,53 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                         <div className="space-y-6 animate-slide-up">
                             {/* Top Stats */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className={`glass-panel p-6 rounded-2xl border-l-[6px] ${result.grading.overallGrade === 'A' ? 'border-green-500 bg-green-50/50 dark:bg-green-900/10' :
-                                    result.grading.overallGrade === 'B' ? 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-900/10' :
-                                        'border-red-500 bg-red-50/50 dark:bg-red-900/10'
-                                    }`}>
-                                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Quality Grade</div>
-                                    <div className="text-4xl font-black text-gray-900 dark:text-white flex items-center gap-2">
-                                        {result.grading.overallGrade}
-                                        <span className="text-base font-normal opacity-60 bg-black/10 dark:bg-white/10 px-2 py-0.5 rounded-md">Grade</span>
-                                    </div>
-                                </div>
+                                <Card className={cn(
+                                    "border-l-[6px]",
+                                    result.grading.overallGrade === 'A' ? 'border-l-green-500 bg-green-50/50 dark:bg-green-900/10' :
+                                    result.grading.overallGrade === 'B' ? 'border-l-yellow-500 bg-yellow-50/50 dark:bg-yellow-900/10' :
+                                    'border-l-red-500 bg-red-50/50 dark:bg-red-900/10'
+                                )}>
+                                    <CardContent className="p-6">
+                                        <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Quality Grade</div>
+                                        <div className="text-4xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                                            {result.grading.overallGrade}
+                                            <Badge variant="secondary">Grade</Badge>
+                                        </div>
+                                    </CardContent>
+                                </Card>
 
-                                <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-indigo-200 dark:border-indigo-500/30">
-                                    <div className="text-sm text-indigo-600 dark:text-indigo-400 mb-1 uppercase tracking-wide flex items-center gap-1">
-                                        <DollarSign size={14} /> Estimated Price
-                                    </div>
-                                    <div className="text-3xl font-bold text-gray-900 dark:text-white">
-                                        ₹{result.market.estimatedPrice} <span className="text-lg text-gray-500">/ q</span>
-                                    </div>
-                                    <div className="text-xs text-green-600 mt-1">{result.market.priceDriver}</div>
-                                </div>
+                                <Card className="border-indigo-200 dark:border-indigo-500/30">
+                                    <CardContent className="p-6">
+                                        <div className="text-sm text-indigo-600 dark:text-indigo-400 mb-1 uppercase tracking-wide flex items-center gap-1">
+                                            <DollarSign size={14} /> Estimated Price
+                                        </div>
+                                        <div className="text-3xl font-bold text-gray-900 dark:text-white">
+                                            ₹{result.market.estimatedPrice} <span className="text-lg text-gray-500">/ q</span>
+                                        </div>
+                                        <div className="text-xs text-green-600 mt-1">{result.market.priceDriver}</div>
+                                    </CardContent>
+                                </Card>
 
-                                <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
-                                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Market Demand</div>
-                                    <div className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2">
-                                        {result.market.demandFactor}
-                                    </div>
-                                </div>
+                                <Card>
+                                    <CardContent className="p-6">
+                                        <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Market Demand</div>
+                                        <div className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2">
+                                            {result.market.demandFactor}
+                                        </div>
+                                    </CardContent>
+                                </Card>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Visual Inspection */}
-                                <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
-                                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
-                                        <CheckCircle className="text-bhoomi-green" size={20} />
-                                        Visual Grading
-                                    </h3>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <CheckCircle className="text-bhoomi-green" size={20} />
+                                            Visual Grading
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
                                     <div className="space-y-4">
                                         {[
                                             { label: 'Color Uniformity', val: result.grading.colorChecking },
@@ -470,14 +491,18 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                             </div>
                                         ))}
                                     </div>
-                                </div>
+                                    </CardContent>
+                                </Card>
 
                                 {/* Health & Defects */}
-                                <div className="glass-panel p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10">
-                                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
-                                        <AlertTriangle className="text-orange-500" size={20} />
-                                        Health & Defects
-                                    </h3>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <AlertTriangle className="text-orange-500" size={20} />
+                                            Health & Defects
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
                                     <div className="space-y-4">
                                         {[
                                             { label: 'Disease / Lesions', val: result.health.lesions, good: result.health.lesions.toLowerCase().includes('none') },
@@ -495,33 +520,39 @@ export const CropAnalysis: React.FC<Props> = ({ lang, onBack, onNavigateToPricin
                                         ))}
                                     </div>
                                     {result.health.diseaseName && (
-                                        <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm text-red-700 dark:text-red-300 break-words">
-                                            <strong>Detected Disease:</strong> {result.health.diseaseName} ({result.health.confidence}%)
-                                        </div>
+                                        <Alert variant="destructive" className="mt-4">
+                                            <AlertDescription>
+                                                <strong>Detected Disease:</strong> {result.health.diseaseName} ({result.health.confidence}%)
+                                            </AlertDescription>
+                                        </Alert>
                                     )}
-                                </div>
+                                    </CardContent>
+                                </Card>
                             </div>
 
                             {/* Navigate to Pricing Engine Button */}
                             {onNavigateToPricing && (
-                                <div className="mt-6 p-6 glass-panel rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-500/30">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">
-                                                Quality Score: {gradeToScore(result.grading.overallGrade)}/10
-                                            </h3>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                Your crop grading is saved. Get fair market price with blockchain verification.
-                                            </p>
+                                <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200 dark:border-emerald-500/30">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">
+                                                    Quality Score: {gradeToScore(result.grading.overallGrade)}/10
+                                                </h3>
+                                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                    Your crop grading is saved. Get fair market price with blockchain verification.
+                                                </p>
+                                            </div>
+                                            <Button
+                                                onClick={onNavigateToPricing}
+                                                variant="success"
+                                                size="lg"
+                                            >
+                                                Get Price <ArrowRight size={20} />
+                                            </Button>
                                         </div>
-                                        <button
-                                            onClick={onNavigateToPricing}
-                                            className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-emerald-500/30 transition-all"
-                                        >
-                                            Get Price <ArrowRight size={20} />
-                                        </button>
-                                    </div>
-                                </div>
+                                    </CardContent>
+                                </Card>
                             )}
                         </div>
                     )}

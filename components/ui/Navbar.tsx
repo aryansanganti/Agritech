@@ -18,7 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
         { id: 'marketplace', label: 'Market', icon: ShoppingBag },
-        { id: 'soil-analysis', label: 'Soil', icon: Activity },
+        // { id: 'soil-analysis', label: 'Soil', icon: Activity },
         { id: 'crop-analysis', label: 'Crop Doctor', icon: ScanEye },
         { id: 'seedscout', label: 'SeedScout', icon: Sprout },
         { id: 'replication-planner', label: 'Planner', icon: Copy },

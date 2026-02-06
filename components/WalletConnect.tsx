@@ -146,10 +146,10 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
     // Not connected state
     if (!walletState.isConnected) {
         return (
-            <div className="glass-panel p-6 rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/5 to-purple-500/5">
+            <div className="glass-panel p-6 rounded-2xl border border-sky-500/20 bg-sky-50 dark:bg-sky-500/5">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-indigo-500/20 p-2 rounded-xl">
-                        <Wallet size={20} className="text-indigo-500" />
+                    <div className="bg-sky-500/20 p-2 rounded-xl">
+                        <Wallet size={20} className="text-sky-600" />
                     </div>
                     <div>
                         <h3 className="font-bold text-gray-900 dark:text-white">Connect Wallet</h3>
@@ -167,7 +167,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 <button
                     onClick={handleConnect}
                     disabled={isConnecting}
-                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
+                    className="w-full bg-bhoomi-blue hover:bg-sky-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
                 >
                     {isConnecting ? (
                         <Loader2 size={20} className="animate-spin" />
@@ -189,7 +189,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
     // Connected but wrong network
     if (!walletState.isCorrectNetwork) {
         return (
-            <div className="glass-panel p-6 rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-orange-500/5">
+            <div className="glass-panel p-6 rounded-2xl border border-amber-500/20 bg-amber-50 dark:bg-amber-500/5">
                 <div className="flex items-center gap-3 mb-4">
                     <div className="bg-amber-500/20 p-2 rounded-xl">
                         <AlertTriangle size={20} className="text-amber-500" />
@@ -212,7 +212,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
                 <button
                     onClick={handleSwitchNetwork}
                     disabled={isSwitching}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
                 >
                     {isSwitching ? (
                         <Loader2 size={20} className="animate-spin" />
@@ -227,7 +227,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
 
     // Connected and correct network
     return (
-        <div className="glass-panel p-6 rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-teal-500/5">
+        <div className="glass-panel p-6 rounded-2xl border border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/5">
             <div className="flex items-center gap-3 mb-4">
                 <div className="bg-emerald-500/20 p-2 rounded-xl">
                     <CheckCircle2 size={20} className="text-emerald-500" />

@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, Sparkles, ArrowLeft, Mic, Volume2, StopCircle, Loader2 } from 'lucide-react';
 import { transcribeAudio, generateSpeech, chatWithSarvam } from '../services/sarvamService';
 import { ChatMessage, Language } from '../types';
+import { Button } from '../components/ui/Button';
+import { Card, CardContent } from '../components/ui/Card';
+import { cn } from '../lib/utils';
 
 interface Props {
     lang: Language;
@@ -174,29 +177,25 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
     };
 
     return (
-        <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] flex flex-col glass-panel rounded-2xl overflow-hidden animate-fade-in relative">
+        <Card className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] flex flex-col overflow-hidden animate-fade-in relative">
             {/* Header */}
-            <div className="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between gap-3">
+            <div className="p-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-bhoomi-green rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-bhoomi-green to-emerald-600 rounded-full flex items-center justify-center shadow-md shadow-emerald-500/20">
                         <Bot size={20} className="text-white" />
                     </div>
                     <div>
-                        <h3 className="font-bold">AI Assistant</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white">AI Assistant</h3>
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                            <span className="text-xs text-gray-400">Online • Sarvam M</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">Online • Sarvam M</span>
                         </div>
                     </div>
                 </div>
                 {onBack && (
-                    <button
-                        onClick={onBack}
-                        className="p-2 hover:bg-white/10 rounded-full transition-colors"
-                        title="Back to Dashboard"
-                    >
+                    <Button variant="ghost" size="icon" onClick={onBack} title="Back to Dashboard">
                         <ArrowLeft size={20} />
-                    </button>
+                    </Button>
                 )}
             </div>
 
@@ -204,17 +203,19 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
             <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
                 {messages.map((msg) => (
                     <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[80%] md:max-w-[70%] rounded-2xl p-4 ${msg.role === 'user'
-                            ? 'bg-bhumi-green text-white rounded-tr-none'
-                            : 'bg-white/10 text-gray-100 rounded-tl-none border border-white/5'
-                            }`}>
-                            <div className="flex items-center gap-2 mb-1 opacity-50 text-xs">
+                        <div className={cn(
+                            "max-w-[80%] md:max-w-[70%] rounded-2xl p-4 shadow-sm",
+                            msg.role === 'user'
+                                ? 'bg-bhoomi-green text-white rounded-tr-sm'
+                                : 'bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-gray-100 rounded-tl-sm border border-gray-200 dark:border-white/5'
+                        )}>
+                            <div className="flex items-center gap-2 mb-1 opacity-60 text-xs">
                                 {msg.role === 'model' ? <Sparkles size={12} /> : <User size={12} />}
                                 <span>{msg.role === 'model' ? 'Bhumi' : 'You'}</span>
                                 {msg.role === 'model' && (
                                     <button
                                         onClick={() => speakText(msg.text)}
-                                        className={`ml-2 transition-colors ${isSpeaking ? 'text-bhumi-gold' : 'text-gray-400 hover:text-white'}`}
+                                        className={cn("ml-2 transition-colors", isSpeaking ? 'text-bhoomi-gold' : 'text-gray-400 hover:text-gray-700 dark:hover:text-white')}
                                         title="Read aloud"
                                     >
                                         {isSpeaking && audioPlayerRef.current ? <Loader2 size={12} className="animate-spin" /> : <Volume2 size={12} />}
@@ -227,7 +228,7 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
                 ))}
                 {isTyping && (
                     <div className="flex justify-start">
-                        <div className="bg-white/10 rounded-2xl rounded-tl-none p-4 flex gap-1 items-center">
+                        <div className="bg-gray-100 dark:bg-white/10 rounded-2xl rounded-tl-sm p-4 flex gap-1.5 items-center border border-gray-200 dark:border-white/5">
                             <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
                             <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
                             <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
@@ -238,20 +239,23 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-white/5 border-t border-white/10">
+            <div className="p-4 bg-gray-50/50 dark:bg-white/5 border-t border-gray-200 dark:border-white/10">
                 <div className="relative flex items-center gap-2">
-                    <button
+                    <Button
+                        variant={isListening ? 'destructive' : 'outline'}
+                        size="icon"
                         onClick={toggleVoiceInput}
                         disabled={isProcessingVoice}
-                        className={`p-4 rounded-xl transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' :
-                            isProcessingVoice ? 'bg-gray-600 animate-pulse' :
-                                'bg-white/10 text-gray-400 hover:bg-white/20'
-                            }`}
+                        className={cn(
+                            "flex-shrink-0 h-12 w-12 rounded-xl",
+                            isListening && 'animate-pulse',
+                            isProcessingVoice && 'animate-pulse opacity-70'
+                        )}
                         title="Voice Input"
                     >
                         {isProcessingVoice ? <Loader2 size={20} className="animate-spin" /> :
                             isListening ? <StopCircle size={20} /> : <Mic size={20} />}
-                    </button>
+                    </Button>
                     <div className="relative flex-1">
                         <input
                             type="text"
@@ -259,18 +263,19 @@ export const Chatbot: React.FC<Props> = ({ lang, onBack }) => {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                             placeholder={isListening ? "Listening..." : "Ask about crops, weather..."}
-                            className="w-full bg-bhumi-dark border border-white/20 rounded-xl py-4 pl-4 pr-12 focus:outline-none focus:border-bhumi-gold transition-colors text-white placeholder-gray-500"
+                            className="w-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-white/10 rounded-xl py-3.5 pl-4 pr-14 focus:outline-none focus:ring-2 focus:ring-bhoomi-green/50 focus:border-bhoomi-green/50 transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm"
                         />
-                        <button
+                        <Button
                             onClick={handleSend}
                             disabled={!input.trim() || isTyping}
-                            className="absolute right-2 top-2 p-2 bg-bhumi-gold hover:bg-yellow-500 text-bhumi-dark rounded-lg transition-colors disabled:opacity-50"
+                            size="icon"
+                            className="absolute right-1.5 top-1.5 h-9 w-9 rounded-lg"
                         >
-                            <Send size={20} />
-                        </button>
+                            <Send size={18} />
+                        </Button>
                     </div>
                 </div>
             </div>
-        </div>
+        </Card>
     );
 };
