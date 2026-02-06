@@ -217,7 +217,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onSearch, isLoading })
                 ) : (
                     <Search size={20} />
                 )}
-                <span>Fetch AI Data & Predict</span>
+                <span>{qualityGrading ? `Check ${crop} Real Price` : 'Fetch AI Data & Predict'}</span>
             </button>
         </form>
     );

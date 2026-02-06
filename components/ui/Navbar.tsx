@@ -17,12 +17,12 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
     // Navigation Items
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
+        { id: 'crop-analysis', label: 'Crop Doctor', icon: ScanEye },
+        { id: 'pricing-engine', label: 'Pricing', icon: Coins },
         { id: 'marketplace', label: 'Market', icon: ShoppingBag },
         // { id: 'soil-analysis', label: 'Soil', icon: Activity },
-        { id: 'crop-analysis', label: 'Crop Doctor', icon: ScanEye },
         { id: 'seedscout', label: 'SeedScout', icon: Sprout },
         { id: 'replication-planner', label: 'Planner', icon: Copy },
-        { id: 'pricing-engine', label: 'Pricing', icon: Coins },
         { id: 'routing-protocol', label: '3-Tier Route', icon: Route },
     ];
 
@@ -33,8 +33,8 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
 
                     {/* Logo Section */}
                     <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('dashboard')}>
-                        <div className="bg-bhoomi-green/10 p-2 rounded-xl">
-                            <img src="/logo.png" alt="bhoomi Logo" className="h-8 w-auto object-contain" />
+                        <div >
+                            <img src="/logo.png" alt="bhoomi Logo" className="h-16 w-auto object-contain" />
                         </div>
                     </div>
 
