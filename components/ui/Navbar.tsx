@@ -21,7 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, currentView, setView, lang
         { id: 'pricing-engine', label: 'Pricing', icon: Coins },
         { id: 'marketplace', label: 'Market', icon: ShoppingBag },
         // { id: 'soil-analysis', label: 'Soil', icon: Activity },
-        { id: 'crop-analysis', label: 'Analysis & Pricing', icon: ScanEye },
+
         { id: 'seedscout', label: 'SeedScout', icon: Sprout },
         { id: 'replication-planner', label: 'Planner', icon: Copy },
         { id: 'routing-protocol', label: '3-Tier Route', icon: Route },

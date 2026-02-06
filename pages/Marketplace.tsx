@@ -6,6 +6,12 @@ import { getMarketplaceListings, removeMarketplaceListing } from '../services/ma
 import { CarbonLogistics } from '../components/CarbonLogistics';
 import { DISTRICT_COORDINATES } from '../services/carbonLogisticsService';
 import { MarketTicker } from '../components/MarketTicker';
+import { Card, CardContent } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { Input } from '../components/ui/Input';
+import { Label } from '../components/ui/Label';
+import { cn } from '../lib/utils';
 
 // UPI Payment Configuration
 const UPI_CONFIG = {
@@ -34,7 +40,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
     const [vendorDistrict, setVendorDistrict] = useState('Mumbai');
     const [vendorState, setVendorState] = useState('Maharashtra');
     const [showVendorLocationModal, setShowVendorLocationModal] = useState(false);
-    
+
     // UPI Payment states
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [selectedForPayment, setSelectedForPayment] = useState<Listing | MarketplaceListing | null>(null);
@@ -216,17 +222,13 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                                 Calculate Route
                             </button>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         );
     };
 
-    // Handle opening carbon logistics
-    const handleOpenCarbonLogistics = (item: MarketplaceListing) => {
-        setSelectedForLogistics(item);
-        setShowVendorLocationModal(true);
-    };
+
 
     // Handle Buy Now - Opens UPI Payment Modal
     const handleBuyNow = (item: Listing | MarketplaceListing) => {
@@ -245,7 +247,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
     // Render UPI Payment Modal
     const renderPaymentModal = () => {
         if (!showPaymentModal || !selectedForPayment) return null;
-        
+
         const pricePerQuintal = selectedForPayment.price;
         const maxQuantity = selectedForPayment.quantity;
         const totalAmount = pricePerQuintal * paymentQuantity;
@@ -273,17 +275,17 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
 
                         {/* Product Info */}
                         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 flex items-center gap-4">
-                            <img 
-                                src={selectedForPayment.image || 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=100&h=100&fit=crop'} 
-                                alt={selectedForPayment.crop} 
+                            <img
+                                src={selectedForPayment.image || 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=100&h=100&fit=crop'}
+                                alt={selectedForPayment.crop}
                                 className="w-16 h-16 rounded-lg object-cover"
                             />
                             <div className="flex-1">
                                 <h4 className="font-bold text-gray-900 dark:text-white">{selectedForPayment.crop}</h4>
                                 <div className="flex items-center gap-1 text-xs text-gray-500">
                                     <MapPin size={10} />
-                                    {typeof selectedForPayment.location === 'string' 
-                                        ? selectedForPayment.location 
+                                    {typeof selectedForPayment.location === 'string'
+                                        ? selectedForPayment.location
                                         : `${selectedForPayment.location.district}, ${selectedForPayment.location.state}`}
                                 </div>
                                 <div className="text-sm text-bhumi-green font-semibold mt-1">₹{pricePerQuintal}/quintal</div>
@@ -294,7 +296,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                         <div className="space-y-2">
                             <Label className="text-sm text-gray-600 dark:text-gray-300">Select Quantity (Quintals)</Label>
                             <div className="flex items-center gap-3">
-                                <button 
+                                <button
                                     onClick={() => setPaymentQuantity(Math.max(1, paymentQuantity - 1))}
                                     className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                                     disabled={paymentQuantity <= 1}
@@ -311,7 +313,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                                         max={maxQuantity}
                                     />
                                 </div>
-                                <button 
+                                <button
                                     onClick={() => setPaymentQuantity(Math.min(maxQuantity, paymentQuantity + 1))}
                                     className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-lg font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                                     disabled={paymentQuantity >= maxQuantity}
@@ -344,7 +346,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                         {paymentStatus === 'pending' && (
                             <div className="text-center space-y-3">
                                 <div className="bg-white p-3 rounded-xl inline-block border-2 border-gray-200 shadow-lg">
-                                    <img 
+                                    <img
                                         src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`}
                                         alt="UPI Payment QR"
                                         className="w-48 h-48"
@@ -369,7 +371,7 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                                 <code className="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm font-mono text-gray-800 dark:text-gray-200">
                                     {UPI_CONFIG.payeeVPA}
                                 </code>
-                                <button 
+                                <button
                                     onClick={() => navigator.clipboard.writeText(UPI_CONFIG.payeeVPA)}
                                     className="p-2 text-gray-500 hover:text-bhumi-green transition-colors"
                                     title="Copy UPI ID"
@@ -381,15 +383,15 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
 
                         {/* Payment Confirmation Buttons */}
                         <div className="flex gap-3">
-                            <Button 
-                                variant="secondary" 
+                            <Button
+                                variant="secondary"
                                 className="flex-1"
                                 onClick={() => setShowPaymentModal(false)}
                             >
                                 Cancel
                             </Button>
-                            <Button 
-                                variant="success" 
+                            <Button
+                                variant="success"
                                 className="flex-1"
                                 onClick={() => {
                                     setPaymentStatus('processing');
@@ -421,8 +423,8 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
                                     <h4 className="text-lg font-bold text-green-600">Payment Successful!</h4>
                                     <p className="text-sm text-gray-500">Your order has been placed</p>
                                 </div>
-                                <Button 
-                                    variant="success" 
+                                <Button
+                                    variant="success"
                                     className="w-full"
                                     onClick={() => {
                                         setShowPaymentModal(false);
@@ -439,162 +441,9 @@ export const Marketplace: React.FC<Props> = ({ user, lang, onBack, onNavigateToQ
         );
     };
 
-    const BlockchainListingCard: React.FC<{ item: MarketplaceListing; isOwner: boolean }> = ({ item, isOwner }) => {
-        const defaultImage = 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop';
-        return (
-            <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 border-2 border-purple-500/30 hover:border-purple-500/60 relative">
-                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs py-1 px-3 flex items-center justify-center gap-2 z-10">
-                    Ethereum Sepolia Verified
-                </div>
-                <div className="relative h-48 overflow-hidden mt-6">
-                    <img src={item.image || defaultImage} alt={item.crop} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <Badge className="absolute top-3 right-3" variant="outline">{item.quantity} Qtl</Badge>
-                    <Badge className={cn("absolute top-3 left-3 flex items-center gap-1", item.grade === 'A' ? 'bg-green-500 text-white border-green-500' : item.grade === 'B' ? 'bg-yellow-500 text-white border-yellow-500' : 'bg-red-500 text-white border-red-500')}>
-                        <ShieldCheck size={12} /> Grade {item.grade}
-                    </Badge>
-                </div>
-                <div className="p-5">
-                    <div className="flex justify-between items-start mb-2">
-                        <div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.crop}</h3>
-                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1"><MapPin size={12} /> {typeof item.location === 'string' ? item.location : `${item.location.district}, ${item.location.state}`}</div>
-                        </div>
-                        <div className="text-right">
-                            <div className="text-xs text-purple-600 font-medium">Quality Score</div>
-                            <div className="text-lg font-bold text-emerald-600">{item.qualityScore}/10</div>
-                        </div>
-                    </div>
-                    <div className="my-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-end">
-                        <div>
-                            <p className="text-xs text-gray-500 mb-1">Listed Price</p>
-                            <div className="text-2xl font-bold text-bhumi-green">₹{item.price}<span className="text-sm font-normal text-gray-400">/q</span></div>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-xs text-gray-500 mb-1">Listed</p>
-                            <div className="text-sm font-medium text-gray-600 dark:text-gray-300">{new Date(item.listedDate).toLocaleDateString()}</div>
-                        </div>
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                        <Button variant="outline" size="sm" className="flex-1 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700" onClick={() => { setSelectedListing(item); setShowQR(true); }}>
-                            <QrCode size={16} /> View Passport
-                        </Button>
-                        {isOwner ? (
-                            <Button variant="destructive" size="sm" onClick={() => handleRemoveListing(item.id)}>
-                                <Trash2 size={16} />
-                            </Button>
-                        ) : (
-                            <>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-green-700 dark:text-green-300 border-green-200 dark:border-green-700"
-                                    onClick={() => handleOpenCarbonLogistics(item)}
-                                    title="Calculate Carbon Footprint"
-                                >
-                                    <Leaf size={16} />
-                                    <Truck size={14} />
-                                </Button>
-                                <Button variant="success" size="sm" className="flex-1" onClick={() => handleBuyNow(item)}>
-                                    <IndianRupee size={14} />
-                                    Buy Now
-                                </Button>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </Card>
-        );
-    };
 
-    const ListingCard: React.FC<{ item: Listing; isOwner: boolean; onViewQR: () => void }> = ({ item, isOwner, onViewQR }) => {
-        const priceDiff = item.price - item.marketPrice;
-        const isCheaper = priceDiff < 0;
 
-        // Convert Listing to MarketplaceListing format for carbon logistics
-        const handleCarbonClick = () => {
-            const marketplaceListing: MarketplaceListing = {
-                id: item.id,
-                farmerName: 'Local Farmer',
-                crop: item.crop,
-                variety: item.variety,
-                quantity: item.quantity,
-                grade: item.grade as 'A' | 'B' | 'C',
-                qualityScore: item.grade === 'A' ? 9 : item.grade === 'B' ? 7 : 5,
-                price: item.price,
-                minPrice: item.price * 0.9,
-                maxPrice: item.price * 1.1,
-                guaranteedPrice: item.price * 0.85,
-                marketPrice: item.marketPrice,
-                location: item.location,
-                image: item.image,
-                blockchainHash: item.blockchainHash || '0x...',
-                transactionHash: item.blockchainHash || '0x...',
-                etherscanUrl: '',
-                contractAddress: '',
-                recordId: 0,
-                harvestDate: new Date().toISOString(),
-                listedDate: new Date().toISOString(),
-                timestamp: Date.now(),
-                verificationStatus: 'pending',
-            };
-            setSelectedForLogistics(marketplaceListing);
-            setShowVendorLocationModal(true);
-        };
 
-        return (
-            <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 border border-transparent hover:border-bhoomi-green/30">
-                <div className="relative h-48 overflow-hidden">
-                    <img src={item.image} alt={item.crop} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <Badge className="absolute top-3 right-3" variant="outline">{item.quantity} Qtl</Badge>
-                    <Badge className={cn("absolute top-3 left-3 flex items-center gap-1", item.grade === 'A' ? 'bg-green-500 text-white border-green-500' : item.grade === 'B' ? 'bg-yellow-500 text-white border-yellow-500' : 'bg-red-500 text-white border-red-500')}>
-                        <ShieldCheck size={12} /> Grade {item.grade}
-                    </Badge>
-                </div>
-                <div className="p-5">
-                    <div className="flex justify-between items-start mb-2">
-                        <div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.crop} <span className="text-sm font-normal text-gray-500">({item.variety})</span></h3>
-                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1"><MapPin size={12} /> {typeof item.location === 'string' ? item.location : `${item.location.district}, ${item.location.state}`}</div>
-                        </div>
-                    </div>
-                    <div className="my-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-end">
-                        <div>
-                            <p className="text-xs text-gray-500 mb-1">Asking Price</p>
-                            <div className="text-2xl font-bold text-bhumi-green">₹{item.price}<span className="text-sm font-normal text-gray-400">/q</span></div>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-xs text-gray-500 mb-1">Mandi Avg</p>
-                            <div className="text-sm font-medium text-gray-600 dark:text-gray-300">₹{item.marketPrice}</div>
-                            <div className={`text-[10px] font-bold ${isCheaper ? 'text-green-500' : 'text-red-500'}`}>{Math.abs(priceDiff)} {isCheaper ? 'below' : 'above'} avg</div>
-                        </div>
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                        <Button variant="secondary" size="sm" className="flex-1" onClick={onViewQR}>
-                            <QrCode size={16} /> {isOwner ? 'View Passport' : 'Verify'}
-                        </Button>
-                        {!isOwner && (
-                            <>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-green-700 dark:text-green-300 border-green-200 dark:border-green-700"
-                                    onClick={handleCarbonClick}
-                                    title="Calculate Carbon Footprint & Route"
-                                >
-                                    <Leaf size={16} />
-                                    <Truck size={14} />
-                                </Button>
-                                <Button variant="success" size="sm" className="flex-1" onClick={() => handleBuyNow(item)}>
-                                    <IndianRupee size={14} />
-                                    Buy Now
-                                </Button>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </div>
-        );
-    };
 
     return (
         <div className="min-h-screen">

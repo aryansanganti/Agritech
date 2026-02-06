@@ -153,8 +153,6 @@ export const CarbonLogistics: React.FC<Props> = ({ listing, vendorLocation, onCl
     useEffect(() => {
         const loc = getLocationString(listing.location);
         const farmerLocation = {
-            district: typeof listing.location === 'object' ? listing.location.district : listing.location,
-            state: typeof listing.location === 'object' ? listing.location.state : '',
             district: loc.district,
             state: loc.state,
             name: `Farmer (${listing.crop})`
@@ -182,8 +180,6 @@ export const CarbonLogistics: React.FC<Props> = ({ listing, vendorLocation, onCl
         try {
             const loc = getLocationString(listing.location);
             const farmerLocation = {
-                district: typeof listing.location === 'object' ? listing.location.district : listing.location,
-                state: typeof listing.location === 'object' ? listing.location.state : '',
                 district: loc.district,
                 state: loc.state,
                 name: `Farmer (${listing.crop})`
