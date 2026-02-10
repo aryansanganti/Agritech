@@ -46,6 +46,38 @@ if (process.env.API_KEY) {
     console.warn('⚠️ API_KEY not set - Gemini features will be disabled');
 }
 
+// Root Status Endpoint
+app.get('/', (req, res) => {
+    res.json({
+        status: 'online',
+        service: 'BHUMI Node.js Backend',
+        version: '1.0.0',
+        timestamp: new Date().toISOString(),
+        features: {
+            geminiAI: ai ? '✅ Enabled' : '❌ Disabled (API_KEY not set)',
+            mongodb: dbConnected ? '✅ Connected' : '⚠️ Connecting...',
+            analytics: dbConnected ? '✅ Enabled' : '❌ Disabled',
+            cropHotspots: dbConnected ? '✅ Enabled' : '❌ Disabled',
+            topologyEngine: dbConnected ? '✅ Enabled' : '❌ Disabled'
+        },
+        endpoints: {
+            seedscout: {
+                calculate: 'POST /api/seedscout/calculate',
+                explain: ai ? 'POST /api/seedscout/explain' : 'POST /api/seedscout/explain (disabled - no API key)'
+            },
+            analytics: dbConnected ? 'GET/POST /api/analytics/*' : '(disabled - no database)',
+            cropHotspots: dbConnected ? 'GET/POST /api/crop-hotspots/*' : '(disabled - no database)',
+            topology: dbConnected ? 'POST /api/topology/*' : '(disabled - no database)'
+        },
+        environment: {
+            nodeVersion: process.version,
+            platform: process.platform,
+            port: 3000
+        }
+    });
+});
+
+
 // API 1: Calculate Hotspots (Pure Data)
 app.post('/api/seedscout/calculate', async (req, res) => {
     try {

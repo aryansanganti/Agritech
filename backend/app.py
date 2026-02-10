@@ -1,7 +1,9 @@
 
+
 import os
 import io
 import base64
+from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -15,10 +17,38 @@ CORS(app)  # Enable CORS for all routes
 
 # Initialize Sarvam Client
 api_key = os.getenv("VITE_SARVAM_API_KEY") or os.getenv("SARVAM_API_KEY")
+sarvam_enabled = bool(api_key)
+
 if not api_key:
     print("WARNING: SARVAM_API_KEY not found in environment variables")
+    client = None
+else:
+    client = SarvamAI(api_subscription_key=api_key)
 
-client = SarvamAI(api_subscription_key=api_key)
+@app.route('/', methods=['GET'])
+def root_status():
+    return jsonify({
+        "status": "online",
+        "service": "BHUMI Python Backend (Sarvam AI)",
+        "version": "1.0.0",
+        "timestamp": datetime.now().isoformat(),
+        "features": {
+            "sarvamAI": "✅ Enabled" if sarvam_enabled else "❌ Disabled (SARVAM_API_KEY not set)",
+            "chat": "✅ Enabled" if sarvam_enabled else "❌ Disabled",
+            "textToSpeech": "✅ Enabled" if sarvam_enabled else "❌ Disabled",
+            "speechToText": "✅ Enabled" if sarvam_enabled else "❌ Disabled"
+        },
+        "endpoints": {
+            "health": "GET /api/health",
+            "chat": "POST /api/chat" if sarvam_enabled else "POST /api/chat (disabled)",
+            "tts": "POST /api/text-to-speech" if sarvam_enabled else "POST /api/text-to-speech (disabled)",
+            "stt": "POST /api/speech-to-text" if sarvam_enabled else "POST /api/speech-to-text (disabled)"
+        },
+        "environment": {
+            "pythonVersion": f"{os.sys.version_info.major}.{os.sys.version_info.minor}.{os.sys.version_info.micro}",
+            "port": int(os.environ.get('PORT', 5001))
+        }
+    }), 200
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
