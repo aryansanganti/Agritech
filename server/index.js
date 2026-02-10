@@ -40,7 +40,7 @@ connectDB().then((connection) => {
 // Gemini Setup - Only initialize if API key exists
 let ai = null;
 if (process.env.API_KEY) {
-    ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
+    ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     console.log('🤖 Gemini AI initialized');
 } else {
     console.warn('⚠️ API_KEY not set - Gemini features will be disabled');
