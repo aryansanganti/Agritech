@@ -7,6 +7,9 @@
 [![Vite](https://img.shields.io/badge/Vite-Bundler-purple)](https://vitejs.dev/)
 [![PWA](https://img.shields.io/badge/PWA-Enabled-green)](https://web.dev/progressive-web-apps/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Deployment](https://img.shields.io/badge/Deployed-Vercel-black)](https://agritech-nine.vercel.app)
+
+🌐 **[Live Demo](https://agritech-nine.vercel.app)** | 📚 **[Documentation](#-getting-started)** | 🔧 **[API Status](https://agritech-server-node.vercel.app)**
 
 ---
 
@@ -244,60 +247,232 @@ server/
 
 ---
 
+## 🌐 Live Demo
+
+### **Production Deployment**
+
+🚀 **Frontend**: [https://agritech-nine.vercel.app](https://agritech-nine.vercel.app)
+
+🔧 **Backend APIs**:
+- **Node.js Backend**: [https://agritech-server-node.vercel.app](https://agritech-server-node.vercel.app)
+- **Python Backend**: [https://agritech-nine.vercel.app](https://agritech-nine.vercel.app)
+
+### **API Status Endpoints**
+
+Check real-time backend status:
+```bash
+# Node.js Backend Status
+curl https://agritech-server-node.vercel.app/
+
+# Python Backend Status
+curl https://agritech-nine.vercel.app/
+```
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Node.js** 18+ and npm
-- **Google AI Studio API Key** ([Get it here](https://aistudio.google.com/app/apikey))
 
-### Installation
+Before you begin, ensure you have:
+- ✅ **Node.js** 18+ and npm ([Download](https://nodejs.org/))
+- ✅ **Python** 3.9+ ([Download](https://www.python.org/))
+- ✅ **Git** ([Download](https://git-scm.com/))
+- ✅ **Google Gemini API Key** ([Get it here](https://aistudio.google.com/app/apikey))
+- ✅ **MongoDB Atlas Account** (Optional - for analytics) ([Sign up](https://www.mongodb.com/cloud/atlas/register))
+- ✅ **Sarvam AI API Key** (Optional - for Indian languages) ([Get it here](https://www.sarvam.ai/))
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/agritech.git
-   cd Agritech
-   ```
+---
 
-2. **Install frontend dependencies**
-   ```bash
-   npm install
-   ```
+### 📦 Installation
 
-3. **Install backend dependencies**
-   ```bash
-   cd server
-   npm install
-   cd ..
-   ```
+#### 1. **Clone the Repository**
+```bash
+git clone https://github.com/yourusername/agritech.git
+cd Agritech
+```
 
-4. **Configure environment variables**
-   
-   Create `.env` in the root directory:
-   ```env
-   VITE_API_KEY=your_google_gemini_api_key_here
-   ```
-   
-   Create `server/.env`:
-   ```env
-   API_KEY=your_google_gemini_api_key_here
-   ```
+#### 2. **Install Frontend Dependencies**
+```bash
+npm install
+```
 
-5. **Start the development servers**
-   
-   **Frontend** (Terminal 1):
-   ```bash
-   npm run dev
-   ```
-   
-   **Backend** (Terminal 2):
-   ```bash
-   cd server
-   node index.js
-   ```
+#### 3. **Install Backend Dependencies**
 
-6. **Access the application**
-   - Frontend: `http://localhost:5173`
-   - Backend API: `http://localhost:3000`
+**Node.js Backend:**
+```bash
+cd server
+npm install
+cd ..
+```
+
+**Python Backend:**
+```bash
+cd backend
+pip install -r requirements.txt
+cd ..
+```
+
+---
+
+### ⚙️ Environment Configuration
+
+#### **Root `.env` (Frontend)**
+
+Create `.env` in the project root:
+
+```env
+# ============================================
+# GOOGLE GEMINI AI (Required)
+# ============================================
+VITE_API_KEY=your_google_gemini_api_key_here
+
+# ============================================
+# SARVAM AI (Optional - for Indian languages)
+# ============================================
+VITE_SARVAM_API_KEY=your_sarvam_api_key_here
+
+# ============================================
+# BACKEND URLs
+# ============================================
+# For Local Development:
+VITE_BACKEND_URL=http://localhost:3000
+VITE_PYTHON_BACKEND_URL=http://localhost:5001
+
+# For Production (Vercel):
+# VITE_BACKEND_URL=https://agritech-server-node.vercel.app
+# VITE_PYTHON_BACKEND_URL=https://agritech-nine.vercel.app
+
+# ============================================
+# MONGODB (Optional - for analytics)
+# ============================================
+MONGODB_URI=your_mongodb_connection_string
+```
+
+#### **Server `.env` (Node.js Backend)**
+
+Create `server/.env`:
+
+```env
+# ============================================
+# GOOGLE GEMINI AI
+# ============================================
+API_KEY=your_google_gemini_api_key_here
+
+# ============================================
+# MONGODB (Optional)
+# ============================================
+MONGODB_URI=your_mongodb_connection_string
+```
+
+#### **Backend `.env` (Python Backend)**
+
+Create `backend/.env`:
+
+```env
+# ============================================
+# SARVAM AI
+# ============================================
+SARVAM_API_KEY=your_sarvam_api_key_here
+```
+
+---
+
+### 🏃 Running Locally
+
+#### **Start All Services**
+
+You'll need **3 terminal windows**:
+
+**Terminal 1 - Frontend (Vite + React):**
+```bash
+npm run dev
+```
+Access at: `http://localhost:5173`
+
+**Terminal 2 - Node.js Backend:**
+```bash
+cd server
+npm start
+```
+Access at: `http://localhost:3000`
+
+**Terminal 3 - Python Backend:**
+```bash
+cd backend
+python3 app.py
+```
+Access at: `http://localhost:5001`
+
+---
+
+### ✅ Verify Installation
+
+Check that all services are running:
+
+```bash
+# Check Frontend
+curl http://localhost:5173
+
+# Check Node.js Backend
+curl http://localhost:3000
+
+# Check Python Backend
+curl http://localhost:5001
+```
+
+All should return status information! 🎉
+
+---
+
+## 📱 Access the Application
+
+Once all services are running:
+
+1. **Open your browser** to `http://localhost:5173`
+2. **Select your language** (English, Hindi, Odia, Bengali, etc.)
+3. **Start exploring** the 12 AI-powered farming features!
+
+---
+
+## 🌐 Deployment
+
+### **Deploy to Vercel**
+
+This project is optimized for Vercel deployment.
+
+#### **Frontend Deployment**
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy frontend
+vercel
+```
+
+#### **Backend Deployment**
+
+See our comprehensive deployment guides:
+- 📘 [Vercel Deployment Guide](./docs/vercel_deployment_guide.md)
+- 🔧 [Deployment Fixes](./docs/vercel_deployment_fixes.md)
+
+#### **Environment Variables for Production**
+
+Add these in Vercel Dashboard → Settings → Environment Variables:
+
+**Frontend:**
+- `VITE_API_KEY`
+- `VITE_SARVAM_API_KEY`
+- `VITE_BACKEND_URL=https://agritech-server-node.vercel.app`
+- `VITE_PYTHON_BACKEND_URL=https://agritech-nine.vercel.app`
+
+**Node.js Backend:**
+- `API_KEY`
+- `MONGODB_URI`
+
+**Python Backend:**
+- `SARVAM_API_KEY`
+
 
 ---
 
