@@ -37,8 +37,14 @@ connectDB().then((connection) => {
     console.error('Database initialization failed:', err);
 });
 
-// Gemini Setup
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Gemini Setup - Only initialize if API key exists
+let ai = null;
+if (process.env.API_KEY) {
+    ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
+    console.log('🤖 Gemini AI initialized');
+} else {
+    console.warn('⚠️ API_KEY not set - Gemini features will be disabled');
+}
 
 // API 1: Calculate Hotspots (Pure Data)
 app.post('/api/seedscout/calculate', async (req, res) => {
@@ -86,6 +92,10 @@ app.post('/api/seedscout/calculate', async (req, res) => {
 // API 2: Explain Result (Gemini)
 app.post('/api/seedscout/explain', async (req, res) => {
     try {
+        if (!ai) {
+            return res.status(503).json({ error: 'AI service not available - API_KEY not configured' });
+        }
+
         const { district, crop, score, logic } = req.body;
 
         const prompt = `Act as an expert agricultural geneticist.

@@ -5,14 +5,14 @@ const Seed = require('../models/Seed');
 
 // 1. GEO-FENCER ENDPOINT
 // Returns the user's ecological zone based on GPS
-router.post('/identify', (req, res) => {
+router.post('/identify', async (req, res) => {
     try {
         const { lat, lng } = req.body;
         if (!lat || !lng) {
             return res.status(400).json({ error: "Latitude and Longitude required" });
         }
 
-        const topology = identifyTopology(parseFloat(lat), parseFloat(lng));
+        const topology = await identifyTopology(parseFloat(lat), parseFloat(lng));
         const twins = getTopologyTwins(topology);
 
         res.json({
@@ -32,7 +32,7 @@ router.post('/recommend', async (req, res) => {
         const { lat, lng, weather } = req.body;
 
         // 1. Identify Topology (Geo-Fencer)
-        const userTopology = identifyTopology(parseFloat(lat), parseFloat(lng));
+        const userTopology = await identifyTopology(parseFloat(lat), parseFloat(lng));
         const twinTopologies = getTopologyTwins(userTopology);
 
         // 2. Weather Bridge (Use provided weather or default)
