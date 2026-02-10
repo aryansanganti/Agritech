@@ -1,4 +1,4 @@
-# 🌾 BHUMI - Smart Farming Assistant
+# 🌾 BHOOMI - Smart Farming Assistant
 
 **An AI-Powered Progressive Web Application Revolutionizing Agriculture**
 
@@ -10,17 +10,17 @@
 
 ---
 
-## 📖 What is BHUMI?
+## 📖 What is BHOOMI?
 
-**BHUMI** (meaning "Earth" in Sanskrit) is a comprehensive **AI-powered farming assistant** designed to democratize agricultural intelligence for farmers worldwide. It combines cutting-edge artificial intelligence with practical farming needs to provide real-time insights, predictions, and recommendations—all accessible through a simple, multilingual interface.
+**BHOOMI** (meaning "Earth" in Sanskrit) is a comprehensive **AI-powered farming assistant** designed to democratize agricultural intelligence for farmers worldwide. It combines cutting-edge artificial intelligence with practical farming needs to provide real-time insights, predictions, and recommendations—all accessible through a simple, multilingual interface.
 
-Think of BHUMI as **"An AI Agronomist in Your Pocket"**—available 24/7, speaking your language, and ready to help with everything from disease detection to yield prediction.
+Think of bhoomi as **"An AI Agronomist in Your Pocket"**—available 24/7, speaking your language, and ready to help with everything from disease detection to yield prediction.
 
 ---
 
 ## 🎯 What Does This App Do?
 
-BHUMI provides **12 core features** that address critical agricultural challenges:
+bhoomi provides **12 core features** that address critical agricultural challenges:
 
 ### 1. 🦠 **Disease Detection & Diagnosis**
 - **Upload a photo** of any crop leaf or plant
@@ -64,7 +64,7 @@ BHUMI provides **12 core features** that address critical agricultural challenge
   - **Crop rotation** suggestions
 - Uses **AI reasoning models** for complex simulations
 
-### 5. 💬 **AI Chatbot (Bhumi Assistant)**
+### 5. 💬 **AI Chatbot (bhoomi Assistant)**
 - **Conversational AI** powered by Google Gemini
 - Ask questions in natural language like:
   - "What fertilizer should I use for tomatoes?"
@@ -76,7 +76,7 @@ BHUMI provides **12 core features** that address critical agricultural challenge
   - Local conditions
 - Supports **multilingual conversations**
 
-### 6. 🎤 **Voice Agent (Bhumi Live)**
+### 6. 🎤 **Voice Agent (bhoomi Live)**
 - **Hands-free operation** for field use
 - Speak naturally in your local dialect:
   - Hindi, Odia, Bengali, Spanish, Mandarin, Russian, Japanese, Portuguese
@@ -303,7 +303,7 @@ server/
 
 ## 🌍 Multilingual Support
 
-BHUMI speaks **9+ languages** natively:
+bhoomi speaks **9+ languages** natively:
 
 | Language | Code | Native Name |
 |----------|------|-------------|
