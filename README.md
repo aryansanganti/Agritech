@@ -563,14 +563,5 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **Open-source community** for React, Vite, and other tools
 - **Farmers worldwide** who inspired this project
 
----
-
-## 📞 Support
-
-- 📧 Email: dipayansardar73@gmail.com
-- 🐛 Report bugs: [GitHub Issues](https://github.com/yourusername/agritech/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/agritech/discussions)
-
----
 
 **Made with ❤️ for farmers, by technologists**
